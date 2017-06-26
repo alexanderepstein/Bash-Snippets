@@ -1,0 +1,64 @@
+#!/bin/bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
+base=""
+exchangeTo=""
+
+getBase()
+{
+  echo -n "What is the base currency: "
+  read -r base
+  base=$(echo $base | tr /a-z/ /A-Z/)
+  if [[ $base != "AUD" && $base != "BGN" && $base != "BRL" \
+      && $base != "CAD" && $base != "CHF" && $base != "CNY" && $base != "CZK" && $base != "DKK" \
+      && $base != "EUR" && $base != "GBP" && $base != "HKD" && $base != "HRK" && $base != "HUF" \
+      && $base != "IDR" && $base != "ILS" && $base != "INR" && $base != "JPY" && $base != "KRW" \
+      && $base != "MXN" && $base != "MYR" && $base != "NOK" && $base != "NZD" && $base != "PHP" \
+      && $base != "PLN" && $base != "RON" && $base != "RUB" && $base != "SEK" && $base != "SGD" \
+    && $base != "THB" && $base != "TRY" && $base != "USD" && $base != "ZAR" ]];then
+    unset base
+    echo "Invalid base currency"
+    getBase
+  fi
+}
+
+getExchangeTo()
+{
+  echo -n "What currency to exchange to: "
+  read -r exchangeTo
+  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
+  if [[ $exchangeTo != "AUD" && $exchangeTo != "BGN" && $exchangeTo != "BRL" \
+      && $exchangeTo != "CAD" && $exchangeTo != "CHF" && $exchangeTo != "CNY" && $exchangeTo != "CZK" && $exchangeTo != "DKK" \
+      && $exchangeTo != "EUR" && $exchangeTo != "GBP" && $exchangeTo != "HKD" && $exchangeTo != "HRK" && $exchangeTo != "HUF" \
+      && $exchangeTo != "IDR" && $exchangeTo != "ILS" && $exchangeTo != "INR" && $exchangeTo != "JPY" && $exchangeTo != "KRW" \
+      && $exchangeTo != "MXN" && $exchangeTo != "MYR" && $exchangeTo != "NOK" && $exchangeTo != "NZD" && $exchangeTo != "PHP" \
+      && $exchangeTo != "PLN" && $exchangeTo != "RON" && $exchangeTo != "RUB" && $exchangeTo != "SEK" && $exchangeTo != "SGD" \
+    && $exchangeTo != "THB" && $exchangeTo != "TRY" && $exchangeTo != "USD" && $exchangeTo != "ZAR"  ]];then
+    echo "Invalid exchange currency"
+    unset getExchangeTo
+    getExchangeTo
+  fi
+}
+
+getAmount()
+{
+  echo -n "What is the amount being exchanged: "
+  read -r amount
+  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]
+  then
+    echo "The amount has to be a number"
+    unset amount
+    getAmount
+  fi
+}
+
+convertCurrency()
+{
+  exchangeRate=$(curl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9][.][0-9]*") > /dev/null
+  exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
+  echo "$amount $base is equal to $exchangeAmount $exchangeTo"
+}
+
+getBase
+getExchangeTo
+getAmount
+convertCurrency
