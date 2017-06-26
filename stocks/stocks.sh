@@ -7,7 +7,7 @@ checkInternet()
   if [ $? -eq 0 ]; then
     return 0
   else
-    echo "Error no active internet connection" >&2
+    echo "Error: no active internet connection" >&2
     return 1
   fi
 }

@@ -51,13 +51,25 @@ getAmount()
   fi
 }
 
+checkInternet()
+{
+  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
+
+  if [ $? -eq 0 ]; then
+    return 0
+  else
+    echo "Error: no active internet connection" >&2
+    return 1
+  fi
+}
+
 convertCurrency()
 {
   exchangeRate=$(curl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9][.][0-9]*") > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   echo "$amount $base is equal to $exchangeAmount $exchangeTo"
 }
-
+checkInternet || exit 1
 getBase
 getExchangeTo
 getAmount
