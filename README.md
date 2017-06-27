@@ -42,6 +42,17 @@ Converts currency based on realtime exchange rates
 
 </div>
 
+
+## Encryption & Decryption
+
+A wrapper for openssl that allows for quickly encrypting and decrypting files
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/crypt/crypt.png?raw=true">
+
+</div>
+
 #### To Be Added
 [ ] Pass in arguments as well on top of the option to have it guide you through input
 

@@ -1,0 +1,41 @@
+#!/bin/bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
+
+encrypt()
+{
+  openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; exit 1; }
+    echo "Successfully encrypted"
+}
+
+decrypt()
+{
+  openssl enc -aes-256-cbc -d -a -in $1 -out $2 || { echo "File not found"; exit 1; }
+  echo "Successfully decrypted"
+}
+
+while getopts ":e:d::" opt; do
+  case $opt in
+    e)
+      if [[ $# -gt 3 ]]; then
+        echo "Option -e only accepts two arguments" <&2
+        exit 1
+      fi
+      encrypt $2 $3
+    ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+    ;;
+    d)
+      if [[ $# -gt 3 ]]; then
+        echo "Option -e only accepts two arguments" <&2
+        exit 1
+      fi
+      decrypt $2 $3
+    ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+    ;;
+  esac
+done
