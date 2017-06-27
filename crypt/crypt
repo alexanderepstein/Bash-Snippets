@@ -4,7 +4,7 @@
 encrypt()
 {
   openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; exit 1; }
-    echo "Successfully encrypted"
+  echo "Successfully encrypted"
 }
 
 decrypt()
