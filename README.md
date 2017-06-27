@@ -64,6 +64,41 @@ A wrapper for openssl that allows for quickly encrypting and decrypting files
 
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
+## Installing
+
+* First clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
+
+* Then cd into the cloned directory: ```cd Bash-Snippets```
+
+#### To install all scripts
+```bash
+./install.sh
+```
+
+#### To install individual scripts
+Ex. Weather
+```bash
+cd weather
+./install.sh
+```
+
+## Uninstalling
+
+* If you don't have the Bash-Snippets folder anymore clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
+
+* cd into the Bash-Snippets directory: ```cd Bash-Snippets```
+
+#### To uninstall all scripts
+```bash
+./uninstall.sh
+```
+
+#### To uninstall individual scripts
+Ex. Weather
+```bash
+cd weather
+./uninstall.sh
+```
 ## Donate
 If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
 
