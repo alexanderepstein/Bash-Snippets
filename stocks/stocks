@@ -49,12 +49,12 @@ printStockInformation()
 
 getTicker()
 {
-   response=$(curl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1&region=1&lang=en%22") > /dev/null
+   response=$(curl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1+$2+$3+$4+$5+$6+$7+$8+$9&region=1&lang=en%22") > /dev/null
    symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']")
    unset response
 }
 
 checkInternet || exit 1
-getTicker $1
+getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9
 getStockInformation $symbol
 printStockInformation
