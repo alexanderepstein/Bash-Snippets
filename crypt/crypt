@@ -1,21 +1,23 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
+## uses openssl aes 256 cbc encryption to encrypt file salting it with password designated by user
 encrypt()
 {
   openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; exit 1; }
   echo "Successfully encrypted"
 }
 
+## uses openssl aes 256 cbc decryption to decrypt file
 decrypt()
 {
   openssl enc -aes-256-cbc -d -a -in $1 -out $2 || { echo "File not found"; exit 1; }
   echo "Successfully decrypted"
 }
 
-while getopts ":e:d::" opt; do
+while getopts ":e:d::" opt; do ## alows for using options in bash
   case $opt in
-    e)
+    e) ## when trying to encrypt run this
       if [[ $# -gt 3 ]]; then
         echo "Option -e only accepts two arguments" <&2
         exit 1
@@ -26,14 +28,14 @@ while getopts ":e:d::" opt; do
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
-    d)
+    d) ## when trying to decrypt run this
       if [[ $# -gt 3 ]]; then
         echo "Option -d only accepts two arguments" <&2
         exit 1
       fi
       decrypt $2 $3
     ;;
-    :)
+    :) ## will run when no arguments are provided to to e or d options
       echo "Option -$OPTARG requires an argument." >&2
       exit 1
     ;;
