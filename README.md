@@ -1,6 +1,9 @@
 <div align="center">
 
 # Bash-Snippets
+
+<img src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/terminal-icon.png" height="250px" width="250px">
+
 ##### A collection of small bash scripts for heavy terminal users
 
 </div>
