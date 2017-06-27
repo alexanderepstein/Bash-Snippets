@@ -1,0 +1,50 @@
+#!/bin/bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
+
+checkInternet()
+{
+  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    return 0
+  else
+    echo "Error: no active internet connection" >&2
+    return 1
+  fi
+}
+
+getMovieInfo()
+{
+  apiKey=946f500a
+  movie="$1+$2+$3+$4+$5+$6+$7+$8+$9"
+  movieInfo=$(curl -s "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null
+  checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']")
+  if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi
+  title=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Title']")
+  year=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Year']")
+  score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']")
+  rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']")
+  genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']")
+  director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']")
+  actors=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Actors']")
+  plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Plot']")
+}
+
+printMovieInfo()
+{
+  echo
+  echo '=================================================='
+  echo "| Title: $title"
+  echo "| Year: $year"
+  echo "| Tomato: $score"
+  echo "| Rated: $rated"
+  echo "| Genre: $genre"
+  echo "| Director: $director"
+  echo "| Actors: $actors"
+  echo "| Plot: $plot"
+  echo '=================================================='
+  echo
+}
+
+checkInternet || exit 1
+getMovieInfo $1 $2 $3 $4 $5 $6 $7 $8 $9 || exit 1
+printMovieInfo
