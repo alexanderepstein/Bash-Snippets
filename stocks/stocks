@@ -1,22 +1,25 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
+
 checkInternet()
 {
-  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
+  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
+  if [ $? -eq 0 ]; then #check if the output is 0, if so no errors have occured and we have connected to google successfully
     return 0
   else
-    echo "Error: no active internet connection" >&2
+    echo "Error: no active internet connection" >&2 #sent to stderr
     return 1
   fi
 }
 
+## This function grabs information about a stock and using python parses the
+## JSON response to extrapolate the information for storage
 getStockInformation()
 {
-  symb=$1
-  stockInfo=$(curl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$symb&apikey=KPCCCRJVMOGN9L6T") > /dev/null
-  export PYTHONIOENCODING=utf8
-  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol" ; exit 1; }
+  stockInfo=$(curl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$1&apikey=KPCCCRJVMOGN9L6T") > /dev/null #grab the JSON response
+  export PYTHONIOENCODING=utf8 #necessary for python in some cases
+  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol" ; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
+  # The rest of the code is just extrapolating the data with python from the JSON response
   exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']")
   latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['03. Latest Price']")
   open=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['04. Open (Current Trading Day)']")
@@ -27,7 +30,11 @@ getStockInformation()
   priceChangePercentage=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['09. Price Change Percentage']")
   volume=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['10. Volume (Current Trading Day)']")
   lastUpdated=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['11. Last Updated']")
+  unset stockInfo # done with the JSON response not needed anymore
 }
+
+## This function uses all the variables that are set by getStockInformation and
+## prints them out to the user in a human readable format
 printStockInformation()
 {
   echo
@@ -35,26 +42,29 @@ printStockInformation()
   echo "============================================="
   echo Exchange Name: $exchangeName
   echo Latest Price: $latestPrice
-  if [[ $open != "--" ]];then echo "Open (Current Trading Day): $open"; fi
-  if [[ $high != "--" ]];then echo "High (Current Trading Day): $high"; fi
-  if [[ $low != "--" ]];then echo "Low (Current Trading Day): $low"; fi
+  if [[ $open != "--" ]];then echo "Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
+  if [[ $high != "--" ]];then echo "High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
+  if [[ $low != "--" ]];then echo "Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
   echo "Close (Previous Trading Day): $close"
   echo "Price Change: $priceChange"
-  if [[ $priceChangePercentage != "%" ]];then echo "Price Change Percentage: $priceChangePercentage"; fi
-  if [[ $volume != "--" ]];then echo "Volume (Current Trading Day): $volume"; fi
+  if [[ $priceChangePercentage != "%" ]];then echo "Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
+  if [[ $volume != "--" ]];then echo "Volume (Current Trading Day): $volume"; fi ## sometime this is blank only print if value is present
   echo "Last Updated: $lastUpdated"
   echo "============================================="
   echo
 }
 
+## This function queries google to determine the stock ticker for a certain company
+## this allows the usage of stocks to be extended where now you can enter stocks appple
+## and it will determine the stock symbol for apple is AAPL and move on from there
 getTicker()
 {
   response=$(curl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1+$2+$3+$4+$5+$6+$7+$8+$9&region=1&lang=en%22") > /dev/null
-  symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']")
-  unset response
+  symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']") # using python to extrapolate the stock symbol
+  unset response #just unsets the entire response after using it since all I need is the stock ticker
 }
 
-checkInternet || exit 1
-getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9
-getStockInformation $symbol
-printStockInformation
+checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9 # the company name might have spaces so passing in all args allows for this
+getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
+printStockInformation  # print this information out to the user in a human readable format
