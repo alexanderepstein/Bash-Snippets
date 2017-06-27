@@ -28,7 +28,7 @@ while getopts ":e:d::" opt; do
     ;;
     d)
       if [[ $# -gt 3 ]]; then
-        echo "Option -e only accepts two arguments" <&2
+        echo "Option -d only accepts two arguments" <&2
         exit 1
       fi
       decrypt $2 $3

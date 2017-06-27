@@ -71,7 +71,7 @@ Quick search that grabs relevant information about a movie
 * To get and print weather based on a location: <a href="wttr.in">wttr.in</a>
 * To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
 * To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
-* To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com/</a>
+* To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
