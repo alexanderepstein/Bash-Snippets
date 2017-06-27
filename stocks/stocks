@@ -13,8 +13,8 @@ checkInternet()
 
 getStockInformation()
 {
-  symbol=$1
-  stockInfo=$(curl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$symbol&apikey=KPCCCRJVMOGN9L6T") > /dev/null
+  symb=$1
+  stockInfo=$(curl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$symb&apikey=KPCCCRJVMOGN9L6T") > /dev/null
   export PYTHONIOENCODING=utf8
   echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol" ; exit 1; }
   exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']")
@@ -47,6 +47,14 @@ printStockInformation()
   echo
 }
 
+getTicker()
+{
+   response=$(curl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1&region=1&lang=en%22") > /dev/null
+   symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']")
+   unset response
+}
+
 checkInternet || exit 1
-getStockInformation $1
+getTicker $1
+getStockInformation $symbol
 printStockInformation
