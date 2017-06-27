@@ -52,6 +52,21 @@ Converts currency based on realtime exchange rates
 
 A wrapper for openssl that allows for quickly encrypting and decrypting files
 
+```bash
+crypt -e [original file] [encrypted file] # encrypts files
+crypt -d [encrypted file] [output file] # decrypts files
+```
+#### Encryption Details
+* Uses AES 256 level encryption
+* Key is salted before creation
+* Password is never in plain text, and OpenSSL generates key based on password
+* Data is encrypted in Base64, so it can be used as plain text in an email. (Not usually necessary if attached as a file)
+
+**Tested With** => .pdf, .txt, .docx, .doc, .png, .jpeg
+
+**CAUTION** => Make sure to use different filenames, otherwise your file will be overwritten!
+
+
 <div align="center">
 
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/crypt/crypt.png?raw=true">
