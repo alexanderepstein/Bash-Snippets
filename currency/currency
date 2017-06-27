@@ -3,6 +3,8 @@
 base=""
 exchangeTo=""
 
+## Grabs the base currency from the user and validates it with all the possible currency
+## types available on the API
 getBase()
 {
   echo -n "What is the base currency: "
@@ -21,6 +23,8 @@ getBase()
   fi
 }
 
+## Grabs the exchange to currency from the user and validates it with all the possible currency
+## types available on the API
 getExchangeTo()
 {
   echo -n "What currency to exchange to: "
@@ -39,6 +43,7 @@ getExchangeTo()
   fi
 }
 
+## Get the amount that will be exchanged and validate that the user has entered a number (decimals are allowed)
 getAmount()
 {
   echo -n "What is the amount being exchanged: "
@@ -62,14 +67,16 @@ checkInternet()
   fi
 }
 
+## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
   exchangeRate=$(curl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9][.][0-9]*") > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   echo "$amount $base is equal to $exchangeAmount $exchangeTo"
 }
-checkInternet || exit 1
-getBase
-getExchangeTo
-getAmount
-convertCurrency
+
+checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+getBase # get base currency
+getExchangeTo # get exchange to currency
+getAmount # get the amount to be converted
+convertCurrency # grab the exhange rate and perform the conversion
