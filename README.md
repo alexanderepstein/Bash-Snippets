@@ -9,7 +9,11 @@
 
 Provides a 3 day forecast based on your ip address
 
-![Weather Usage](https://github.com/alexanderepstein/Bash-Snippets/blob/master/weather/weather.png?raw=true)
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/weather/weather.png?raw=true">
+
+</div>
 
 #### To Be Added
 [ ] Take in location as arguments
@@ -18,13 +22,22 @@ Provides a 3 day forecast based on your ip address
 
 Provides information about a certain stock symbol
 
-![Stock Usage](https://github.com/alexanderepstein/Bash-Snippets/blob/master/stocks/stocks.png?raw=true)
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/stocks/stocks.png?raw=true">
+
+</div>
 
 ## Currency
 
 Converts currency based on realtime exchange rates
 
-![Currency Usage](https://github.com/alexanderepstein/Bash-Snippets/blob/master/currency/currency.png?raw=true)
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/currency/currency.png?raw=true">
+
+</div>
 
 #### To Be Added
 [ ] Pass in arguments as well on top of the option to have it guide you through input
