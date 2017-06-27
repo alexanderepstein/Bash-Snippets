@@ -48,8 +48,10 @@ Converts currency based on realtime exchange rates
 ## API's Used
 * To get location based on ip address: <a href="ipinfo.io">ipinfo.io</a>
 * To get and print weather based on a location: <a href="wttr.in">wttr.in</a>
-* To grab the stock information in JSON format: <a href="https://www.alphavantage.co">https://www.alphavantage.co</a>
-* To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">http://api.fixer.io</a>
+* To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
+* To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
+
+#### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Donate
 If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
