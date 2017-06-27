@@ -1,14 +1,15 @@
 #!/bin/sh
 # Author: Alexander Epstein https://github.com/alexanderepstein
+
 getWeather()
 {
-  country=$(curl -s ipinfo.io/country) > /dev/null
-  if [ $country = "US" ];then
+  country=$(curl -s ipinfo.io/country) > /dev/null ## grab the country
+  if [ $country = "US" ];then ## if were in the us id rather not use longitude and latitude so the output is nicer
     city=$(curl -s ipinfo.io/city) > /dev/null
     region=$(curl -s ipinfo.io/region) > /dev/null
     region=$(echo "$region" | tr -dc '[:upper:]')
     curl wttr.in/$city,$region
-  else
+  else ## otherwise we are going to use longitude and latitude
     location=$(curl -s ipinfo.io/loc) > /dev/null
     curl wttr.in/$location
   fi
@@ -16,14 +17,14 @@ getWeather()
 
 checkInternet()
 {
-  echo "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
+  echo "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
+  if [ $? -eq 0 ]; then #check if the output is 0, if so no errors have occured and we have connected to google successfully
     return 0
   else
-    echo "Error: no active internet connection" >&2
+    echo "Error: no active internet connection" >&2 #sent to stderr
     return 1
   fi
 }
 
-checkInternet || exit 1
+checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 getWeather
