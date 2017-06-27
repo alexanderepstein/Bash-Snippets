@@ -4,7 +4,7 @@
 
 <img src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/terminal-icon.png" height="250px" width="250px">
 
-##### A collection of small bash scripts for heavy terminal users
+##### A collection of small bash scripts for heavy terminal users with no dependencies
 
 </div>
 
@@ -42,6 +42,9 @@ Converts currency based on realtime exchange rates
 
 </div>
 
+#### To Be Added
+[ ] Pass in arguments as well on top of the option to have it guide you through input
+
 
 ## Encryption & Decryption
 
@@ -53,8 +56,6 @@ A wrapper for openssl that allows for quickly encrypting and decrypting files
 
 </div>
 
-#### To Be Added
-[ ] Pass in arguments as well on top of the option to have it guide you through input
 
 ## API's Used
 * To get location based on ip address: <a href="ipinfo.io">ipinfo.io</a>
