@@ -107,6 +107,15 @@ Quick search that grabs relevant information about a movie
 ```
 this will let you choose which scripts to install
 
+* Install all the scripts
+```bash
+./install.sh all
+```
+
+* Install an individual script
+```bash
+./install.sh stocks
+```
 ## Uninstalling
 
 * If you don't have the Bash-Snippets folder anymore clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```

@@ -74,6 +74,49 @@ elif [[ $1 == "movies" ]]; then
   cd movies || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $1 == "all" ]];then
+  cd currency || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd stocks || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd weather || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd crypt || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd movies || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+elif [[ $1 == "update" ]]; then
+  echo "Updating scripts..."
+  if [[ -f  /usr/local/bin/currency ]];then
+    cd currency || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/stocks ]];then
+    cd stocks || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/weather ]];then
+    cd weather || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/crypt ]];then
+    cd crypt || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/movies ]];then
+    cd movies || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
 fi
 
 echo "Bash Snippets version $currentVersion"
