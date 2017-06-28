@@ -1,50 +1,59 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-
-echo -n "Do you wish to uninstall currency [Y/n]: "
-read -r answer
-if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-  cd currency || exit 1
-  ./uninstall.sh || exit 1
-  cd .. || exit 1
+if [[ -f  /usr/local/bin/currency ]];then
+  echo -n "Do you wish to uninstall currency [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd currency || exit 1
+    ./uninstall.sh || exit 1
+    cd .. || exit 1
+  fi
+  unset answer
 fi
 
-unset answer
-echo -n "Do you wish to uninstall stocks [Y/n]: "
-read -r answer
-if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-  cd stocks || exit 1
-  ./uninstall.sh
-  cd .. || exit 1
+if [[ -f  /usr/local/bin/stocks ]];then
+  echo -n "Do you wish to uninstall stocks [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd stocks || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
 
+  fi
+  unset answer
 fi
 
-unset answer
-echo -n "Do you wish to uninstall weather [Y/n]: "
-read -r answer
-if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-  cd weather || exit 1
-  ./uninstall.sh
-  cd .. || exit 1
+if [[ -f  /usr/local/bin/weather ]];then
+  echo -n "Do you wish to uninstall weather [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd weather || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
 
+  fi
+  unset answer
 fi
 
-unset answer
-echo -n "Do you wish to uninstall crypt [Y/n]: "
-read -r answer
-if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-  cd crypt || exit 1
-  ./uninstall.sh
-  cd .. || exit 1
+if [[ -f  /usr/local/bin/crypt ]];then
+  echo -n "Do you wish to uninstall crypt [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd crypt || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
 
+  fi
+  unset answer
 fi
 
-unset answer
-echo -n "Do you wish to uninstall movies [Y/n]: "
-read -r answer
-if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-  cd movies || exit 1
-  ./uninstall.sh
-  cd .. || exit 1
+if [[ -f  /usr/local/bin/movies ]];then
+  echo -n "Do you wish to uninstall movies [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd movies || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
+  fi
 fi
