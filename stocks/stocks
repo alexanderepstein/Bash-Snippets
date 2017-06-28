@@ -1,6 +1,8 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
+currentVersion="1.0.0"
+
 checkInternet()
 {
   echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
@@ -40,16 +42,16 @@ printStockInformation()
   echo
   echo $symbol stock info
   echo "============================================="
-  echo Exchange Name: $exchangeName
-  echo Latest Price: $latestPrice
-  if [[ $open != "--" ]];then echo "Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
-  if [[ $high != "--" ]];then echo "High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
-  if [[ $low != "--" ]];then echo "Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
-  echo "Close (Previous Trading Day): $close"
-  echo "Price Change: $priceChange"
-  if [[ $priceChangePercentage != "%" ]];then echo "Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
-  if [[ $volume != "--" ]];then echo "Volume (Current Trading Day): $volume"; fi ## sometime this is blank only print if value is present
-  echo "Last Updated: $lastUpdated"
+  echo "| Exchange Name: $exchangeName"
+  echo "| Latest Price: $latestPrice"
+  if [[ $open != "--" ]];then echo "| Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
+  if [[ $high != "--" ]];then echo "| High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
+  if [[ $low != "--" ]];then echo "| Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
+  echo "| Close (Previous Trading Day): $close"
+  echo "| Price Change: $priceChange"
+  if [[ $priceChangePercentage != "%" ]];then echo "| Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
+  if [[ $volume != "--" ]];then echo "| Volume (Current Trading Day): $volume"; fi ## sometime this is blank only print if value is present
+  echo "| Last Updated: $lastUpdated"
   echo "============================================="
   echo
 }
@@ -64,7 +66,80 @@ getTicker()
   unset response #just unsets the entire response after using it since all I need is the stock ticker
 }
 
+update()
+{
+  # Author: Alexander Epstein https://github.com/alexanderepstein
+  # Update utility version 1.2.0
+  # To test the tool enter in the defualt values that are in the examples for each variable
+  repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
+  githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
+  nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
+  latestVersion=$(curl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+    echo "Error: update utility has not been configured correctly." >&2
+    exit 1
+  elif [[ $latestVersion == "" ]];then
+    echo "Error: no active internet connection" >&2
+    exit 1
+  else
+    if [[ "$latestVersion" != "$currentVersion" ]]; then
+      echo "Version $latestVersion available"
+      echo -n "Do you wish to update $repositoryName [Y/n]: "
+      read -r answer
+      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r $repositoryName  || { echo "Your password is required to continue with the update" ; sudo rm -r $repositoryName ; }; fi #sudo command only on error
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
+        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+        git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
+        chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
+        "./$nameOfInstallFile update" || { echo "Your password is required to continue with the update" ; "sudo ./$nameOfInstallFile update" ; }
+        cd ..
+        rm -r $repositoryName || sudo rm -r $repositoryName #sudo command only on error
+      else
+        exit 1
+      fi
+    else
+      echo "$repositoryName is already the latest version"
+    fi
+  fi
+
+}
+
+
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9 # the company name might have spaces so passing in all args allows for this
-getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
-printStockInformation  # print this information out to the user in a human readable format
+
+
+while getopts "uv" opt; do
+  case $opt in
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    h)
+      help
+      exit 0
+    ;;
+    v)
+      echo "Version $currentVersion"
+      exit 0
+    ;;
+    u)
+      update
+      exit 0
+    ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ $1 == "update" ]];then
+  update
+else
+  getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9 # the company name might have spaces so passing in all args allows for this
+  getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
+  printStockInformation  # print this information out to the user in a human readable format
+fi
