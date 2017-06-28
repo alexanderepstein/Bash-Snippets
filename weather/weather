@@ -2,6 +2,7 @@
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
 currentVersion="1.1.1" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
+locale=$(echo $LANG | cut -c1-2)
 
 getIPWeather()
 {
@@ -10,16 +11,16 @@ getIPWeather()
     city=$(curl -s ipinfo.io/city) > /dev/null
     region=$(curl -s ipinfo.io/region) > /dev/null
     region=$(echo "$region" | tr -dc '[:upper:]')
-    curl wttr.in/$city,$region
+    curl $locale.wttr.in/$city,$region
   else ## otherwise we are going to use longitude and latitude
     location=$(curl -s ipinfo.io/loc) > /dev/null
-    curl wttr.in/$location
+    curl $locale.wttr.in/$location
   fi
 }
 
 getLocationWeather()
 {
-  curl wttr.in/$1,$2,$3,$4
+  curl $locale.wttr.in/$1,$2,$3,$4
 }
 
 checkInternet()
