@@ -101,17 +101,11 @@ Quick search that grabs relevant information about a movie
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-#### To install all scripts
+* Run the guided install script with
 ```bash
 ./install.sh
 ```
-
-#### To install individual scripts
-Ex. Weather
-```bash
-cd weather
-./install.sh
-```
+this will let you choose which scripts to install
 
 ## Uninstalling
 
