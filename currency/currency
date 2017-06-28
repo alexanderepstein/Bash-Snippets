@@ -3,7 +3,7 @@
 
 base=""
 exchangeTo=""
-currentVersion="1.0.0"
+currentVersion="1.1.0"
 ## Grabs the base currency from the user and validates it with all the possible currency
 ## types available on the API
 getBase()

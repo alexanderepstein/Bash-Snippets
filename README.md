@@ -101,6 +101,8 @@ Quick search that grabs relevant information about a movie
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
+* Git checkout to the latest stable release ```git checkout v1.1.0```
+
 * Run the guided install script with
 ```bash
 ./install.sh
@@ -116,6 +118,19 @@ this will let you choose which scripts to install
 ```bash
 ./install.sh stocks
 ```
+
+## Updating
+With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
+Ex.
+```bash
+stocks update
+```
+or
+```bash
+stocks -u
+```
+This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.
+
 ## Uninstalling
 
 * If you don't have the Bash-Snippets folder anymore clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
