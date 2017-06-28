@@ -16,7 +16,9 @@
 
 ## Weather
 
-Provides a 3 day forecast based on your ip address
+Provides a 3 day forecast
+
+With no arguments it will grab the weather for your location as determined by you ip
 
 <div align="center">
 
@@ -24,8 +26,8 @@ Provides a 3 day forecast based on your ip address
 
 </div>
 
-#### To Be Added
-[ ] Take in location as arguments
+With arguments you can pass in a city state or country and get the weather in that area
+
 
 ## Stocks
 
@@ -48,8 +50,9 @@ Converts currency based on realtime exchange rates
 
 </div>
 
-#### To Be Added
-[ ] Pass in arguments as well on top of the option to have it guide you through input
+If you want to bypass to guided input you can pass in 3 arguments and it will run from there
+ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
+so a valid use case would be ```currency USD EUR 12.35```
 
 
 ## Encryption & Decryption
