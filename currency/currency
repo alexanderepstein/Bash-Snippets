@@ -73,7 +73,13 @@ convertCurrency()
 {
   exchangeRate=$(curl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9][.][0-9]*") > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
-  echo "$amount $base is equal to $exchangeAmount $exchangeTo"
+  echo
+  echo "========================="
+  echo "| $base to $exchangeTo"
+  echo "| Rate: $exchangeRate"
+  echo "| $base: $amount"
+  echo "| $exchangeTo: $exchangeAmount"
+  echo "========================="
 }
 
 update()
