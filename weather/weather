@@ -3,7 +3,7 @@
 
 currentVersion="1.1.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 
-getWeather()
+getIPWeather()
 {
   country=$(curl -s ipinfo.io/country) > /dev/null ## grab the country
   if [[ $country == "US" ]];then ## if were in the us id rather not use longitude and latitude so the output is nicer
@@ -15,6 +15,11 @@ getWeather()
     location=$(curl -s ipinfo.io/loc) > /dev/null
     curl wttr.in/$location
   fi
+}
+
+getLocationWeather()
+{
+  curl wttr.in/$1,$2,$3,$4
 }
 
 checkInternet()
@@ -71,11 +76,7 @@ update()
 
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-if [[ $# == 0 ]]; then
-getWeather
-elif [[ $1 == "update" ]]; then
-update
-fi
+
 
 
 while getopts "uv" opt; do
@@ -83,7 +84,7 @@ while getopts "uv" opt; do
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
-      ;;
+    ;;
     h)
       help
     ;;
@@ -98,6 +99,14 @@ while getopts "uv" opt; do
     :)
       echo "Option -$OPTARG requires an argument." >&2
       exit 1
-      ;;
+    ;;
   esac
 done
+
+if [[ $# == 0 ]]; then
+  getIPWeather
+elif [[ $1 == "update" ]]; then
+  update
+else
+  getLocationWeather $1 $2 $3 $4
+fi
