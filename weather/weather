@@ -103,7 +103,7 @@ while getopts "uv" opt; do
   esac
 done
 
-if [[ $# == 0 ]]; then
+if [[ $# == "0" ]]; then
   getIPWeather
 elif [[ $1 == "update" ]]; then
   update

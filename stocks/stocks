@@ -116,7 +116,7 @@ while getopts "uv" opt; do
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
-      ;;
+    ;;
     h)
       help
       exit 0
@@ -132,7 +132,7 @@ while getopts "uv" opt; do
     :)
       echo "Option -$OPTARG requires an argument." >&2
       exit 1
-      ;;
+    ;;
   esac
 done
 
