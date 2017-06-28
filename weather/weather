@@ -20,7 +20,7 @@ getIPWeather()
 
 getLocationWeather()
 {
-  curl $locale.wttr.in/$1,$2,$3,$4
+  curl $locale.wttr.in/$1+$2+$3+$4
 }
 
 checkInternet()
