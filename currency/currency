@@ -5,7 +5,7 @@ base=""
 exchangeTo=""
 currentVersion="1.1.0"
 ## Grabs the base currency from the user and validates it with all the possible currency
-## types available on the API
+## types available on the API and guides user through input (doesnt take in arguments)
 getBase()
 {
   echo -n "What is the base currency: "
@@ -23,9 +23,27 @@ getBase()
     getBase
   fi
 }
+## Checks base currency from the user and validates it with all the possible currency
+## types available on the API (requires argument)
+checkBase()
+{
+  base=$1
+  base=$(echo $base | tr /a-z/ /A-Z/)
+  if [[ $base != "AUD" && $base != "BGN" && $base != "BRL" \
+      && $base != "CAD" && $base != "CHF" && $base != "CNY" && $base != "CZK" && $base != "DKK" \
+      && $base != "EUR" && $base != "GBP" && $base != "HKD" && $base != "HRK" && $base != "HUF" \
+      && $base != "IDR" && $base != "ILS" && $base != "INR" && $base != "JPY" && $base != "KRW" \
+      && $base != "MXN" && $base != "MYR" && $base != "NOK" && $base != "NZD" && $base != "PHP" \
+      && $base != "PLN" && $base != "RON" && $base != "RUB" && $base != "SEK" && $base != "SGD" \
+    && $base != "THB" && $base != "TRY" && $base != "USD" && $base != "ZAR" ]];then
+    unset base
+    echo "Invalid base currency"
+    exit 1
+  fi
+}
 
 ## Grabs the exchange to currency from the user and validates it with all the possible currency
-## types available on the API
+## types available on the API and guides user through input (doesnt take in arguments)
 getExchangeTo()
 {
   echo -n "What currency to exchange to: "
@@ -44,7 +62,27 @@ getExchangeTo()
   fi
 }
 
+## Grabs the exchange to currency from the user and validates it with all the possible currency
+## types available on the API (requires arguments)
+checkExchangeTo()
+{
+  exchangeTo=$1
+  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
+  if [[ $exchangeTo != "AUD" && $exchangeTo != "BGN" && $exchangeTo != "BRL" \
+      && $exchangeTo != "CAD" && $exchangeTo != "CHF" && $exchangeTo != "CNY" && $exchangeTo != "CZK" && $exchangeTo != "DKK" \
+      && $exchangeTo != "EUR" && $exchangeTo != "GBP" && $exchangeTo != "HKD" && $exchangeTo != "HRK" && $exchangeTo != "HUF" \
+      && $exchangeTo != "IDR" && $exchangeTo != "ILS" && $exchangeTo != "INR" && $exchangeTo != "JPY" && $exchangeTo != "KRW" \
+      && $exchangeTo != "MXN" && $exchangeTo != "MYR" && $exchangeTo != "NOK" && $exchangeTo != "NZD" && $exchangeTo != "PHP" \
+      && $exchangeTo != "PLN" && $exchangeTo != "RON" && $exchangeTo != "RUB" && $exchangeTo != "SEK" && $exchangeTo != "SGD" \
+    && $exchangeTo != "THB" && $exchangeTo != "TRY" && $exchangeTo != "USD" && $exchangeTo != "ZAR"  ]];then
+    echo "Invalid exchange currency"
+    unset getExchangeTo
+    exit 1
+  fi
+}
+
 ## Get the amount that will be exchanged and validate that the user has entered a number (decimals are allowed)
+## doesnt take in argument, it guides user through input
 getAmount()
 {
   echo -n "What is the amount being exchanged: "
@@ -54,6 +92,19 @@ getAmount()
     echo "The amount has to be a number"
     unset amount
     getAmount
+  fi
+}
+
+## Get the amount that will be exchanged
+## validate that the user has entered a number (decimals are allowed and requires argument)
+checkAmount()
+{
+  amount=$1
+  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]
+  then
+    echo "The amount has to be a number"
+    unset amount
+    exit 1
   fi
 }
 
@@ -154,6 +205,17 @@ if [[ $# == 0 ]]; then
   getExchangeTo # get exchange to currency
   getAmount # get the amount to be converted
   convertCurrency # grab the exhange rate and perform the conversion
-elif [[ $1 == "update" ]]; then
-  update
+  exit 0
+elif [[ $# == "1" ]]; then
+  if [[ $1 == "update" ]];then
+    update
+  else
+    echo "Not a valid argument"
+  fi
+elif [[ $# == 3 ]];then
+  checkBase $1
+  checkExchangeTo $2
+  checkAmount $3
+  convertCurrency
+  exit 0
 fi
