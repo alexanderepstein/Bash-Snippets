@@ -58,7 +58,19 @@ update()
 
 }
 
-while getopts "uve:d:" opt; do ## alows for using options in bash
+
+usage()
+{
+  echo "Crypt tool"
+  echo "Usage: crypt [flag] [inputFile] [outputFile]"
+  echo "  -e Encrypt the inputFile and store it in the outputFile"
+  echo "  -d Decrypt the inputFile and store it in the outputFile"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
+while getopts "huve:d:" opt; do ## alows for using options in bash
   case $opt in
     e) ## when trying to encrypt run this
       if [[ $# -ne 3 ]]; then
@@ -82,6 +94,10 @@ while getopts "uve:d:" opt; do ## alows for using options in bash
       update
       exit 0
     ;;
+    h)
+      usage
+      exit 0
+    ;;
     v)
       echo "Version $currentVersion"
       exit 0
@@ -93,7 +109,12 @@ while getopts "uve:d:" opt; do ## alows for using options in bash
   esac
 done
 
-if [[ $1 == "update" ]];then
+if [[ $# == 0 ]]; then
+  usage
+elif [[ $1 == "update" ]];then
   update
+  exit 0
+elif [[ $1 == "help" ]];then
+  usage
   exit 0
 fi

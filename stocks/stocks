@@ -107,18 +107,26 @@ update()
 
 }
 
+usage()
+{
+  echo "Stocks tool"
+  echo "Usage: stocks [flag or company]"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
 
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 
-while getopts "uv" opt; do
+while getopts "uvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
     h)
-      help
+      usage
       exit 0
     ;;
     v)
@@ -139,8 +147,10 @@ done
 
 if [[ $1 == "update" ]];then
   update
+elif [[ $1 == "help" ]];then
+  usage
 elif [[ $# == "0" ]];then
-  echo "Error: requires an argument either stocks [company] or stocks [stock symbol]"
+  usage
 else
   getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9 # the company name might have spaces so passing in all args allows for this
   getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock

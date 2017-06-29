@@ -75,19 +75,33 @@ update()
 
 }
 
+usage()
+{
+  echo "Weather tool"
+  echo "Usage: weather or weather [flag] or weather [country] or weather [city] [state]"
+  echo "  weather [i] get weather in imperial units"
+  echo "  weather [m] get weather in metric units"
+  echo "  weather [Moon] grabs the phase of the moon"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
+
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 
 
 
-while getopts "uv" opt; do
+while getopts "uvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
     h)
-      help
+      usage
+      exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -106,6 +120,8 @@ done
 
 if [[ $# == "0" ]]; then
   getIPWeather
+elif [[ $1 == "help" ]];then
+  usage
 elif [[ $1 == "update" ]]; then
   update
 elif [[ $1 == "m" ]]; then

@@ -94,16 +94,26 @@ update()
 
 }
 
+usage()
+{
+  echo "Movies tool"
+  echo "Usage: movies [flag] or movies [movieToSearch]"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-while getopts "uv" opt; do
+while getopts "uvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
     h)
-      help
+      usage
+      exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -120,8 +130,12 @@ while getopts "uv" opt; do
   esac
 done
 
-if [[ $1 == "update" ]];then
+if [[ $# == 0 ]]; then
+  usage
+elif [[ $1 == "update" ]];then
   update
+elif [[ $1 == "help" ]];then
+  usage
 else
   getMovieInfo $1 $2 $3 $4 $5 $6 $7 $8 $9 || exit 1 ## exit if we return 1 (chances are movie was not found)
   printMovieInfo ## print out the data

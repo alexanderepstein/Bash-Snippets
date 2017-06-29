@@ -174,16 +174,27 @@ update()
 
 }
 
+
+usage()
+{
+  echo "Currency tool"
+  echo "Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-while getopts "uv" opt; do
+while getopts "uvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
     h)
-      help
+      usage
+      exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -209,6 +220,8 @@ if [[ $# == 0 ]]; then
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]];then
     update
+  elif [[ $1 == "help" ]]; then
+    usage
   else
     echo "Not a valid argument"
   fi
