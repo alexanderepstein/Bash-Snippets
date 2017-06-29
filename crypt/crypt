@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.2.0"
+currentVersion="1.2.1"
 
 ## uses openssl aes 256 cbc encryption to encrypt file salting it with password designated by user
 encrypt()
