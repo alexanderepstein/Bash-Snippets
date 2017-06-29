@@ -2,6 +2,19 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.2.1
+
+</div>
+
+### Changes
+* Check if curl is installed before using it
+* No sudo on error in update, just let user know they need to run the command as sudo
+* Changelog added
+### Bugfixes
+* Setting user agent for curl to prevent issues from changes in  ~/.curlrc
+
+<div align="center">
+
 ## Version 1.2.0
 
 </div>
