@@ -26,7 +26,7 @@ checkInternet()
 ## JSON response to extrapolate the information for storage
 getStockInformation()
 {
-  stockInfo=$(curl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$1&apikey=KPCCCRJVMOGN9L6T") > /dev/null #grab the JSON response
+  stockInfo=$(curl -Acurl -s  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$1&apikey=KPCCCRJVMOGN9L6T") > /dev/null #grab the JSON response
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol" ; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
   # The rest of the code is just extrapolating the data with python from the JSON response
@@ -69,7 +69,7 @@ printStockInformation()
 ## and it will determine the stock symbol for apple is AAPL and move on from there
 getTicker()
 {
-  response=$(curl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1+$2+$3+$4+$5+$6+$7+$8+$9&region=1&lang=en%22") > /dev/null
+  response=$(curl -Acurl -s "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1+$2+$3+$4+$5+$6+$7+$8+$9&region=1&lang=en%22") > /dev/null
   symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']") # using python to extrapolate the stock symbol
   unset response #just unsets the entire response after using it since all I need is the stock ticker
 }
@@ -82,7 +82,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(curl -Acurl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2

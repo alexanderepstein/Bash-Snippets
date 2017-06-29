@@ -131,7 +131,7 @@ checkInternet()
 ## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
-  exchangeRate=$(curl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
+  exchangeRate=$(curl -Acurl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   echo
   echo "========================="
@@ -150,7 +150,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(curl -Acurl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2
@@ -234,6 +234,7 @@ elif [[ $# == "1" ]]; then
     usage
   else
     echo "Not a valid argument"
+    exit 1
   fi
 elif [[ $# == 3 ]];then
   checkBase $1

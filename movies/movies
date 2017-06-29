@@ -29,7 +29,7 @@ getMovieInfo()
 {
   apiKey=946f500a # try not to abuse this it is a key that came from the ruby-scripts repo I link to.
   movie="$1+$2+$3+$4+$5+$6+$7+$8+$9" ## format the inputs to use for the api
-  movieInfo=$(curl -s "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  movieInfo=$(curl -Acurl -s "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
   checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']")
   if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python from the JSON response
@@ -70,7 +70,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(curl -Acurl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2
