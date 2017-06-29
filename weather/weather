@@ -11,10 +11,10 @@ getIPWeather()
     city=$(curl -s ipinfo.io/city) > /dev/null
     region=$(curl -s ipinfo.io/region) > /dev/null
     region=$(echo "$region" | tr -dc '[:upper:]')
-    curl $locale.wttr.in/$city,$region
+    curl $locale.wttr.in/$city,$region$1
   else ## otherwise we are going to use longitude and latitude
     location=$(curl -s ipinfo.io/loc) > /dev/null
-    curl $locale.wttr.in/$location
+    curl $locale.wttr.in/$location$1
   fi
 }
 
@@ -108,6 +108,10 @@ if [[ $# == "0" ]]; then
   getIPWeather
 elif [[ $1 == "update" ]]; then
   update
+elif [[ $1 == "m" ]]; then
+  getIPWeather "?m"
+elif [[ $1 == "i" ]]; then
+  getIPWeather "?u"
 else
   getLocationWeather $1 $2 $3 $4
 fi
