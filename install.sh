@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.1.1"
+currentVersion="1.2.0"
 
 if [[ $# == 0 ]]; then
 
