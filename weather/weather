@@ -4,6 +4,15 @@
 currentVersion="1.2.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 locale=$(echo $LANG | cut -c1-2)
 
+
+checkCurl()
+{
+  if ! command -v curl &>/dev/null ; then
+   echo "Error: this tool requires 'curl', please install it."
+   return 1
+ fi
+}
+
 getIPWeather()
 {
   country=$(curl -s ipinfo.io/country) > /dev/null ## grab the country
@@ -87,7 +96,7 @@ usage()
   echo "  -v Get the tool version"
 }
 
-
+checkCurl || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 

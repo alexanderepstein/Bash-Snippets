@@ -3,6 +3,14 @@
 
 currentVersion="1.2.0"
 
+checkCurl()
+{
+  if ! command -v curl &>/dev/null ; then
+   echo "Error: this tool requires 'curl', please install it."
+   return 1
+ fi
+}
+
 checkInternet()
 {
   echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
@@ -116,6 +124,7 @@ usage()
   echo "  -v Get the tool version"
 }
 
+checkCurl || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 
