@@ -121,7 +121,7 @@ Also can provide information on a given item
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.3.1```
+* Git checkout to the latest stable release ```git checkout v1.4.0```
 
 * Run the guided install script with
 ```bash

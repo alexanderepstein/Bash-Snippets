@@ -2,6 +2,14 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.4.0
+</div>
+
+# Changes
+* Added taste component
+
+<div align="center">
+
 ## Version 1.3.1
 
 </div>
