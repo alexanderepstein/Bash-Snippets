@@ -100,11 +100,9 @@ getSimilar()
   typeThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['Type']")
   if [[ $info == "1" ]];then
     wikiOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['wTeaser']")
-    youtubeOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['yUrl']")
     wikiTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['wTeaser']")
-    youtubeTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['yUrl']")
     wikiThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['wTeaser']")
-    youtubeThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['yUrl']")
+    youtube=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['yUrl']")
   fi
 }
 
@@ -132,17 +130,15 @@ printResults()
     echo $nameOne: $typeOne
     echo $wikiOne
     echo
-    if [[ $youtubeOne != "None" ]];then echo $youtubeOne;fi
     echo
     echo $nameTwo: $typeTwo
     echo $wikiTwo
     echo
-    if [[ $youtubeTwo != "None" ]];then echo $youtubeOne;fi
     echo
     echo $nameThree: $typeThree
     echo $wikiThree
     echo
-    if [[ $youtubeThree != "None" ]];then echo $youtubeOne;fi
+    if [[ $youtube != "None" ]];then echo $youtube;fi
     echo
     echo "==================================="
   else
