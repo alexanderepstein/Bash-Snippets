@@ -3,33 +3,52 @@
 
 currentVersion="1.2.1" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 locale=$(echo $LANG | cut -c1-2)
+configuredClient=""
 
-
-checkCurl()
+## This function determines which http get tool the system has installed and returns an error if there isnt one
+getConfiguredClient()
 {
-  if ! command -v curl &>/dev/null ; then
-   echo "Error: this tool requires 'curl', please install it."
-   return 1
- fi
+    if  command -v curl &>/dev/null ; then
+      configuredClient="curl"
+    elif command -v wget &>/dev/null ; then
+      configuredClient="wget"
+    elif command -v fetch &>/dev/null ; then
+      configuredClient="fetch"
+    else
+      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+      return 1
+    fi
+
 }
+
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl) curl -A curl -s "$@";;
+    wget) wget -qO- "$@";;
+    fetch) fetch -o "...";;
+  esac
+}
+
 
 getIPWeather()
 {
-  country=$(curl -Acurl -s ipinfo.io/country) > /dev/null ## grab the country
+  country=$(httpGet ipinfo.io/country) > /dev/null ## grab the country
   if [[ $country == "US" ]];then ## if were in the us id rather not use longitude and latitude so the output is nicer
-    city=$(curl -Acurl -s ipinfo.io/city) > /dev/null
-    region=$(curl -Acurl -s ipinfo.io/region) > /dev/null
+    city=$(httpGet ipinfo.io/city) > /dev/null
+    region=$(httpGet ipinfo.io/region) > /dev/null
     region=$(echo "$region" | tr -dc '[:upper:]')
-    curl -Acurl $locale.wttr.in/$city,$region$1
+    httpGet $locale.wttr.in/$city,$region$1
   else ## otherwise we are going to use longitude and latitude
-    location=$(curl -Acurl-s ipinfo.io/loc) > /dev/null
-    curl -Acurl $locale.wttr.in/$location$1
+    location=$(httpGet ipinfo.io/loc) > /dev/null
+    httpGet $locale.wttr.in/$location$1
   fi
 }
 
 getLocationWeather()
 {
-  curl -Acurl $locale.wttr.in/$1+$2+$3+$4
+  httpGet $locale.wttr.in/$1+$2+$3+$4
 }
 
 checkInternet()
@@ -51,7 +70,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -Acurl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2
@@ -71,7 +90,7 @@ update()
         cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
-        ./$nameOfInstallFile "update" || { echo "Permissions Error: try running the update as sudo"; exit 1; }
+        ./$nameOfInstallFile "update" || exit 1
         cd ..
         rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
@@ -96,7 +115,7 @@ usage()
   echo "  -v Get the tool version"
 }
 
-checkCurl || exit 1
+getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 
