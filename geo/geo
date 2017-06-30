@@ -50,6 +50,7 @@ usage() {
     echo "  -a  [address] For specific ip in -s"
     echo "  -v  Returns Version"
     echo "  -h  Returns Help Screen"
+    echo "  -u  Updates Bash-Snippets"
     exit
 }
 
