@@ -45,7 +45,7 @@ update()
         cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
-        ./$nameOfInstallFile "update" || { echo "Permissions Error: try running the update as sudo"; exit 1; }
+        ./$nameOfInstallFile "update" || exit 1
         cd ..
         rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
