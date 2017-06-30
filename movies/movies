@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
 
 # Reset
 Color_Off='\033[0m'       # Text Reset
