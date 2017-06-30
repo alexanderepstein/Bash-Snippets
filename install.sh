@@ -69,6 +69,16 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
   fi
 
+  unset answer
+  echo -n "Do you wish to install geo [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd geo || exit 1
+    ./install.sh
+    cd .. || exit 1
+  fi
+
+
 fi
 
 if [[ $1  == "currency" ]];then
@@ -99,6 +109,10 @@ elif [[ $1 == "short" ]]; then
   cd short || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $1 == "geo" ]]; then
+  cd geo || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -119,6 +133,9 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd short || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd geo || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -155,6 +172,11 @@ elif [[ $1 == "update" ]]; then
   fi
   if [[ -f  /usr/local/bin/short ]];then
     cd short || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/geo ]];then
+    cd geo || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
   fi

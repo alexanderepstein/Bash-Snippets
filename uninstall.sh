@@ -59,7 +59,7 @@ if [[ -f  /usr/local/bin/movies ]];then
 fi
 
 if [[ -f  /usr/local/bin/taste ]];then
-  echo -n "Do you wish to uninstall movies [Y/n]: "
+  echo -n "Do you wish to uninstall taste [Y/n]: "
   read -r answer
   if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
     cd taste || exit 1
@@ -69,10 +69,20 @@ if [[ -f  /usr/local/bin/taste ]];then
 fi
 
 if [[ -f  /usr/local/bin/short ]];then
-  echo -n "Do you wish to uninstall movies [Y/n]: "
+  echo -n "Do you wish to uninstall short [Y/n]: "
   read -r answer
   if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
     cd short || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
+  fi
+fi
+
+if [[ -f  /usr/local/bin/geo ]];then
+  echo -n "Do you wish to uninstall geo [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd geo || exit 1
     ./uninstall.sh
     cd .. || exit 1
   fi
