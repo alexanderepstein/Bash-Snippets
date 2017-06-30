@@ -60,11 +60,15 @@ getMovieInfo()
 {
   apiKey=946f500a # try not to abuse this it is a key that came from the ruby-scripts repo I link to.
   movie=$(echo $1 $2 $3 $4 $5 $6 $7 $8 $9 | tr " " + ) ## format the inputs to use for the api
-  realMovie=`googler -C -n 1 -c us -l us --noprompt -w imdb.com "$movie"|head -n 1|cut -d '(' -f1|awk '{for (i=2;i<=NF;i++){printf $i; if (i < NF) {printf FS};}printf RS}'`
-  rrMovie=$(echo $realMovie| tr '[:upper:]' '[:lower:]'|tr " " +)
-  rsMovie=$(echo -e "${rrMovie}" | tr -d '[:space:]')
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  movieInfo=$(httpGet "http://www.omdbapi.com/?t=$rsMovie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  if googler --help 1>/dev/null 2>/dev/null; then
+    realMovie=`googler -C -n 1 -c us -l us --noprompt -w imdb.com "$movie"|head -n 1|cut -d '(' -f1|awk '{for (i=2;i<=NF;i++){printf $i; if (i < NF) {printf FS};}printf RS}'`
+    rrMovie=$(echo $realMovie| tr '[:upper:]' '[:lower:]'|tr " " +)
+    rsMovie=$(echo -e "${rrMovie}" | tr -d '[:space:]')
+    movieInfo=$(httpGet "http://www.omdbapi.com/?t=$rsMovie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  else
+    movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  fi
   checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']")
   if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python from the JSON response
