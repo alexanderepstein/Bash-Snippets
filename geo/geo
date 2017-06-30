@@ -47,8 +47,6 @@ lan_search() {
   fi
 }
 
-#
-# ^default via
 # Fetches Router ip address
 router_search() {
   if [ "$(uname)" = "Darwin" ]; then
