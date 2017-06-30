@@ -5,12 +5,47 @@ base=""
 exchangeTo=""
 currentVersion="1.2.1"
 
-checkCurl()
+configuredClient=""
+
+## This function determines which http get tool the system has installed and returns an error if there isnt one
+getConfiguredClient()
 {
-  if ! command -v curl &>/dev/null ; then
-   echo "Error: this tool requires 'curl', please install it."
-   return 1
- fi
+    if  command -v curl &>/dev/null ; then
+      configuredClient="curl"
+    elif command -v wget &>/dev/null ; then
+      configuredClient="wget"
+    elif command -v fetch &>/dev/null ; then
+      configuredClient="fetch"
+    else
+      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+      return 1
+    fi
+
+}
+
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl) curl -A curl -s "$@";;
+    wget) wget -qO- "$@";;
+    fetch) fetch -o "...";;
+  esac
+}
+
+checkValidCurrency()
+{
+  if [[ $1 != "AUD" && $1 != "BGN" && $1 != "BRL" \
+      && $1 != "CAD" && $1 != "CHF" && $1 != "CNY" && $1 != "CZK" && $1 != "DKK" \
+      && $1 != "EUR" && $1 != "GBP" && $1 != "HKD" && $1 != "HRK" && $1 != "HUF" \
+      && $1 != "IDR" && $1 != "ILS" && $1 != "INR" && $1 != "JPY" && $1 != "KRW" \
+      && $1 != "MXN" && $1 != "MYR" && $1 != "NOK" && $1 != "NZD" && $1 != "PHP" \
+      && $1 != "PLN" && $1 != "RON" && $1 != "RUB" && $1 != "SEK" && $1 != "SGD" \
+    && $1 != "THB" && $1 != "TRY" && $1 != "USD" && $1 != "ZAR" ]];then
+    echo "1"
+  else
+    echo "0"
+  fi
 }
 
 ## Grabs the base currency from the user and validates it with all the possible currency
@@ -20,13 +55,7 @@ getBase()
   echo -n "What is the base currency: "
   read -r base
   base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $base != "AUD" && $base != "BGN" && $base != "BRL" \
-      && $base != "CAD" && $base != "CHF" && $base != "CNY" && $base != "CZK" && $base != "DKK" \
-      && $base != "EUR" && $base != "GBP" && $base != "HKD" && $base != "HRK" && $base != "HUF" \
-      && $base != "IDR" && $base != "ILS" && $base != "INR" && $base != "JPY" && $base != "KRW" \
-      && $base != "MXN" && $base != "MYR" && $base != "NOK" && $base != "NZD" && $base != "PHP" \
-      && $base != "PLN" && $base != "RON" && $base != "RUB" && $base != "SEK" && $base != "SGD" \
-    && $base != "THB" && $base != "TRY" && $base != "USD" && $base != "ZAR" ]];then
+  if [[ $(checkValidCurrency $base) == "1"  ]];then
     unset base
     echo "Invalid base currency"
     getBase
@@ -38,13 +67,7 @@ checkBase()
 {
   base=$1
   base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $base != "AUD" && $base != "BGN" && $base != "BRL" \
-      && $base != "CAD" && $base != "CHF" && $base != "CNY" && $base != "CZK" && $base != "DKK" \
-      && $base != "EUR" && $base != "GBP" && $base != "HKD" && $base != "HRK" && $base != "HUF" \
-      && $base != "IDR" && $base != "ILS" && $base != "INR" && $base != "JPY" && $base != "KRW" \
-      && $base != "MXN" && $base != "MYR" && $base != "NOK" && $base != "NZD" && $base != "PHP" \
-      && $base != "PLN" && $base != "RON" && $base != "RUB" && $base != "SEK" && $base != "SGD" \
-    && $base != "THB" && $base != "TRY" && $base != "USD" && $base != "ZAR" ]];then
+  if [[ $(checkValidCurrency $base) == "1" ]];then
     unset base
     echo "Invalid base currency"
     exit 1
@@ -58,13 +81,7 @@ getExchangeTo()
   echo -n "What currency to exchange to: "
   read -r exchangeTo
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $exchangeTo != "AUD" && $exchangeTo != "BGN" && $exchangeTo != "BRL" \
-      && $exchangeTo != "CAD" && $exchangeTo != "CHF" && $exchangeTo != "CNY" && $exchangeTo != "CZK" && $exchangeTo != "DKK" \
-      && $exchangeTo != "EUR" && $exchangeTo != "GBP" && $exchangeTo != "HKD" && $exchangeTo != "HRK" && $exchangeTo != "HUF" \
-      && $exchangeTo != "IDR" && $exchangeTo != "ILS" && $exchangeTo != "INR" && $exchangeTo != "JPY" && $exchangeTo != "KRW" \
-      && $exchangeTo != "MXN" && $exchangeTo != "MYR" && $exchangeTo != "NOK" && $exchangeTo != "NZD" && $exchangeTo != "PHP" \
-      && $exchangeTo != "PLN" && $exchangeTo != "RON" && $exchangeTo != "RUB" && $exchangeTo != "SEK" && $exchangeTo != "SGD" \
-    && $exchangeTo != "THB" && $exchangeTo != "TRY" && $exchangeTo != "USD" && $exchangeTo != "ZAR"  ]];then
+  if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
     echo "Invalid exchange currency"
     unset getExchangeTo
     getExchangeTo
@@ -77,13 +94,7 @@ checkExchangeTo()
 {
   exchangeTo=$1
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $exchangeTo != "AUD" && $exchangeTo != "BGN" && $exchangeTo != "BRL" \
-      && $exchangeTo != "CAD" && $exchangeTo != "CHF" && $exchangeTo != "CNY" && $exchangeTo != "CZK" && $exchangeTo != "DKK" \
-      && $exchangeTo != "EUR" && $exchangeTo != "GBP" && $exchangeTo != "HKD" && $exchangeTo != "HRK" && $exchangeTo != "HUF" \
-      && $exchangeTo != "IDR" && $exchangeTo != "ILS" && $exchangeTo != "INR" && $exchangeTo != "JPY" && $exchangeTo != "KRW" \
-      && $exchangeTo != "MXN" && $exchangeTo != "MYR" && $exchangeTo != "NOK" && $exchangeTo != "NZD" && $exchangeTo != "PHP" \
-      && $exchangeTo != "PLN" && $exchangeTo != "RON" && $exchangeTo != "RUB" && $exchangeTo != "SEK" && $exchangeTo != "SGD" \
-    && $exchangeTo != "THB" && $exchangeTo != "TRY" && $exchangeTo != "USD" && $exchangeTo != "ZAR"  ]];then
+  if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
     echo "Invalid exchange currency"
     unset getExchangeTo
     exit 1
@@ -131,7 +142,7 @@ checkInternet()
 ## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
-  exchangeRate=$(curl -Acurl -s "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
+  exchangeRate=$(httpGet "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   echo
   echo "========================="
@@ -150,7 +161,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -Acurl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2
@@ -193,7 +204,7 @@ usage()
   echo "  -v Get the tool version"
 }
 
-checkCurl || exit 1
+getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 while getopts "uvh" opt; do
@@ -234,9 +245,14 @@ elif [[ $# == "1" ]]; then
     usage
   else
     echo "Not a valid argument"
+    usage
     exit 1
   fi
-elif [[ $# == 3 ]];then
+elif [[ $# == "2" ]]; then
+  echo "Not a valid argument"
+  usage
+  exit 1
+elif [[ $# == "3" ]];then
   checkBase $1
   checkExchangeTo $2
   checkAmount $3
