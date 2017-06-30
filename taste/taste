@@ -3,10 +3,10 @@
 
 currentVersion="1.4.0"
 configuredClient=""
-source ~/.bashrc
+source ~/.bashrc ## allows grabbing enviornment variable
 apiKey=$TASTE_API_KEY
-info="0"
-search="0"
+info="0" ## indicates if we want extra info
+search="0" ## indivates that we want results on the item itself
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -87,18 +87,20 @@ update()
 
 }
 
+## This function gets 3 results similar to the item of interest
 getSimilar()
 {
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   media=$( echo "$1 $2 $3 $4 $5 $6 $7 $8" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
+  ## Extrapolate the information by parsing the JSON
   nameOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['Name']" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
   typeOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['Type']" 2>  /dev/null)
   nameTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['Name']" 2>  /dev/null)
   typeTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['Type']" 2>  /dev/null)
   nameThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['Name']" 2>  /dev/null)
   typeThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['Type']" 2>  /dev/null)
-  if [[ $info == "1" ]];then
+  if [[ $info == "1" ]];then ## if we want more detailed info we have to grab a few more fields
     wikiOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['wTeaser']" 2>  /dev/null)
     wikiTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['wTeaser']" 2>  /dev/null)
     wikiThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['wTeaser']" 2>  /dev/null)
@@ -106,6 +108,7 @@ getSimilar()
   fi
 }
 
+## This function grabs all the information it can on the item of interest itself
 getInfo()
 {
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
