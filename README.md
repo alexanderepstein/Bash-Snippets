@@ -121,6 +121,15 @@ Valid items are: shows, books, music, artists, movies, authors, games
 * After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"
 * If issues occur first try setting the API key without quotations marks
 
+## Short
+
+Gets the link that is being masked by a url shortner
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/short/short.png?raw=true">
+
+</div>
 
 ## API's Used
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
@@ -129,6 +138,7 @@ Valid items are: shows, books, music, artists, movies, authors, games
 * To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
 * To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
 * To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
+* To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
@@ -137,7 +147,7 @@ Valid items are: shows, books, music, artists, movies, authors, games
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.4.0```
+* Git checkout to the latest stable release ```git checkout v1.5.0```
 
 * Run the guided install script with
 ```bash

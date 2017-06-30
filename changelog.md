@@ -2,7 +2,20 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.5.0
+
+</div>
+
+### Changes
+* Added short component
+### Bugfixes
+* Sending errors in taste tool to /den/null
+* Taste tool only has one unique youtube link not three
+
+<div align="center">
+
 ## Version 1.4.0
+
 </div>
 
 # Changes
