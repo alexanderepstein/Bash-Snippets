@@ -119,6 +119,7 @@ Valid items are: shows, books, music, artists, movies, authors, games
 ### Needs an API Key
 * To get an API key visit https://tastedive.com/account/api_access
 * After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"
+* If issues occur first try setting the API key without quotations marks
 
 
 ## API's Used
