@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.3.0
+
+</div>
+
+### Changes
+* Now supporting wget, fetch and curl
+* Cleaning an echo on error for updating
+
+<div align="center">
+
 ## Version 1.2.1
 
 </div>
