@@ -177,6 +177,13 @@ usage()
   echo "  -v Get the tool version"
 }
 
+if [[ $apiKey == "" ]];then
+  echo "Error: API key not setup properly"
+  echo "To get an API key visit https://tastedive.com/account/api_access"
+  echo 'After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"'
+  echo "After following all the steps and issues still persist try adding TASTE_API_KEY manually to your .bashrc"
+  exit 1
+fi
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
