@@ -93,7 +93,10 @@ Quick search that grabs relevant information about a movie
 ## Taste
 
 Recommendation engine that provides three similar items like the supplied item
+
 Also can provide information on a given item
+
+Valid items are: shows, books, music, artists, movies, authors, games
 
 <div align="center">
 
