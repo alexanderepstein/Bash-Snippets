@@ -1,5 +1,17 @@
 #!/bin/bash
-# Author: Alexander Epstein https://github.com/alexanderepstein
+
+# Reset
+Color_Off='\033[0m'       # Text Reset
+
+# Regular Colors
+Black='\033[0;30m'        # Black
+Red='\033[0;31m'          # Red
+Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Blue='\033[0;34m'         # Blue
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+White='\033[0;37m'        # White'
 
 currentVersion="1.5.0"
 configuredClient=""
@@ -49,18 +61,30 @@ getMovieInfo()
   apiKey=946f500a # try not to abuse this it is a key that came from the ruby-scripts repo I link to.
   movie=$(echo $1 $2 $3 $4 $5 $6 $7 $8 $9 | tr " " + ) ## format the inputs to use for the api
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  if googler --help 1>/dev/null 2>/dev/null; then
+    realMovie=`googler -C -n 1 -c us -l us --noprompt -w imdb.com "$movie"|head -n 1|cut -d '(' -f1|awk '{for (i=2;i<=NF;i++){printf $i; if (i < NF) {printf FS};}printf RS}'`
+    rrMovie=$(echo $realMovie| tr '[:upper:]' '[:lower:]'|tr " " +)
+    rsMovie=$(echo -e "${rrMovie}" | tr -d '[:space:]')
+    movieInfo=$(httpGet "http://www.omdbapi.com/?t=$rsMovie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  else
+    movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+  fi
   checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']")
   if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python from the JSON response
   title=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Title']")
   year=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Year']")
-  score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']")
+  imdb_score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][0]['Value']")
+  tomato_score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']")
+  metacritic_score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][2]['Value']")
   rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']")
+  imdbVotes=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['imdbVotes']")
   genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']")
   director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']")
   actors=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Actors']")
   plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Plot']")
+  boxOffice=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['BoxOffice']")
+  awards=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Awards']")
   unset movieInfo # don't need this anymore
   unset checkResponse # don't need this anymore
 }
@@ -72,9 +96,14 @@ printMovieInfo()
   echo '=================================================='
   echo "| Title: $title"
   echo "| Year: $year"
-  echo "| Tomato: $score"
-  echo "| Rated: $rated"
+  echo -e "$Cyan| IMDB Votes: $imdbVotes"
+  echo -e "$Red| IMDB: $imdb_score"
+  echo -e "$Blue| Tomato: $tomato_score"
+  echo -e "$Green| Metacritic: $metacritic_score"
+  echo -e "$Purple| BoxOffice: $boxOffice"
+  echo -e "$Color_Off| Rated: $rated"
   echo "| Genre: $genre"
+  echo "| Awards: $awards"
   echo "| Director: $director"
   echo "| Actors: $actors"
   echo "| Plot: $plot"
