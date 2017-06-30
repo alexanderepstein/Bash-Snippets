@@ -26,7 +26,19 @@ With no arguments it will grab the weather for your location as determined by yo
 
 </div>
 
-With arguments you can pass in a city state or country and get the weather in that area
+With arguments you can pass in a city or country and get the weather in that area
+
+
+Also can show the current moon phase
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/weather/moon.png?raw=true">
+
+</div>
+
+
+
 
 
 ## Stocks
