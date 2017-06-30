@@ -60,6 +60,15 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
   fi
 
+  unset answer
+  echo -n "Do you wish to install short [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd short || exit 1
+    ./install.sh
+    cd .. || exit 1
+  fi
+
 fi
 
 if [[ $1  == "currency" ]];then
@@ -86,6 +95,10 @@ elif [[ $1 == "taste" ]]; then
   cd taste || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $1 == "short" ]]; then
+  cd short || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -103,6 +116,9 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd taste || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd short || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -134,6 +150,11 @@ elif [[ $1 == "update" ]]; then
   fi
   if [[ -f  /usr/local/bin/taste ]];then
     cd taste || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/short ]];then
+    cd short || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
   fi

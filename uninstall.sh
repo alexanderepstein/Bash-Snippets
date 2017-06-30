@@ -67,3 +67,13 @@ if [[ -f  /usr/local/bin/taste ]];then
     cd .. || exit 1
   fi
 fi
+
+if [[ -f  /usr/local/bin/short ]];then
+  echo -n "Do you wish to uninstall movies [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd short || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
+  fi
+fi
