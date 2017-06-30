@@ -82,7 +82,7 @@ getExchangeTo()
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
   if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
     echo "Invalid exchange currency"
-    unset getExchangeTo
+    unset exchangeTo
     getExchangeTo
   fi
 }
@@ -95,7 +95,7 @@ checkExchangeTo()
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
   if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
     echo "Invalid exchange currency"
-    unset getExchangeTo
+    unset exchangeTo
     exit 1
   fi
 }
