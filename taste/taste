@@ -166,6 +166,17 @@ printInfo()
 }
 
 
+usage()
+{
+  echo "Taste tool"
+  echo "Usage: taste [flag] [item]"
+  echo "  -i Get more information on similar items"
+  echo "  -s Get information on the item itself"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
