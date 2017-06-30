@@ -90,12 +90,29 @@ Quick search that grabs relevant information about a movie
 
 </div>
 
+## Taste
+
+Recommendation engine that provides three similar items like the supplied item
+Also can provide information on a given item
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/taste/taste.png?raw=true">
+
+</div>
+
+### Needs an API Key
+* To get an API key visit https://tastedive.com/account/api_access
+* After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"
+
+
 ## API's Used
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
 * To get and print weather based on a location: <a href="http://wttr.in">wttr.in</a>
 * To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
 * To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
 * To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
+* To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
