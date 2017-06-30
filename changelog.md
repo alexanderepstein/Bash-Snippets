@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.3.1
+
+</div>
+
+### Bugfixes
+* Fixing bug in currency where invalid exchangeTo wasn't handled correctly
+
+
+<div align="center">
+
 ## Version 1.3.0
 
 </div>

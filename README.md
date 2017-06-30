@@ -104,7 +104,7 @@ Quick search that grabs relevant information about a movie
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.3.0```
+* Git checkout to the latest stable release ```git checkout v1.3.1```
 
 * Run the guided install script with
 ```bash
