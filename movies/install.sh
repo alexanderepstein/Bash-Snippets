@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
 
 echo -n "Installing movies: "
 if brew help 1>/dev/null 2>/dev/null; then
