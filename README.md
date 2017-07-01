@@ -52,6 +52,17 @@ Provides information about a certain stock symbol
 
 </div>
 
+
+## Geo
+  Provides date for  wan, lan, router, dns, mac, and ip geolocation
+
+
+  <div align="center">
+
+  <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/geo/geo.png?raw=true">
+
+  </div>
+
 ## Currency
 
 Converts currency based on realtime exchange rates
@@ -147,7 +158,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.5.0```
+* Git checkout to the latest stable release ```git checkout v1.6.0```
 
 * Run the guided install script with
 ```bash

@@ -6,7 +6,7 @@
 # Github: https://github.com/jakewmeyer
 #
 
-currentVersion="1.5.0"
+currentVersion="1.6.0"
 configuredClient=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -207,6 +207,9 @@ if [ $# -eq 0 ];
 then
     usage
     exit 0
-elif [[ $1 == "update" ]];then  getConfiguredClient && checkInternet && update || exit 1
-elif [[ $1 == "help" ]];then usage
+elif [[ $1 == "update" ]];then
+  getConfiguredClient && checkInternet && update || exit 1
+elif [[ $1 == "help" ]];then
+  usage
+  exit 0
 fi

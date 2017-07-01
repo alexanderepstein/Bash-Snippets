@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.5.0"
+currentVersion="1.6.0"
 configuredClient=""
 source ~/.bashrc ## allows grabbing enviornment variable
 apiKey=$TASTE_API_KEY

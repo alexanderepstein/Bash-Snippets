@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.6.0
+
+</div>
+
+### Changes
+* Added geo component
+
+<div align="center">
+
 ## Version 1.5.0
 
 </div>

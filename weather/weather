@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.5.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
+currentVersion="1.6.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 LANG="${LANG:-en}"
 locale=$(echo $LANG | cut -c1-2)
 configuredClient=""
