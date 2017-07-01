@@ -63,7 +63,7 @@ Provides information about a certain stock symbol
 
   </div>
   
-  Written by: <a href="https://github.com/jakewmeyer>Jake Meyer<\a>
+  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer<\a>
 
 ## Currency
 
