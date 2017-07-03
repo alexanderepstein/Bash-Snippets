@@ -1,5 +1,5 @@
 #!/bin/bash
-# REQUIRED PACKAGES: lynx mpv
+# REQUIRED PACKAGES: curl mpv
 
 # USAGE: ytchannel [YouTube channel]
 
