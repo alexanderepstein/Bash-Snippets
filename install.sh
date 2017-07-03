@@ -78,7 +78,6 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
  fi
   
-  unset answer
 
 fi
 
@@ -114,10 +113,6 @@ elif [[ $1 == "geo" ]]; then
   cd geo || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
-elif [[ $! == "youtubeviewer" ]]; then
-	cd youtube-viewer || exit 1
-	./install.sh || exit 1
-	cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
