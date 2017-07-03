@@ -4,6 +4,7 @@
 # USAGE: ytchannel [YouTube channel]
 
 # EXAMPLE: ytchannel pewdiepie
+read -p "Choose your video player: " player
 rm -rf /home/$USER/.cache/ytchannel/
 mkdir -p /home/$USER/.cache/ytchannel/channels/$1
 
@@ -19,6 +20,6 @@ head /home/$USER/.cache/ytchannel/channels/$1/titles.txt -n 20 --quiet
 read -p "Choose a video: " titlenumber
 
 # Play the video with mpv
-mpv $(grep $titlenumber  /home/$USER/.cache/ytchannel/channels/$1/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
+$player $(grep $titlenumber  /home/$USER/.cache/ytchannel/channels/$1/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
 
 
