@@ -76,8 +76,8 @@ if [[ $# == 0 ]]; then
     cd geo || exit 1
     ./install.sh
     cd .. || exit 1
- fi
-  
+  fi
+
 
 fi
 
