@@ -2,7 +2,7 @@
 
 # Bash-Snippets
 
-<img src="https://cloud.githubusercontent.com/assets/2059754/24601246/753a7f36-1858-11e7-9d6b-7a0e64fb27f7.png" height="250px" width="250px">
+<img src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/terminal-icon.png" height="250px" width="250px">
 
 ##### A collection of small bash scripts for heavy terminal users with no dependencies
 
@@ -63,8 +63,6 @@ Provides information about a certain stock symbol
 
   </div>
 
-  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer
-
 ## Currency
 
 Converts currency based on realtime exchange rates
@@ -115,19 +113,6 @@ Quick search that grabs relevant information about a movie
 
 </div>
 
-
-## Cheat
-
-
-The fastest way to find {command options|code pieces} you need
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
-
-</div>
-
-
 ## Taste
 
 Recommendation engine that provides three similar items like the supplied item
@@ -161,11 +146,10 @@ Gets the link that is being masked by a url shortner
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
 * To get and print weather based on a location: <a href="http://wttr.in">wttr.in</a>
 * To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
-* To grab the latest exchange rate between currencies: <a href="http://fixer.io">fixer.io</a>
+* To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
 * To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
 * To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
-* To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
@@ -174,7 +158,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.7.0```
+* Git checkout to the latest stable release ```git checkout v1.6.0```
 
 * Run the guided install script with
 ```bash
