@@ -138,9 +138,6 @@ elif [[ $1 == "all" ]];then
   cd geo || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
-  cd youtube-viewer || exit 1
-  ./install.sh || exit 1
-  cd .. || exit 1
 elif [[ $1 == "update" ]]; then
   echo "Updating scripts..."
   if [[ -f  /usr/local/bin/currency ]];then
