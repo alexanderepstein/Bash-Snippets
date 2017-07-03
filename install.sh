@@ -77,6 +77,15 @@ if [[ $# == 0 ]]; then
     ./install.sh
     cd .. || exit 1
   fi
+  
+  unset answer
+  echo -n "Do you wish to install youtubeviewer [Y/n]: "
+  read -r answer
+  if [[ "answer" == "Y" || "$answer" == "y" ]] ;then
+	  cd youtube-veiwer || exit 1
+	  ./install.sh
+	  cd .. || exit 1
+  fi
 
 
 fi
@@ -113,6 +122,10 @@ elif [[ $1 == "geo" ]]; then
   cd geo || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $! == "youtubeviewer" ]]; then
+	cd youtube-viewer || exit 1
+	./install.sh || exit 1
+	cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -136,6 +149,9 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd geo || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd youtube-viewer || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -179,6 +195,11 @@ elif [[ $1 == "update" ]]; then
     cd geo || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
+  fi
+  if [[ -f /usr/local/bin/youtubeviewer ]]; then
+	  cd youtube-viewer || exit 1
+	  ./install.sh || exit 1
+	  cd .. || exit 1
   fi
 fi
 
