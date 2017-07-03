@@ -49,7 +49,8 @@ getIPWeather()
 
 getLocationWeather()
 {
-  httpGet $locale.wttr.in/$1+$2+$3+$4
+  args=$(echo $@ | tr " " + )
+  httpGet $locale.wttr.in/${args}
 }
 
 checkInternet()
@@ -158,5 +159,5 @@ elif [[ $1 == "m" ]]; then
 elif [[ $1 == "i" ]]; then
   getIPWeather "?u"
 else
-  getLocationWeather $1 $2 $3 $4
+  getLocationWeather $@
 fi
