@@ -11,11 +11,8 @@ mkdir -p /home/$USER/.cache/ytchannel/channels/$1
 # Get the video titles
 curl -s https://www.youtube.com/user/$1/videos | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > /home/$USER/.cache/ytchannel/channels/$1/titles.txt
 
-echo "All clear"
-
 # Get the video urls
 curl -s https://www.youtube.com/user/pewdiepie/Videos | grep "watch?v=" | awk '{print $6}' | sed s/spf-link//  | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' |  awk '{printf "%s.\t%s\n",NR,$0}' > /home/$USER/.cache/ytchannel/channels/$1/urls.txt 
-echo "All clear"
 
 
 # Print 20 first video titles for the user to choose from
