@@ -103,7 +103,7 @@ getBitbucketInfo()
   echo -n 'Enter your Bitbucket username: '
   read bbUsername
   echo -n 'Enter your Bitbucket password: '
-  read  password  # -s flag hides password text
+  read -s password  # -s flag hides password text
   echo
 }
 
