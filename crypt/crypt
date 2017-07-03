@@ -3,6 +3,16 @@
 
 currentVersion="1.6.0"
 
+
+checkOpenSSL()
+{
+  if  ! command -v openssl &>/dev/null ;then
+    echo "Error: to use this tool openssl must be installed" >&2
+    return 1
+  else
+    return 0
+  fi
+}
 ## uses openssl aes 256 cbc encryption to encrypt file salting it with password designated by user
 encrypt()
 {
@@ -69,6 +79,8 @@ usage()
   echo "  -h Show the help"
   echo "  -v Get the tool version"
 }
+
+checkOpenSSL || exit 1
 
 while getopts "huve:d:" opt; do ## alows for using options in bash
   case $opt in
