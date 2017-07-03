@@ -105,7 +105,7 @@ crypt -d [encrypted file] [output file] # decrypts files
 
 </div>
 
-## Movies:
+## Movies
 
 Quick search that grabs relevant information about a movie
 
