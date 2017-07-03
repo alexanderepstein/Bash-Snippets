@@ -4,6 +4,7 @@
 currentVersion="1.7.0"
 configuredClient=""
 private="0"
+all="0"
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -99,49 +100,116 @@ update()
 
 getBitbucketInfo()
 {
-    echo -n 'Enter your Bitbucket username: '
-    read username
-    echo -n 'Enter your Bitbucket password: '
-    read  password  # -s flag hides password text
-    echo
+  echo -n 'Enter your Bitbucket username: '
+  read bbUsername
+  echo -n 'Enter your Bitbucket password: '
+  read  password  # -s flag hides password text
+  echo
 }
 
 backupRepo()
 {
   cd ~/temp/$repoName
   if [[ $private == "1" ]];then
-    httpGet --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private='true' > /dev/null
+    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private='true' > /dev/null
   else
-    httpGet --user $username:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null
+    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null
   fi
-    echo "Before remote"
-    originalRepoName=$repoName
-    repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
-    timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
-    git remote add origin https://$username:$password@bitbucket.org/$username/$repoName$timestamp.git > /dev/null || return 1
-    echo "After remote"
-    git push -q origin --all --tags > /dev/null || return 1
-    git push -q origin --tags > /dev/null || return 1
-    echo "Successfully backedup $originalRepoName"
-    echo
-    rm -rf ~/temp
+  originalRepoName=$repoName
+  repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
+  timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
+  git remote add origin https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git > /dev/null || return 1
+  git push -q origin --all > /dev/null || return 1
+  git push -q origin --tags > /dev/null || return 1
+  echo "Successfully backedup $originalRepoName"
+  echo
+  rm -rf ~/temp
 }
 
 copyRepository()
 {
   timestamp=$(date | tr " " _ | tr : _  )
-  mkdir ~/temp
-  cd ~/temp || { rm -r ~/temp; return 1;  }
-  cp -r $1 ~/temp || { rm -r ~/temp; return 1;  }
-  repoName=$(ls ~/temp)
-  cd $repoName || { rm -r ~/temp; return 1;  }
+  cd ~/temp || { rm -rf ~/temp; return 1;  }
+  cp -r $1 ~/temp || { rm -rf ~/temp; return 1;  }
+  #repoName=$(ls ~/temp)
+  cd $repoName || { rm -rf ~/temp; return 1;  }
   rm -rf .git && git init > /dev/null
   git add -A . > /dev/null
   git commit -m "Initial commit" > /dev/null
 }
 
+getGitHubRepoInfo()
+{
+  echo -n 'Enter your Github username: '
+  read ghUsername
+  echo -n 'Enter the name of the repostiory to backup: '
+  read repoName  # -s flag hides password text
+  echo
+}
+
+cloneGitHubRepo()
+{
+  mkdir ~/temp
+  cd
+  mkdir ~/temp/github
+  cd ~/temp/github
+  git clone -q https://github.com/$ghUsername/$repoName
+}
+
+usage()
+{
+  echo "Cloudup tool"
+  echo "Usage: cloudup [flags]"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+}
+
+while getopts "auvh" opt; do
+  case $opt in
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+    ;;
+    h)
+      usage
+      exit 0
+    ;;
+    a)
+      all="1"
+      echo "Feature not added yet, for now backup repositories individually"
+      exit 0
+    ;;
+    v)
+      echo "Version $currentVersion"
+      exit 0
+    ;;
+    u)
+      update
+      exit 0
+    ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+    ;;
+  esac
+done
+
 getConfiguredClient || exit 1
 checkInternet || exit 1
-getBitbucketInfo
-copyRepository $1 || { echo "Error: couldnt copy $originalRepoName to ~/temp/$repoName"; exit 1; }
-backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+
+if [[ $# == "1" ]]; then
+  if [[ $1 == "update" ]];then
+    update
+  elif [[ $1 == "help" ]]; then
+    usage
+  fi
+fi
+
+if [[ $all == "0" ]];then
+  getGitHubRepoInfo
+  cloneGitHubRepo
+  getBitbucketInfo
+  copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+  backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+fi
