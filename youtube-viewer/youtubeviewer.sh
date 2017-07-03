@@ -20,22 +20,18 @@
 
 # USAGE: ytchannel [YouTube channel]
 
-# EXAMPLE: "ytchannel druaga1" will give you a list of Druaga's newest videos to choose from
-
-# Empty and recreate the cache directory
-
+# EXAMPLE: ytchannel pewdiepie
 rm -rf /home/$USER/.cache/ytchannel/
 mkdir -p /home/$USER/.cache/ytchannel/channels/$1
 
 # Get the video titles
-lynx --dump "https://youtube.com/user/$1/videos" | grep "Duration" > /home/$USER/.cache/ytchannel/channels/$1/titles.txt
+lynx --dump "https://youtube.com/user/$1/Videos" | grep "Duration" > /home/$USER/.cache/ytchannel/channels/$1/titles.txt
 
 # Get the video urls
-lynx --dump "https://youtube.com/user/$1/videos" | grep "https://www.youtube.com/watch?v=" > /home/$USER/.cache/ytchannel/channels/$1/urls.txt
+lynx --dump "https://youtube.com/user/$1/Videos" | grep "https://www.youtube.com/watch?v=" > /home/$USER/.cache/ytchannel/channels/$1/urls.txt
 
 # Print 20 first video titles for the user to choose from
 head /home/$USER/.cache/ytchannel/channels/$1/titles.txt -n 20 --quiet
-echo $1;
 # Prompt the user for video number
 read -p "Choose a video: " titlenumber
 
