@@ -62,8 +62,8 @@ Provides information about a certain stock symbol
   <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/geo/geo.png?raw=true">
 
   </div>
-
-Written by: <a href="https://github.com/jakewmeyer">Jake Meyer 
+ 
+ Written by: <a href="https://github.com/jakewmeyer">Jake Meyer 
 
 ## Currency
 
