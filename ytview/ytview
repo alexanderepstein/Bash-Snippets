@@ -19,7 +19,7 @@ channelview() {
 
 
 	# Print 20 first video titles for the user to choose from
-	head $HOME/.cache/ytview/channels/$channel/titles.txt -n 20
+	head -n 20 $HOME/.cache/ytview/channels/$channel/titles.txt 
 	# Prompt the user for video number
 	read -p "Choose a video: " titlenumber
 
@@ -41,7 +41,7 @@ searchview() {
 	#Get video urls
 	curl -s https://www.youtube.com/results\?search_query\=$search | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// |sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt
 	#Print 20 first video titles for the user to choose from
-	head $HOME/.cache/ytview/searches/$search/titles.txt -n 18
+	head -n 20 $HOME/.cache/ytview/searches/$search/titles.txt 
 	
 	#Let the user choose the video number
 	read -p "Choose a video: " titlenumber
