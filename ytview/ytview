@@ -5,6 +5,7 @@ if [[ -d $HOME/.cache/ytview ]];then  rm -rf $HOME/.cache/ytview/ ;fi
 player=""
 configuredClient=""
 currentVersion="1.7.0"
+flag=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -19,7 +20,6 @@ getConfiguredClient()
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."  >&2
     return 1
   fi
-
 }
 
 checkInternet()
@@ -95,81 +95,83 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 getConfiguredPlayer()
 {
-	if [[ "$OSTYPE" == "linux"* ]];then
-	  if command -v vlc &>/dev/null;then
-			player="vlc"
-		elif  command -v mpv &>/dev/null;then
-			player="mpv"
-		elif command -v mplayer &>/dev/null;then
-			player="mplayer"
-		else
-			echo "Error: no supported video player installed (vlc, mpv or mplayer)"  >&2
-			return 1
-		fi
-	elif [[ "$OSTYPE" == "darwin"* ]]; then
-	  if [[ -f /Applications/VLC.app/Contents/MacOS/VLC ]];then
-			player="/Applications/VLC.app/Contents/MacOS/VLC"
-		else
-			echo "Error: vlc is not installed and it is required to play videos"  >&2
-			return 1
-		fi
-	fi
+  if [[ "$OSTYPE" == "linux"* ]];then
+    if command -v vlc &>/dev/null;then
+      player="vlc"
+    elif  command -v mpv &>/dev/null;then
+      player="mpv"
+    elif command -v mplayer &>/dev/null;then
+      player="mplayer"
+    else
+      echo "Error: no supported video player installed (vlc, mpv or mplayer)"  >&2
+      return 1
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ -f /Applications/VLC.app/Contents/MacOS/VLC ]];then
+      player="/Applications/VLC.app/Contents/MacOS/VLC"
+    else
+      echo "Error: vlc is not installed and it is required to play videos"  >&2
+      return 1
+    fi
+  fi
 }
 
 
 # Get the video titles
-channelview() {
+channelview()
+{
 
-	mkdir -p $HOME/.cache/ytview/channels/$channel
-	httpGet https://www.youtube.com/user/$channel/videos | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/titles.txt
+  mkdir -p $HOME/.cache/ytview/channels/$channel
+  httpGet https://www.youtube.com/user/$channel/videos | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/titles.txt
 
-	# Get the video urls
-	httpGet https://www.youtube.com/user/$channel/Videos | grep "watch?v=" | awk '{print $6}' | sed s/spf-link//  | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' |  awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/urls.txt
-
-
-	# Print 20 first video titles for the user to choose from
-	head -n 20 $HOME/.cache/ytview/channels/$channel/titles.txt
-	# Prompt the user for video number
-	read -p "Choose a video: " titlenumber
+  # Get the video urls
+  httpGet https://www.youtube.com/user/$channel/Videos | grep "watch?v=" | awk '{print $6}' | sed s/spf-link//  | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' |  awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/urls.txt
 
 
+  # Print 20 first video titles for the user to choose from
+  head -n 20 $HOME/.cache/ytview/channels/$channel/titles.txt
+  # Prompt the user for video number
+  read -p "Choose a video: " titlenumber
 
-	# Play the video with your player
-	$player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1  & # grep is not needed here but I'm lazy
+
+
+  # Play the video with your player
+  $player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1  & # grep is not needed here but I'm lazy
 }
 
-searchview() {
+searchview()
+{
 
-	search=$(echo $search |sed -e "s/ /+/")
-	mkdir -p $HOME/.cache/ytview/searches/$search
+  search=$(echo $search |sed -e "s/ /+/")
+  mkdir -p $HOME/.cache/ytview/searches/$search
 
-	#Get video titles
-	httpGet https://www.youtube.com/results\?search_query\=$search | grep "Duration" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | sed s/spf-link// | sed 's/data-sessionlink=itct*.//' |  sed s/spf-prefetch// | tail -n 17 | sed 's/rel="//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/titles.txt
+  #Get video titles
+  httpGet https://www.youtube.com/results\?search_query\=$search | grep "Duration" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | sed s/spf-link// | sed 's/data-sessionlink=itct*.//' |  sed s/spf-prefetch// | tail -n 17 | sed 's/rel="//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/titles.txt
 
-	#Get video urls
-	httpGet https://www.youtube.com/results\?search_query\=$search | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// |sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt
-	#Print 20 first video titles for the user to choose from
-	head -n 20 $HOME/.cache/ytview/searches/$search/titles.txt
+  #Get video urls
+  httpGet https://www.youtube.com/results\?search_query\=$search | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// |sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt
+  #Print 20 first video titles for the user to choose from
+  head -n 20 $HOME/.cache/ytview/searches/$search/titles.txt
 
-	#Let the user choose the video number
-	read -p "Choose a video: " titlenumber
+  #Let the user choose the video number
+  read -p "Choose a video: " titlenumber
 
-	#Play the video with your favorite player
-	$player $(grep $titlenumber  $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
+  #Play the video with your favorite player
+  $player $(grep $titlenumber  $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
 
 
 
 }
 
-usage() {
-	echo "Usage: ytview [flag] [string]"
-	echo "     -s Searches youtube"
-	echo "     -c Shows the latest videos of a channel"
+usage()
+{
+  echo "Usage: ytview [flag] [string]"
+  echo "     -s Searches youtube"
+  echo "     -c Shows the latest videos of a channel"
 }
 
 getConfiguredClient || exit 1
@@ -178,11 +180,42 @@ checkInternet || exit 1
 
 while getopts uc:s:h*: option
 do
-	case "${option}" in
-		s) search=${OPTARG} && searchview ;;
-		c) channel=${OPTARG} && channelview ;;
-		h) usage ;;
-		u) update ;;
-		*) usage ;;
-	esac
+  case "${option}" in
+    s)
+      if [[ $flag != "channel" ]];then
+        search=${OPTARG}
+        flag="search"
+      else
+        echo "Error: search and channel options are mutually exclusive"
+        exit 1
+      fi
+    ;;
+    c)
+      if [[ $flag != "search" ]];then
+        channel=${OPTARG}
+        flag="channel"
+      else
+        echo "Error: search and channel options are mutually exclusive"
+        exit 1
+      fi
+    ;;
+    h) usage ;;
+    u) update ;;
+    *) usage ;;
+  esac
 done
+
+if [[ $# == "0" ]]; then
+  usage
+elif [[ $1 == "help" ]];then
+  usage
+elif [[ $1 == "update" ]]; then
+  update
+elif [[ $flag == "search" ]]; then
+  searchview
+elif [[ $flag == "channel" ]]; then
+  channelview
+else
+  search="$@"
+  searchview
+fi
