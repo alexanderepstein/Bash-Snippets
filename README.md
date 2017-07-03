@@ -105,7 +105,7 @@ crypt -d [encrypted file] [output file] # decrypts files
 
 </div>
 
-## Movies
+## Movies:
 
 Quick search that grabs relevant information about a movie
 
@@ -143,6 +143,13 @@ Gets the link that is being masked by a url shortner
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/short/short.png?raw=true">
 
 </div>
+## Youtube-Viewer
+
+Provides a way to watch youtube videos from the terminal. 
+
+Valid input is the name of the channel whose videos you wish to view. For example, you would run "youtubeviewer pewdiepie" to watch recent videos by pewdiepie.
+
+You can use any video player you want to, simply input the name into the program.
 
 ## API's Used
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
