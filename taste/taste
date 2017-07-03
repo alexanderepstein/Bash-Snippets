@@ -91,7 +91,7 @@ update()
 getSimilar()
 {
   export PYTHONIOENCODING=utf8 #necessary for python2 in some cases
-  media=$( echo "$1 $2 $3 $4 $5 $6 $7 $8" | tr " " + )
+  media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
   ## Extrapolate the information by parsing the JSON
   nameOne=$(echo $response | python2 -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['Name']" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
@@ -112,7 +112,7 @@ getSimilar()
 getInfo()
 {
   export PYTHONIOENCODING=utf8 #necessary for python2 in some cases
-  media=$( echo "$1 $2 $3 $4 $5 $6 $7 $8" | tr " " + )
+  media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
   name=$(echo $response | python2 -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['Name']")
   type=$(echo $response | python2 -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['Type']")
@@ -238,14 +238,14 @@ elif [[ $1 == "help" ]];then
 else
   if [[ $search == "0" ]];then
     if [[ $info == "0" ]];then
-      getSimilar $1 $2 $3 $4 $5 $6 $7 $8 || exit 1 ## exit if we return 1 (chances are movie was not found)
+      getSimilar $@ || exit 1 ## exit if we return 1 (chances are movie was not found)
       printResults
     else
-      getSimilar $2 $3 $4 $5 $6 $7 $8 $9 || exit 1
+      getSimilar $@ || exit 1
       printResults
     fi
   else
-    getInfo $2 $3 $4 $5 $6 $7 $8 $9 || exit 1 ## exit if we return 1 (chances are movie was not found)
+    getInfo ${@:2} || exit 1 ## exit if we return 1 (chances are movie was not found)
     printInfo
   fi
 fi
