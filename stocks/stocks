@@ -175,12 +175,16 @@ done
 
 if [[ $1 == "update" ]];then
   update
+  exit 0
 elif [[ $1 == "help" ]];then
   usage
+  exit 0
 elif [[ $# == "0" ]];then
   usage
+  exit 0
 else
   getTicker $1 $2 $3 $4 $5 $6 $7 $8 $9 # the company name might have spaces so passing in all args allows for this
   getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
   printStockInformation  # print this information out to the user in a human readable format
+  exit 0
 fi
