@@ -26,7 +26,7 @@ channelview() {
 
 
 	# Play the video with your player
-	$player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
+	$player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1  & # grep is not needed here but I'm lazy
 }
 
 searchview() {
@@ -47,7 +47,7 @@ searchview() {
 	read -p "Choose a video: " titlenumber
 	
 	#Play the video with your favorite player
-	$player $(grep $titlenumber  $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')
+	$player $(grep $titlenumber  $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
 	
 
 
