@@ -2,7 +2,7 @@
 
 # Bash-Snippets
 
-<img src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/terminal-icon.png" height="250px" width="250px">
+<img src="https://cloud.githubusercontent.com/assets/2059754/24601246/753a7f36-1858-11e7-9d6b-7a0e64fb27f7.png" height="250px" width="250px">
 
 ##### A collection of small bash scripts for heavy terminal users with no dependencies
 
