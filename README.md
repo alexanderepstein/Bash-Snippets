@@ -148,7 +148,7 @@ Gets the link that is being masked by a url shortner
 
 Provides a way to watch youtube videos from the terminal. 
 
-Valid input is the name of the channel whose videos you wish to view. For example, you would run ```youtubeviewer pewdiepie``` to watch recent videos by pewdiepie.
+You can use ```youtubeviewer -c [channel name]``` to see recent videos by that artist. You can use ```youtubeviewer -s '[what you want to search'``` to search for videos. For example, you would run ```youtubeviewer -c pewdiepie``` to watch recent videos by pewdiepie.
 
 You can use any video player you want to, simply input the name into the program.
 
