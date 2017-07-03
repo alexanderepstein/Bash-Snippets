@@ -36,8 +36,6 @@ if [[ -f  /usr/local/bin/weather ]];then
   unset answer
 fi
 
-
-
 if [[ -f  /usr/local/bin/crypt ]];then
   echo -n "Do you wish to uninstall crypt [Y/n]: "
   read -r answer
