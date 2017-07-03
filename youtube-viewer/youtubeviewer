@@ -1,24 +1,29 @@
 #!/bin/bash
-# REQUIRED PACKAGES: lynx mpv
+# REQUIRED PACKAGES: curl
 
-# USAGE: ytchannel [YouTube channel]
+# USAGE: youtubeviewer [YouTube channel]
 
-# EXAMPLE: ytchannel pewdiepie
+# EXAMPLE: youtubeviewer pewdiepie
+read -p "Choose your video player: " player
 rm -rf /home/$USER/.cache/ytchannel/
 mkdir -p /home/$USER/.cache/ytchannel/channels/$1
 
 # Get the video titles
-lynx --dump "https://youtube.com/user/$1/Videos" | grep "Duration" > /home/$USER/.cache/ytchannel/channels/$1/titles.txt
+curl -s https://www.youtube.com/user/$1/videos | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' > /home/$USER/.cache/ytchannel/channels/$1/titles.txt
 
 # Get the video urls
-lynx --dump "https://youtube.com/user/$1/Videos" | grep "https://www.youtube.com/watch?v=" > /home/$USER/.cache/ytchannel/channels/$1/urls.txt
+curl -s https://www.youtube.com/user/pewdiepie/Videos | grep "watch?v=" | awk '{print $6}' | sed s/spf-link//  | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' |  awk '{printf "%s.\t%s\n",NR,$0}' > /home/$USER/.cache/ytchannel/channels/$1/urls.txt 
+
 
 # Print 20 first video titles for the user to choose from
 head /home/$USER/.cache/ytchannel/channels/$1/titles.txt -n 20 --quiet
 # Prompt the user for video number
 read -p "Choose a video: " titlenumber
 
-# Play the video with mpv
-mpv $(grep $titlenumber  /home/$USER/.cache/ytchannel/channels/$1/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
+
+
+# Play the video with your player
+$player $(grep $titlenumber  /home/$USER/.cache/ytchannel/channels/$1/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
+
 
 
