@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.7.0"
+currentVersion="1.6.0"
 
 if [[ $# == 0 ]]; then
 
@@ -78,15 +78,6 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
   fi
 
-  unset answer
-  echo -n "Do you wish to install cheat [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd cheat || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
 
 fi
 
@@ -122,10 +113,6 @@ elif [[ $1 == "geo" ]]; then
   cd geo || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
-elif [[ $1 == "cheat" ]]; then
-  cd cheat || exit 1
-  ./install.sh || exit 1
-  cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -149,9 +136,6 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd geo || exit 1
-  ./install.sh || exit 1
-  cd .. || exit 1
-  cd cheat || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -193,11 +177,6 @@ elif [[ $1 == "update" ]]; then
   fi
   if [[ -f  /usr/local/bin/geo ]];then
     cd geo || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/cheat ]];then
-    cd cheat || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
   fi
