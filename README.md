@@ -63,6 +63,8 @@ Provides information about a certain stock symbol
 
   </div>
 
+Written by: <a href="https://github.com/jakewmeyer">Jake Meyer 
+
 ## Currency
 
 Converts currency based on realtime exchange rates
