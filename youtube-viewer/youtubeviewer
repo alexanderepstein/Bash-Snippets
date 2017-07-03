@@ -20,6 +20,8 @@ head /home/$USER/.cache/ytchannel/channels/$1/titles.txt -n 20 --quiet
 # Prompt the user for video number
 read -p "Choose a video: " titlenumber
 
+
+
 # Play the video with your player
 $player $(grep $titlenumber  /home/$USER/.cache/ytchannel/channels/$1/urls.txt | awk '{print $2}') # grep is not needed here but I'm lazy
 
