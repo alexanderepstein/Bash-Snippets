@@ -36,6 +36,18 @@ if [[ -f  /usr/local/bin/weather ]];then
   unset answer
 fi
 
+if [[ -f /usr/local/bin/youtubeviewer ]]; then
+	echo -n "Do you wish to uninstall youtubeviewer? [Y/n]: "
+	read -r answer
+	if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+		cd weather ||e xit 1
+		./uninstall.sh
+		cd .. || exit 1
+	fi
+	unset answer
+fi
+
+
 if [[ -f  /usr/local/bin/crypt ]];then
   echo -n "Do you wish to uninstall crypt [Y/n]: "
   read -r answer
