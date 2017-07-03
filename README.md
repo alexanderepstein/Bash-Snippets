@@ -62,8 +62,8 @@ Provides information about a certain stock symbol
   <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/geo/geo.png?raw=true">
 
   </div>
-  
-  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer 
+
+  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer
 
 ## Currency
 
@@ -115,6 +115,19 @@ Quick search that grabs relevant information about a movie
 
 </div>
 
+
+## Cheat
+
+
+The fastest way to find {command options|code pieces} you need
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
+
+</div>
+
+
 ## Taste
 
 Recommendation engine that provides three similar items like the supplied item
@@ -148,10 +161,11 @@ Gets the link that is being masked by a url shortner
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
 * To get and print weather based on a location: <a href="http://wttr.in">wttr.in</a>
 * To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
-* To grab the latest exchange rate between currencies: <a href="http://api.fixer.io">api.fixer.io</a>
+* To grab the latest exchange rate between currencies: <a href="http://fixer.io">fixer.io</a>
 * To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
 * To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
+* To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
