@@ -140,10 +140,15 @@ copyRepository()
 
 getGitHubRepoInfo()
 {
-  echo -n 'Enter your Github username: '
-  read ghUsername
   echo -n 'Enter the name of the repostiory to backup: '
   read repoName  # -s flag hides password text
+  echo
+}
+
+getGitHubUserInfo()
+{
+  echo -n 'Enter your Github username: '
+  read ghUsername
   echo
 }
 
@@ -156,10 +161,18 @@ cloneGitHubRepo()
   git clone -q https://github.com/$ghUsername/$repoName
 }
 
+getGithubRepoNames()
+{
+  response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100")
+  
+}
+
 usage()
 {
   echo "Cloudup tool"
   echo "Usage: cloudup [flags]"
+  echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
+  echo "  -a Backup all github repositories"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
@@ -177,8 +190,8 @@ while getopts "auvh" opt; do
     ;;
     a)
       all="1"
-      echo "Feature not added yet, for now backup repositories individually"
-      exit 0
+      #echo "Feature not added yet, for now backup repositories individually"
+      #exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -207,9 +220,13 @@ if [[ $# == "1" ]]; then
 fi
 
 if [[ $all == "0" ]];then
-  getGitHubRepoInfo
-  cloneGitHubRepo
-  getBitbucketInfo
+  getGitHubRepoUserInfo || exit 1
+  getGitHubRepoInfo || exit 1
+  cloneGitHubRepo || exit 1
+  getBitbucketInfo || exit 1
   copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
   backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+else
+  getGitHubUserInfo || exit 1
+  getGithubRepoNames || exit 1
 fi
