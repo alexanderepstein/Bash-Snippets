@@ -238,14 +238,14 @@ elif [[ $1 == "help" ]];then
 else
   if [[ $search == "0" ]];then
     if [[ $info == "0" ]];then
-      getSimilar $@ || exit 1 ## exit if we return 1 (chances are movie was not found)
+      getSimilar "$@" || exit 1 ## exit if we return 1 (chances are movie was not found)
       printResults
     else
-      getSimilar $@ || exit 1
+      getSimilar "$@" || exit 1
       printResults
     fi
   else
-    getInfo ${@:2} || exit 1 ## exit if we return 1 (chances are movie was not found)
+    getInfo "${@:2}" || exit 1 ## exit if we return 1 (chances are movie was not found)
     printInfo
   fi
 fi

@@ -183,7 +183,7 @@ elif [[ $# == "0" ]];then
   usage
   exit 0
 else
-  getTicker $@ # the company name might have spaces so passing in all args allows for this
+  getTicker "$@" # the company name might have spaces so passing in all args allows for this
   getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
   printStockInformation  # print this information out to the user in a human readable format
   exit 0
