@@ -212,7 +212,7 @@ if [[ $# == 0 ]]; then
 elif [[ $1 == "update" ]];then
   update
   exit 0
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" || $1 == ":help" ]];then
   usage
   exit 0
 else
