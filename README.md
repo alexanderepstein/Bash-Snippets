@@ -18,7 +18,7 @@
 
 Provides a 3 day forecast
 
-With no arguments it will grab the weather for your location as determined by you ip
+With no arguments it will grab the weather for your location as determined by your ip
 
 <div align="center">
 
