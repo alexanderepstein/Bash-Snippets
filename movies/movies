@@ -50,17 +50,17 @@ getMovieInfo()
   movie=$(echo "$@" | tr " " + ) ## format the inputs to use for the api
   export PYTHONIOENCODING=utf8 #necessary for python2 in some cases
   movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
-  checkResponse=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Response']")
+  checkResponse=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
   if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python2 from the JSON response
-  title=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Title']")
-  year=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Year']")
-  score=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']")
-  rated=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Rated']")
-  genre=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Genre']")
-  director=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Director']")
-  actors=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Actors']")
-  plot=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Plot']")
+  title=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Title']" 2> /dev/null)
+  year=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Year']" 2> /dev/null)
+  score=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
+  rated=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Rated']" 2> /dev/null)
+  genre=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Genre']" 2> /dev/null)
+  director=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Director']" 2> /dev/null)
+  actors=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Actors']" 2> /dev/null)
+  plot=$(echo $movieInfo | python2 -c "import sys, json; print json.load(sys.stdin)['Plot']" 2> /dev/null)
   unset movieInfo # don't need this anymore
   unset checkResponse # don't need this anymore
 }
@@ -72,12 +72,12 @@ printMovieInfo()
   echo '=================================================='
   echo "| Title: $title"
   echo "| Year: $year"
-  echo "| Tomato: $score"
-  echo "| Rated: $rated"
+  if [[ $score != "" ]];then echo "| Tomato: $score";fi
+  if [[ $rated != "N/A" && $rated != "" ]];then echo "| Rated: $rated";fi
   echo "| Genre: $genre"
   echo "| Director: $director"
   echo "| Actors: $actors"
-  echo "| Plot: $plot"
+  if [[ $plot != "N/A" && $plot != "" ]];then echo "| Plot: $plot"; fi
   echo '=================================================='
   echo
 }
