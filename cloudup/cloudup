@@ -5,6 +5,8 @@ currentVersion="1.8.0"
 configuredClient=""
 private="0"
 all="0"
+if [ -d ~/temp ];then rm -rf ~/temp; fi
+
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -103,8 +105,7 @@ getBitbucketInfo()
   echo -n 'Enter your Bitbucket username: '
   read bbUsername
   echo -n 'Enter your Bitbucket password: '
-  read -s password  # -s flag hides password text
-  echo
+  read  password  # -s flag hides password text;
 }
 
 backupRepo()
@@ -122,7 +123,6 @@ backupRepo()
   git push -q origin --all > /dev/null || return 1
   git push -q origin --tags > /dev/null || return 1
   echo "Successfully backedup $originalRepoName"
-  echo
   rm -rf ~/temp
 }
 
@@ -142,14 +142,12 @@ getGitHubRepoInfo()
 {
   echo -n 'Enter the name of the repostiory to backup: '
   read repoName  # -s flag hides password text
-  echo
 }
 
 getGitHubUserInfo()
 {
   echo -n 'Enter your Github username: '
   read ghUsername
-  echo
 }
 
 cloneGitHubRepo()
@@ -158,13 +156,14 @@ cloneGitHubRepo()
   cd
   mkdir ~/temp/github
   cd ~/temp/github
-  git clone -q https://github.com/$ghUsername/$repoName
+  echo "Cloning $repoName"
+  git clone -q --progress https://github.com/$ghUsername/$repoName
+  echo "Successfully cloned $repoName"
 }
 
 getGithubRepoNames()
 {
   response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100")
-
 }
 
 usage()
@@ -190,8 +189,8 @@ while getopts "auvh" opt; do
     ;;
     a)
       all="1"
-      #echo "Feature not added yet, for now backup repositories individually"
-      #exit 0
+      echo "Feature not added yet, for now backup repositories individually" >&2
+      exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -214,19 +213,35 @@ checkInternet || exit 1
 if [[ $# == "1" ]]; then
   if [[ $1 == "update" ]];then
     update
+    exit 0
   elif [[ $1 == "help" ]]; then
     usage
+    exit 0
   fi
+elif [ $# -gt 1 ];then
+  getGitHubUserInfo || exit 1
+  getBitbucketInfo || exit 1
+  echo
+  for i in "$@"; do
+  repoName=$i
+  cloneGitHubRepo || exit 1
+  copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+  backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+done
+exit 0
 fi
 
 if [[ $all == "0" ]];then
   getGitHubRepoUserInfo || exit 1
   getGitHubRepoInfo || exit 1
-  cloneGitHubRepo || exit 1
   getBitbucketInfo || exit 1
+  echo
+  cloneGitHubRepo || exit 1
   copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
   backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+  exit 0
 else
   getGitHubUserInfo || exit 1
   getGithubRepoNames || exit 1
+  exit 0
 fi
