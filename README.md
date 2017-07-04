@@ -93,6 +93,18 @@ If you want to bypass to guided input you can pass in 3 arguments and it will ru
 ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
 so a valid use case would be ```currency USD EUR 12.35```
 
+## Cloudup
+
+A tool that facilitates backing up github repositories to bitbucket
+
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cloudup/cloudup.png?raw=true">
+
+</div>
+
+
 
 ## Encryption & Decryption
 
@@ -188,7 +200,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.8.0```
+* Git checkout to the latest stable release ```git checkout v1.9.0```
 
 * Run the guided install script with
 ```bash

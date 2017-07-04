@@ -2,12 +2,25 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.9.0
+
+</div>
+
+### Changes
+* Added cloudup component
+
+### Bugfixes
+* Fixing bug in ytview when search results are sparse
+
+
+<div align="center">
+
 ## Version 1.8.0
 
 </div>
 
 ### Changes
-* Added ytview componenet
+* Added ytview component
 
 ### Bugfixes
 * Using ```$@``` instead of ```$1 $2 $3...``` in all applicable scripts
