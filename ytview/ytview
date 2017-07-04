@@ -3,6 +3,7 @@
 # Modifications: Alexander Epstein https://github.com/alexanderepstein
 
 if [[ -d $HOME/.cache/ytview ]];then  rm -rf $HOME/.cache/ytview/ ;fi
+
 player=""
 configuredClient=""
 currentVersion="1.8.0"
