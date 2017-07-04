@@ -13,7 +13,23 @@
 ### All of these scripts have been heavily tested on OSX and Linux
 ### Most of these scripts have been tested on Windows 10 and the official developer bash instance. Does not work with Cygwin or Mysys2.
 
+#### Favorite Tool?
+
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Weather)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Weather/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Yotube-Viewer)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Yotube-Viewer/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Stocks)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Stocks/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Geo)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Geo/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Currency)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Currency/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cloudup)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cloudup/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Crypt)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Crypt/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Movies)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Movies/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cheat)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cheat/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Taste)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Taste/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Short)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Short/vote)
+
 </div>
+
+
 
 ## Weather
 
@@ -106,7 +122,7 @@ A tool that facilitates backing up github repositories to bitbucket
 
 
 
-## Encryption & Decryption
+## Crypt
 
 A wrapper for openssl that allows for quickly encrypting and decrypting files
 
