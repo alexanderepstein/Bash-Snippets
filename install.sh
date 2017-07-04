@@ -87,6 +87,15 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
   fi
 
+  unset answer
+  echo -n "Do you wish to install ytview [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd ytview || exit 1
+    ./install.sh
+    cd .. || exit 1
+  fi
+
 
 fi
 
@@ -126,6 +135,10 @@ elif [[ $1 == "cheat" ]]; then
   cd cheat || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $1 == "ytview" ]]; then
+  cd ytview || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -152,6 +165,9 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd cheat || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd ytview || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -198,6 +214,11 @@ elif [[ $1 == "update" ]]; then
   fi
   if [[ -f  /usr/local/bin/cheat ]];then
     cd cheat || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
+  if [[ -f  /usr/local/bin/ytview ]];then
+    cd ytview || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
   fi

@@ -97,3 +97,13 @@ if [[ -f  /usr/local/bin/cheat ]];then
     cd .. || exit 1
   fi
 fi
+
+if [[ -f  /usr/local/bin/ytview ]];then
+  echo -n "Do you wish to uninstall ytview [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd ytview || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
+  fi
+fi
