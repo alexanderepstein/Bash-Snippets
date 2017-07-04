@@ -170,9 +170,12 @@ searchview()
 
 usage()
 {
-  echo "Usage: ytview [flag] [string]"
-  echo "     -s Searches youtube"
-  echo "     -c Shows the latest videos of a channel"
+  echo "Usage: ytview [flag] [string] or ytview [videoToSearch]"
+  echo "  -s Searches youtube"
+  echo "  -c Shows the latest videos of a channel"
+	echo "  -u Update Bash-Snippet Tools"
+	echo "  -h Show the help"
+	echo "  -v Get the tool version"
 }
 
 getConfiguredClient || exit 1
