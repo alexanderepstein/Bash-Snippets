@@ -190,7 +190,7 @@ do
         search=$(printf '%s ' "$@")
         flag="search"
       else
-        echo "Error: search and channel options are mutually exclusive"
+        echo "Error: search and channel options are mutually exclusive" >&2
         exit 1
       fi
     ;;
@@ -199,22 +199,25 @@ do
         channel="$OPTARG"
         flag="channel"
       else
-        echo "Error: search and channel options are mutually exclusive"
+        echo "Error: search and channel options are mutually exclusive" >&2
         exit 1
       fi
     ;;
-    h) usage ;;
-    u) update ;;
-    *) usage ;;
+    h) usage && exit 0 ;;
+    u) update && exit 0 ;;
+    *) usage && exit 0 ;;
   esac
 done
 
 if [[ $# == "0" ]]; then
   usage
+  exit 0
 elif [[ $1 == "help" ]];then
   usage
+  exit 0
 elif [[ $1 == "update" ]]; then
   update
+  exit 0
 elif [[ $flag == "search" ]]; then
   searchview || exit 1
 elif [[ $flag == "channel" ]]; then
