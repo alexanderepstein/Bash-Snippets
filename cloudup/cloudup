@@ -46,19 +46,6 @@ httpGet()
 }
 
 
-
-
-checkInternet()
-{
-  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
-  if [ $? -eq 0 ]; then #check if the output is 0, if so no errors have occured and we have connected to google successfully
-    return 0
-  else
-    echo "Error: no active internet connection" >&2 #sent to stderr
-    return 1
-  fi
-}
-
 update()
 {
   # Author: Alexander Epstein https://github.com/alexanderepstein
@@ -112,7 +99,8 @@ backupRepo()
 {
   cd ~/temp/$repoName
   if [[ $private == "1" ]];then
-    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private='true' > /dev/null
+    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp is_private=true > /dev/null
+    echo "private"
   else
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null
   fi
@@ -177,11 +165,16 @@ usage()
   echo "  -v Get the tool version"
 }
 
-while getopts "auvh" opt; do
+while getopts "pauvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
+    ;;
+    p)
+      private="1"
+      echo "Feature not added yet, for now all backups must be public (can be manually set to private through bitbucket)" >&2
+      exit 0
     ;;
     h)
       usage
@@ -218,21 +211,32 @@ if [[ $# == "1" ]]; then
     usage
     exit 0
   fi
-elif [ $# -gt 1 ];then
+elif [ $# -ge 1 ];then
   getGitHubUserInfo || exit 1
   getBitbucketInfo || exit 1
   echo
-  for i in "$@"; do
-  repoName=$i
-  cloneGitHubRepo || exit 1
-  copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
-  backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
-done
-exit 0
+  if [[ $private != "1" ]];then
+    for i in "$@"; do
+      repoName=$i
+      cloneGitHubRepo || exit 1
+      copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+      backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+    done
+    exit 0
+  else
+    for i in "${@:2}"; do
+      repoName=$i
+      cloneGitHubRepo || exit 1
+      copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+      backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+    done
+    exit 0
+  fi
 fi
 
+
 if [[ $all == "0" ]];then
-  getGitHubRepoUserInfo || exit 1
+  getGitHubUserInfo || exit 1
   getGitHubRepoInfo || exit 1
   getBitbucketInfo || exit 1
   echo
