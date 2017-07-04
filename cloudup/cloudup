@@ -92,7 +92,7 @@ getBitbucketInfo()
   echo -n 'Enter your Bitbucket username: '
   read bbUsername
   echo -n 'Enter your Bitbucket password: '
-  read  password  # -s flag hides password text;
+  read -s password  # -s flag hides password text;
 }
 
 backupRepo()
@@ -108,8 +108,10 @@ backupRepo()
   repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
   timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
   git remote add origin https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git > /dev/null || return 1
-  git push -q origin --all > /dev/null || return 1
-  git push -q origin --tags > /dev/null || return 1
+  echo "Upoading $originalRepoName to bitbucket"
+  git push -q --progress origin --all > /dev/null || return 1
+  echo "Uploading the tags for $originalRepoName"
+  git push -q --progress origin --tags > /dev/null || return 1
   echo "Successfully backedup $originalRepoName"
   rm -rf ~/temp
 }
