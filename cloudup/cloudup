@@ -157,7 +157,7 @@ getGithubRepoNames()
 usage()
 {
   echo "Cloudup tool"
-  echo "Usage: cloudup [flags]"
+  echo "Usage: cloudup [flags] or cloudup or cloudup [listOfGHRepoNamesSplitBySpaces]"
   echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
   echo "  -a Backup all github repositories"
   echo "  -u Update Bash-Snippet Tools"
