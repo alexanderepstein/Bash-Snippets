@@ -44,7 +44,7 @@ Provides a way to watch youtube videos from the terminal.
 
 You can use ```ytview -c [channel name]``` to see recent videos by that artist.
 
-You can use ```youtubeviewer -s '[videoToSearch]'``` to search for videos.
+You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]``` to search for videos.
 
 
 <div align="center">
