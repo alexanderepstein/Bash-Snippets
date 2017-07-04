@@ -241,7 +241,7 @@ else
       getSimilar "$@" || exit 1 ## exit if we return 1 (chances are movie was not found)
       printResults
     else
-      getSimilar "$@" || exit 1
+      getSimilar "${@:2}" || exit 1
       printResults
     fi
   else
