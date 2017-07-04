@@ -167,6 +167,9 @@ usage()
   echo "  -v Get the tool version"
 }
 
+getConfiguredClient || exit 1
+checkInternet || exit 1
+
 while getopts "pauvh" opt; do
   case $opt in
     \?)
@@ -202,8 +205,7 @@ while getopts "pauvh" opt; do
   esac
 done
 
-getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 if [[ $# == "1" ]]; then
   if [[ $1 == "update" ]];then
