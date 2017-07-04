@@ -38,7 +38,20 @@ Also can show the current moon phase
 </div>
 
 
+## Youtube-Viewer
 
+Provides a way to watch youtube videos from the terminal.
+
+You can use ```ytview -c [channel name]``` to see recent videos by that artist.
+
+You can use ```youtubeviewer -s '[videoToSearch]'``` to search for videos.
+
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/ytview/ytview.png?raw=true">
+
+</div>
 
 
 ## Stocks
@@ -174,7 +187,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.7.0```
+* Git checkout to the latest stable release ```git checkout v1.8.0```
 
 * Run the guided install script with
 ```bash

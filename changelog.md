@@ -2,6 +2,21 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.8.0
+
+</div>
+
+### Changes
+* Added ytview componenet
+
+### Bugfixes
+* Using ```$@``` instead of ```$1 $2 $3...``` in all applicable scripts
+* Make call to python 2 explicit in all applicable scripts
+* Hiding the cheatsheet api help page from the user
+
+
+<div align="center">
+
 ## Version 1.7.0
 
 </div>

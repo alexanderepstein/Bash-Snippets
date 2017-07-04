@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.7.0"
+currentVersion="1.8.0"
 configuredClient=""
 private="0"
 all="0"
@@ -164,7 +164,7 @@ cloneGitHubRepo()
 getGithubRepoNames()
 {
   response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100")
-  
+
 }
 
 usage()
