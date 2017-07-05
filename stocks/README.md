@@ -8,6 +8,8 @@ Provides information about a certain stock symbol
 
 # USAGE
 
+Basic usage:
+
     sparrow plg run stocks --param name=Google
 
 
@@ -20,6 +22,8 @@ Or if you need some automation:
 
     name: Google
 
+
+# Output 
 
 ![stocks output](https://raw.githubusercontent.com/alexanderepstein/Bash-Snippets/master/stocks/stocks.png)
 
