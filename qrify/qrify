@@ -18,10 +18,21 @@ getConfiguredClient()
 	fi
 }
 
+httpGet()
+{
+	case "$configuredClient" in
+		curl) curl -A curl -s "$@";;
+		wget) wget -q0- "$@";;
+		fetch) fetch -o "...";;
+	esac
+}
+
 makeqr()
 {	
 	echo "Processing input:" $input 
-	echo $input | curl -F-=\<- qrenco.de
+	input=$(echo $input | sed s/" "/%20/ )
+	echo $input
+	httpGet qrenco.de/$input
 
 }
 
