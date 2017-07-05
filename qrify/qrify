@@ -36,16 +36,6 @@ makeqr()
 
 }
 
-makeqrmultiline()
-{
-	if [[ $configuredClient != "curl" ]]; then
-		echo "Multiline support is for now curl only!"
-		return 1
-	else
-		echo "Processing input:" $input
-		echo $input | curl -F-=\<- qrenco.de
-	fi
-}
 
 checkInternet()
 {
