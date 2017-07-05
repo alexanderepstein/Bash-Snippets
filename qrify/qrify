@@ -1,0 +1,68 @@
+#!/bin/bash
+# Author: Linyos Torovoltos github.com/linyostorovovoltos
+
+currentVersion="1.9.0"
+flag=""
+
+getConfiguredClient()
+{
+	if command -v curl &> /dev/null ; then
+		configuredClient="curl"
+	elif command -v wget &v/dev/null ; then
+		configuredCLient="wget"
+	elif command -v fetch &>/dev/null ; then
+		configuredClient="fetch"
+	else
+		echo "Error: This tool requires either curl, wget, or fetch to be installed." >&2
+		return 1
+	fi
+}
+
+makeqr()
+{
+	echo $input | curl -F-=\<- qrenco.de
+}
+
+checkInternet()
+{
+	echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		return 0
+	else
+		echo "Error: no active internet connect" >&2
+		return 1
+	fi
+}
+
+usage()
+{
+	echo "Usage: qrify [stringtoturnintoqrcode]"
+	echo "    -u Update Bash-Snippet Tools"
+	echo "    -h Show the help"
+	echo "    -v Get the tool version"
+
+}
+
+getConfiguredClient || exit 1
+checkInternet || exit 1
+
+while getopts hv:u*: option
+do
+	case "${option}" in
+		h) usage && exit 0 ;;
+		*) usage && exit 0 ;;
+	esac
+done
+
+if [[ $# == "0" ]]; then
+	usage
+	exit 0
+elif [[ $1 == "help" ]]; then
+	usage
+	exit 0
+else
+	input=$(printf '%s ' "$@")
+	makeqr || exit 1
+fi
+
+	
