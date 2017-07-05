@@ -19,8 +19,10 @@ getConfiguredClient()
 }
 
 makeqr()
-{
+{	
+	echo "Processing input:" $input 
 	echo $input | curl -F-=\<- qrenco.de
+
 }
 
 checkInternet()
