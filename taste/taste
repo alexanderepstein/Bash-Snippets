@@ -3,7 +3,7 @@
 
 currentVersion="1.9.0"
 configuredClient=""
-source ~/.bashrc ## allows grabbing enviornment variable
+source ~/.bash_profile ## allows grabbing enviornment variable
 apiKey=$TASTE_API_KEY
 info="0" ## indicates if we want extra info
 search="0" ## indivates that we want results on the item itself

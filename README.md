@@ -170,10 +170,8 @@ Valid items are: shows, books, music, artists, movies, authors, games
 
 </div>
 
-### Needs an API Key
-* To get an API key visit https://tastedive.com/account/api_access
-* After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"
-* If issues occur first try setting the API key without quotations marks
+### Needs an API Key (don't worry it's free)
+* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"``` 
 
 ## Short
 
