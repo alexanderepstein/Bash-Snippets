@@ -216,7 +216,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.9.0```
+* Git checkout to the latest stable release ```git checkout v1.10.0```
 
 * Run the guided install script with
 ```bash
