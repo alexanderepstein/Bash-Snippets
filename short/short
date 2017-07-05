@@ -3,6 +3,7 @@
 
 currentVersion="1.9.0"
 configuredClient=""
+configuredPython=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -18,6 +19,28 @@ getConfiguredClient()
     return 1
   fi
 
+}
+
+
+getConfiguredPython()
+{
+  if  command -v python2 &>/dev/null ; then
+    configuredPython="python2"
+  elif command -v python &>/dev/null ; then
+    configuredPython="python"
+  else
+    echo "Error: This tool requires python 2 to be installed."
+    return 1
+  fi
+}
+
+
+python()
+{
+  case "$configuredPython" in
+    python2) python2 "$@";;
+    python) python "$@";;
+  esac
 }
 
 ## Allows to call the users configured client without if statements everywhere
@@ -104,12 +127,12 @@ expandURL()
     url=$1
   fi
   response=$(httpGet http://x.datasig.io/short?url=$url)
-  errorCheck=$(echo $response | python2 -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2>  /dev/null  )
+  errorCheck=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2>  /dev/null  )
   if [[ $errorCheck == "Error in /short" ]];then
   echo "Error: 404 could not find the website"
   return 1
 fi
-  expandedURL=$(echo $response | python2 -c "import sys, json; print json.load(sys.stdin)['/short']['destination']" 2>  /dev/null  )
+  expandedURL=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['destination']" 2>  /dev/null  )
 
 }
 
@@ -121,6 +144,7 @@ printResults()
   echo "====================================================================="
 }
 
+getConfiguredPython || exit 1
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
