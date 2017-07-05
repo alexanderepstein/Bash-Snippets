@@ -105,6 +105,15 @@ if [[ $# == 0 ]]; then
     cd .. || exit 1
   fi
 
+  unset answer
+  echo -n "Do you wish to install qrify [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd qrify || exit 1
+    ./install.sh
+    cd .. || exit 1
+  fi
+
 fi
 
 if [[ $1  == "currency" ]];then
@@ -151,6 +160,10 @@ elif [[ $1 == "cloudup" ]]; then
   cd cloudup || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
+elif [[ $1 == "qrify" ]]; then
+  cd qrify || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
 elif [[ $1 == "all" ]];then
   cd currency || exit 1
   ./install.sh || exit 1
@@ -183,6 +196,9 @@ elif [[ $1 == "all" ]];then
   ./install.sh || exit 1
   cd .. || exit 1
   cd cloudup || exit 1
+  ./install.sh || exit 1
+  cd .. || exit 1
+  cd qrify || exit 1
   ./install.sh || exit 1
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
@@ -242,7 +258,19 @@ elif [[ $1 == "update" ]]; then
     ./install.sh || exit 1
     cd .. || exit 1
   fi
+  if [[ -f  /usr/local/bin/qrify ]];then
+    cd qrify || exit 1
+    ./install.sh || exit 1
+    cd .. || exit 1
+  fi
 fi
 
+echo -n "( •_•)"
+sleep .75
+echo -n -e "\r( •_•)>⌐■-■"
+sleep .75
+echo -n -e "\r               "
+echo  -e "\r(⌐■_■)"
+sleep .5
 echo "Bash Snippets version $currentVersion"
 echo  "https://github.com/alexanderepstein/Bash-Snippets"

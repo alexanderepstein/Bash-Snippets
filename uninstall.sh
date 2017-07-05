@@ -117,3 +117,13 @@ if [[ -f  /usr/local/bin/cloudup ]];then
     cd .. || exit 1
   fi
 fi
+
+if [[ -f  /usr/local/bin/qrify ]];then
+  echo -n "Do you wish to uninstall qrify [Y/n]: "
+  read -r answer
+  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    cd qrify || exit 1
+    ./uninstall.sh
+    cd .. || exit 1
+  fi
+fi
