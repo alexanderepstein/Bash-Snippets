@@ -97,7 +97,7 @@ getBitbucketInfo()
 
 backupRepo()
 {
-  cd ~/temp/$repoName
+  cd ~/temp/$repoName || return 1
   if [[ $private == "1" ]];then
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp is_private=true > /dev/null
     echo "private"
@@ -108,7 +108,7 @@ backupRepo()
   repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
   timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
   git remote add origin https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git > /dev/null || return 1
-  echo "Upoading $originalRepoName to bitbucket"
+  echo "Uploading $originalRepoName to bitbucket"
   git push -q --progress origin --all > /dev/null || return 1
   echo "Uploading the tags for $originalRepoName"
   git push -q --progress origin --tags > /dev/null || return 1
@@ -119,8 +119,8 @@ backupRepo()
 copyRepository()
 {
   timestamp=$(date | tr " " _ | tr : _  )
-  cd ~/temp || { rm -rf ~/temp; return 1;  }
   cp -r $1 ~/temp || { rm -rf ~/temp; return 1;  }
+  cd ~/temp || { rm -rf ~/temp; return 1;  }
   #repoName=$(ls ~/temp)
   cd $repoName || { rm -rf ~/temp; return 1;  }
   rm -rf .git && git init > /dev/null
@@ -143,7 +143,7 @@ getGitHubUserInfo()
 cloneGitHubRepo()
 {
   mkdir ~/temp
-  cd
+  cd 
   mkdir ~/temp/github
   cd ~/temp/github
   echo "Cloning $repoName"
@@ -153,7 +153,11 @@ cloneGitHubRepo()
 
 getGithubRepoNames()
 {
-  response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100")
+  response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100"  | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g)
+  for repo in $response
+do
+    repoNames+=("$repo")
+done
 }
 
 usage()
@@ -187,8 +191,8 @@ while getopts "pauvh" opt; do
     ;;
     a)
       all="1"
-      echo "Feature not added yet, for now backup repositories individually" >&2
-      exit 0
+      #echo "Feature not added yet, for now backup repositories individually" >&2
+      #exit 0
     ;;
     v)
       echo "Version $currentVersion"
@@ -223,7 +227,7 @@ elif [ $# -ge 1 ];then
     for i in "$@"; do
       repoName=$i
       cloneGitHubRepo || exit 1
-      copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+      copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$originalRepoName"; exit 1; }
       backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
     done
     exit 0
@@ -251,5 +255,15 @@ if [[ $all == "0" ]];then
 else
   getGitHubUserInfo || exit 1
   getGithubRepoNames || exit 1
+  getBitbucketInfo || exit 1
+  echo
+  for repo in "${repoNames[@]}"
+  do
+    repoName=$repo
+    cloneGitHubRepo || exit 1
+    copyRepository ~/temp/gitub/$repoName  || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
+    backupRepo  || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
+  done
   exit 0
+
 fi
