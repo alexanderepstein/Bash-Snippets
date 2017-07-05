@@ -71,7 +71,7 @@ httpGet()
 
 makeqr()
 {
-  input=$(echo $input | sed s/" "/%20/ )
+  input=$(echo $input | sed s/" "/%20/g )
   httpGet qrenco.de/$input
 }
 
