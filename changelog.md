@@ -2,6 +2,20 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.10.0
+
+</div>
+
+### Changes
+* Added qrify component
+
+### Bugfixes
+* Bug in taste where the -i option was not working
+* Bug in all scripts that used python on OSX
+* Bug in taste script on OSX
+
+<div align="center">
+
 ## Version 1.9.0
 
 </div>

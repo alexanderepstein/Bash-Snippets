@@ -97,7 +97,7 @@ so a valid use case would be ```currency USD EUR 12.35```
 
 ## Cloudup
 
-A tool that facilitates backing up github repositories to bitbucket
+A tool that facilitates backing up github repositories to bitbucket (if you have ever felt the fear of the github unicorn this could be your savior)
 
 
 <div align="center">
@@ -149,6 +149,8 @@ Quick search that grabs relevant information about a movie
 
 The fastest way to find {command options|code pieces} you need
 
+Supports multiple languages and many bash commands
+
 <div align="center">
 
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
@@ -171,7 +173,21 @@ Valid items are: shows, books, music, artists, movies, authors, games
 </div>
 
 ### Needs an API Key (don't worry it's free)
-* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"``` 
+* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"```
+
+## Qrify
+
+Takes any string of text and turns it into a qr code
+
+This is useful for sending links or saving a string of commands to your phone
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/qrify/qrify.png?raw=true">
+
+</div>
+
 
 ## Short
 
