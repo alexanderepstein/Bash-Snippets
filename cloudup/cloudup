@@ -97,7 +97,8 @@ getBitbucketInfo()
 
 backupRepo()
 {
-  cd ~/temp/$repoName || return 1
+  timestamp=$(date | tr " " _ | tr : _  )
+  cd ~/temp/github/$repoName || return 1
   if [[ $private == "1" ]];then
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp is_private=true > /dev/null
     echo "private"
@@ -116,17 +117,7 @@ backupRepo()
   rm -rf ~/temp
 }
 
-copyRepository()
-{
-  timestamp=$(date | tr " " _ | tr : _  )
-  cp -r ~/temp/github/$repoName ~/temp || { rm -rf ~/temp; return 1;  }
-  cd ~/temp || { rm -rf ~/temp; return 1;  }
-  #repoName=$(ls ~/temp)
-  cd $repoName || { rm -rf ~/temp; return 1;  }
-  #rm -rf .git && git init > /dev/null
-  # git add -A . > /dev/null
-  # git commit -m "Initial commit" > /dev/null
-}
+
 
 getGitHubRepoInfo()
 {
@@ -226,7 +217,6 @@ elif [ $# -ge 1 ];then
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
-      copyRepository || { echo "Error: couldnt copy $repoName to ~/temp/$originalRepoName"; exit 1; }
       backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
       echo
     done
@@ -236,7 +226,6 @@ elif [ $# -ge 1 ];then
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
-      copyRepository  || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
       backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
       echo
     done
@@ -251,7 +240,6 @@ if [[ $all == "0" ]];then
   getBitbucketInfo || exit 1
   echo
   cloneGitHubRepo || exit 1
-  copyRepository ~/temp/github/$repoName || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
   backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
   exit 0
 else
@@ -264,7 +252,6 @@ else
     repoName=$repo
     echo "Starting to backup $repoName"
     cloneGitHubRepo || exit 1
-    copyRepository ~/temp/gitub/$repoName  || { echo "Error: couldnt copy $repoName to ~/temp/$repoName"; exit 1; }
     backupRepo  || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
     echo
   done
