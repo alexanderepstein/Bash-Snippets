@@ -56,6 +56,7 @@ You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]```
 
 </div>
 
+Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
 
 ## Stocks
 
@@ -79,7 +80,7 @@ Provides information about a certain stock symbol
 
   </div>
 
-  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer
+  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer</a>
 
 ## Currency
 
@@ -101,7 +102,7 @@ A tool that facilitates backing up github repositories to bitbucket
 
 If you have ever felt the fear of the github unicorn this could be your savior
 
-Furthermore you can backup the repositories of any github user to your bitbucket. 
+Furthermore you can backup the repositories of any github user to your bitbucket.
 
 
 <div align="center">
@@ -177,6 +178,7 @@ Valid items are: shows, books, music, artists, movies, authors, games
 </div>
 
 ### Needs an API Key (don't worry it's free)
+* Get the API key here: <a href="https://tastedive.com/account/api_access">taste dive</a>
 * After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"```
 
 ## Qrify
@@ -192,6 +194,7 @@ This is useful for sending links or saving a string of commands to your phone
 
 </div>
 
+Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
 
 ## Short
 
@@ -213,6 +216,7 @@ Gets the link that is being masked by a url shortner
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
 * To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
 * To encode text into a qr code: <a href="http://qrenco.de">qrenco.de</a>
+
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing

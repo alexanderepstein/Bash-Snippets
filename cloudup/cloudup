@@ -3,9 +3,9 @@
 
 currentVersion="1.10.1"
 configuredClient=""
-private="0"
-all="0"
-if [ -d ~/temp ];then rm -rf ~/temp; fi
+private="0" ## state of private flag
+all="0" ## state of all flag
+if [ -d ~/temp ];then rm -rf ~/temp; fi ## if the temp folder exists we want to delete it just in case it was left over from a fatal error
 
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -87,18 +87,22 @@ update()
 
 }
 
+## This grabs the users bitbucket info could be improved by making sure username exists
 getBitbucketInfo()
 {
   echo -n 'Enter your Bitbucket username: '
   read bbUsername
+  if [[ $bbUsername == "1" ]];then
+    echo  "Using github username as bitbucket username"
+  fi
   echo -n 'Enter your Bitbucket password: '
   read -s password  # -s flag hides password text;
 }
 
 backupRepo()
 {
-  timestamp=$(date | tr " " _ | tr : _  )
-  cd ~/temp/github/$repoName || return 1
+  timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
+  cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
   if [[ $private == "1" ]];then
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp is_private=true > /dev/null
     echo "private"
@@ -108,40 +112,43 @@ backupRepo()
   originalRepoName=$repoName
   repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
   timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
-  git remote set-url origin https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git > /dev/null || return 1
+  git remote set-url origin https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git > /dev/null || return 1 ## switch the remote over to bitbucket rather than github
   echo "Uploading $originalRepoName to bitbucket"
-  git push -q --progress origin --all > /dev/null || return 1
+  git push -q --progress origin --all > /dev/null || return 1 ## pushes al files to github and most of the repo history
   echo "Uploading the tags for $originalRepoName"
-  git push -q --progress origin --tags > /dev/null || return 1
+  git push -q --progress origin --tags > /dev/null || return 1 ## have to push tags here since --tags and --all are mutually exclusive
   echo "Successfully backedup $originalRepoName"
-  rm -rf ~/temp
+  rm -rf ~/temp #if we have succesfully backedup the repo we dion't need this anymore and if we do we will recreate it
 }
 
 
-
+## When cloudup is called with no flags
 getGitHubRepoInfo()
 {
   echo -n 'Enter the name of the repostiory to backup: '
-  read repoName  # -s flag hides password text
+  read repoName
 }
 
+## This grabs github user info could be improved upon by checking if user exists
 getGitHubUserInfo()
 {
   echo -n 'Enter your Github username: '
   read ghUsername
 }
 
+## function that handles cloning a repository it uses $ghUsername and $repoName
 cloneGitHubRepo()
 {
   mkdir ~/temp
-  cd
-  mkdir ~/temp/github
-  cd ~/temp/github
+  cd || { echo "Fatal error"; return 1; }
+  mkdir ~/temp/github || { echo "Fatal error"; return 1; }
+  cd ~/temp/github || { echo "Fatal error"; return 1; }
   echo "Cloning $repoName"
   git clone -q --progress https://github.com/$ghUsername/$repoName || return 1
   echo "Successfully cloned $repoName"
 }
 
+## Grabs the last 100 updated repos and greps to grab the repository names and puts them in an array called repoNames
 getGithubRepoNames()
 {
   response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100"  | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g)
@@ -213,7 +220,7 @@ elif [ $# -ge 1 ];then
   getBitbucketInfo || exit 1
   echo
   if [[ $private != "1" ]];then
-    for i in "$@"; do
+    for i in "$@"; do  ## if private is not on as a flag start rpping through them
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
@@ -235,13 +242,23 @@ fi
 
 
 if [[ $all == "0" ]];then
-  getGitHubUserInfo || exit 1
-  getGitHubRepoInfo || exit 1
-  getBitbucketInfo || exit 1
-  echo
-  cloneGitHubRepo || exit 1
-  backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
-  exit 0
+  if [[ $1 == "" ]];then
+    getGitHubUserInfo || exit 1
+    getGitHubRepoInfo || exit 1
+    getBitbucketInfo || exit 1
+    echo
+    cloneGitHubRepo || exit 1
+    backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+    exit 0
+  else
+    getGitHubUserInfo || exit 1
+    repoName=$1 || exit 1
+    getBitbucketInfo || exit 1
+    echo
+    cloneGitHubRepo || exit 1
+    backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
+    exit 0
+  fi
 else
   getGitHubUserInfo || exit 1
   getGithubRepoNames || exit 1
