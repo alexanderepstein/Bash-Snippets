@@ -97,7 +97,11 @@ so a valid use case would be ```currency USD EUR 12.35```
 
 ## Cloudup
 
-A tool that facilitates backing up github repositories to bitbucket (if you have ever felt the fear of the github unicorn this could be your savior)
+A tool that facilitates backing up github repositories to bitbucket
+
+If you have ever felt the fear of the github unicorn this could be your savior
+
+Furthermore you can backup the repositories of any github user to your bitbucket. 
 
 
 <div align="center">
@@ -208,7 +212,7 @@ Gets the link that is being masked by a url shortner
 * To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
 * To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
-* To encode text into a qr code: <a href="qrenco.de">qrenco.de</a>
+* To encode text into a qr code: <a href="http://qrenco.de">qrenco.de</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
