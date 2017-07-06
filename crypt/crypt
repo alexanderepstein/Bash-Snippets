@@ -2,7 +2,7 @@
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
 currentVersion="1.10.1"
-
+state=""
 
 checkOpenSSL()
 {
@@ -16,14 +16,16 @@ checkOpenSSL()
 ## uses openssl aes 256 cbc encryption to encrypt file salting it with password designated by user
 encrypt()
 {
-  openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; exit 1; }
+  echo "Encrypting $1..."
+  openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; return 1; }
   echo "Successfully encrypted"
 }
 
 ## uses openssl aes 256 cbc decryption to decrypt file
 decrypt()
 {
-  openssl enc -aes-256-cbc -d -a -in $1 -out $2 || { echo "File not found"; exit 1; }
+  echo "Decrypting $1..."
+  openssl enc -aes-256-cbc -d -a -in $1 -out $2 || { echo "File not found"; return 1; }
   echo "Successfully decrypted"
 }
 
@@ -85,22 +87,33 @@ checkOpenSSL || exit 1
 while getopts "huve:d:" opt; do ## alows for using options in bash
   case $opt in
     e) ## when trying to encrypt run this
-      if [[ $# -ne 3 ]]; then
-        echo "Option -e needs and only accepts two arguments [file to encrypt] [output file]" <&2
+      if [[ $state != "decrypt" ]];then
+        state="encrypt"
+      else
+        echo "Error: the -d and -e options are mutally exclusive" >&2
         exit 1
       fi
-      encrypt $2 $3
+      if [[ $# -ne 3 ]]; then
+        echo "Option -e needs and only accepts two arguments [file to encrypt] [output file]" >&2
+        exit 1
+      fi
+
     ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
     ;;
     d) ## when trying to decrypt run this
-      if [[ $# -ne 3 ]]; then
-        echo "Option -d needs and only accepts two arguments [file to decrypt] [output file]" <&2
+      if [[ $state != "encrypt" ]];then
+        state="decrypt"
+      else
+        echo "Error: the -e and -d options are mutally exclusive" >&2
         exit 1
       fi
-      decrypt $2 $3
+      if [[ $# -ne 3 ]]; then
+        echo "Option -d needs and only accepts two arguments [file to decrypt] [output file]" >&2
+        exit 1
+      fi
     ;;
     u)
       update
@@ -123,10 +136,17 @@ done
 
 if [[ $# == 0 ]]; then
   usage
+  exit 0
 elif [[ $1 == "update" ]];then
   update
   exit 0
 elif [[ $1 == "help" ]];then
   usage
+  exit 0
+elif [[ $state == "encrypt" ]];then
+  encrypt $2 $3 || exit 1
+  exit 0
+elif [[ $state == "decrypt" ]];then
+  decrypt $2 $3 || exit 1
   exit 0
 fi
