@@ -208,6 +208,7 @@ Gets the link that is being masked by a url shortner
 * To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
 * To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
+* To encode text into a qr code: <a href="qrenco.de">qrenco.de</a>
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
 ## Installing
@@ -216,7 +217,7 @@ Gets the link that is being masked by a url shortner
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.10.0```
+* Git checkout to the latest stable release ```git checkout v1.10.1```
 
 * Run the guided install script with
 ```bash
@@ -252,7 +253,7 @@ This will clone the repository and install the new versions of scripts that were
 
 * cd into the Bash-Snippets directory: ```cd Bash-Snippets```
 
-#### To uninstall all scripts
+#### To go through a guided uninstall
 ```bash
 ./uninstall.sh
 ```

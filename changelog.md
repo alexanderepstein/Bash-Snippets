@@ -2,6 +2,23 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.10.1
+
+</div>
+
+
+### Changes
+* Cloudup's -a option is now functional
+
+### Bugfixes
+* Cloudup only needs one temporary copy of the repository
+* Qrify had an issue where it couldn't handle more than one space
+* Cloudup now retains git history when it backs up to bitbucket
+* Fetch removed from qrify since it will not work
+
+
+<div align="center">
+
 ## Version 1.10.0
 
 </div>
