@@ -11,10 +11,8 @@ getConfiguredClient()
     configuredClient="curl"
   elif command -v wget &v/dev/null ; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
-    configuredClient="fetch"
   else
-    echo "Error: This tool requires either curl, wget, or fetch to be installed." >&2
+    echo "Error: This tool requires either curl or  wget to be installed." >&2
     return 1
   fi
 }
@@ -64,8 +62,7 @@ httpGet()
 {
   case "$configuredClient" in
     curl) curl -A curl -s "$@";;
-    wget) wget -q0- "$@";;
-    fetch) fetch -o "...";;
+    wget) wget --post-data "$@";;
   esac
 }
 
@@ -78,7 +75,7 @@ makeqr()
 makeMultiLineQr()
 {
   if [[ $configuredClient != "curl" ]]; then
-    echo "Multiline support is for now curl only!"
+    echo "Multiline currently only supports curl!"
     return 1
   else
     printf "%s" "$*"  | curl -F-=\<- qrenco.de
