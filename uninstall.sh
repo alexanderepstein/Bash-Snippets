@@ -1,129 +1,30 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-if [[ -f  /usr/local/bin/currency ]];then
-  echo -n "Do you wish to uninstall currency [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd currency || exit 1
-    ./uninstall.sh || exit 1
-    cd .. || exit 1
+askUninstall()
+{
+  if [[ -f  /usr/local/bin/$1 ]];then
+    echo -n "Do you wish to uninstall $1 [Y/n]: "
+    read -r answer
+    if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+      cd $1 || return 1
+      ./uninstall.sh || return 1
+      cd .. || return 1
+    fi
+    unset answer
   fi
-  unset answer
-fi
+}
 
-if [[ -f  /usr/local/bin/stocks ]];then
-  echo -n "Do you wish to uninstall stocks [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd stocks || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
 
-  fi
-  unset answer
-fi
-
-if [[ -f  /usr/local/bin/weather ]];then
-  echo -n "Do you wish to uninstall weather [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd weather || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-
-  fi
-  unset answer
-fi
-
-if [[ -f  /usr/local/bin/crypt ]];then
-  echo -n "Do you wish to uninstall crypt [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd crypt || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-
-  fi
-  unset answer
-fi
-
-if [[ -f  /usr/local/bin/movies ]];then
-  echo -n "Do you wish to uninstall movies [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd movies || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/taste ]];then
-  echo -n "Do you wish to uninstall taste [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd taste || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/short ]];then
-  echo -n "Do you wish to uninstall short [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd short || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/geo ]];then
-  echo -n "Do you wish to uninstall geo [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd geo || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/cheat ]];then
-  echo -n "Do you wish to uninstall cheat [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd cheat || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/ytview ]];then
-  echo -n "Do you wish to uninstall ytview [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd ytview || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/cloudup ]];then
-  echo -n "Do you wish to uninstall cloudup [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd cloudup || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
-
-if [[ -f  /usr/local/bin/qrify ]];then
-  echo -n "Do you wish to uninstall qrify [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd qrify || exit 1
-    ./uninstall.sh
-    cd .. || exit 1
-  fi
-fi
+askUninstall currency || exit 1
+askUninstall stocks || exit 1
+askUninstall weather || exit 1
+askUninstall crypt || exit 1
+askUninstall movies || exit 1
+askUninstall taste || exit 1
+askUninstall short || exit 1
+askUninstall geo || exit 1
+askUninstall cheat || exit 1
+askUninstall ytview || exit 1
+askUninstall cloudup || exit 1
+askUninstall qrify || exit 1

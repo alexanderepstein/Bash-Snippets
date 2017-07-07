@@ -2,118 +2,40 @@
 # Author: Alexander Epstein https://github.com/alexanderepstein
 currentVersion="1.10.1"
 
-if [[ $# == 0 ]]; then
-
-  echo -n "Do you wish to install currency [Y/n]: "
+askInstall()
+{
+  echo -n "Do you wish to install $1 [Y/n]: "
   read -r answer
   if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd currency || exit 1
+    cd $1 || return 1
+    ./install.sh || return 1
+    cd .. || return 1
+  fi
+}
+
+updateTool()
+{
+  if [[ -f  /usr/local/bin/$1 ]];then
+    cd $1 || exit 1
     ./install.sh || exit 1
     cd .. || exit 1
   fi
+}
 
-  unset answer
-  echo -n "Do you wish to install stocks [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd stocks || exit 1
-    ./install.sh
-    cd .. || exit 1
+if [[ $# == 0 ]]; then
 
-  fi
-
-  unset answer
-  echo -n "Do you wish to install weather [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd weather || exit 1
-    ./install.sh
-    cd .. || exit 1
-
-  fi
-
-  unset answer
-  echo -n "Do you wish to install crypt [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd crypt || exit 1
-    ./install.sh
-    cd .. || exit 1
-
-  fi
-
-  unset answer
-  echo -n "Do you wish to install movies [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd movies || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install taste [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd taste || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install short [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd short || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install geo [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd geo || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install cheat [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd cheat || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install ytview [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd ytview || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install cloudup [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd cloudup || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
-  unset answer
-  echo -n "Do you wish to install qrify [Y/n]: "
-  read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-    cd qrify || exit 1
-    ./install.sh
-    cd .. || exit 1
-  fi
-
+  askInstall currency || exit 1
+  askInstall stocks || exit 1
+  askInstall weather || exit 1
+  askInstall crypt || exit 1
+  askInstall movies || exit 1
+  askInstall taste || exit 1
+  askInstall short || exit 1
+  askInstall geo || exit 1
+  askInstall cheat || exit 1
+  askInstall ytview || exit 1
+  askInstall cloudup || exit 1
+  askInstall qrify || exit 1
 fi
 
 if [[ $1  == "currency" ]];then
@@ -203,66 +125,18 @@ elif [[ $1 == "all" ]];then
   cd .. || exit 1
 elif [[ $1 == "update" ]]; then
   echo "Updating scripts..."
-  if [[ -f  /usr/local/bin/currency ]];then
-    cd currency || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/stocks ]];then
-    cd stocks || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/weather ]];then
-    cd weather || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/crypt ]];then
-    cd crypt || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/movies ]];then
-    cd movies || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/taste ]];then
-    cd taste || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/short ]];then
-    cd short || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/geo ]];then
-    cd geo || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/cheat ]];then
-    cd cheat || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/ytview ]];then
-    cd ytview || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/cloudup ]];then
-    cd cloudup || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
-  if [[ -f  /usr/local/bin/qrify ]];then
-    cd qrify || exit 1
-    ./install.sh || exit 1
-    cd .. || exit 1
-  fi
+  updateTool currency
+  updateTool stocks
+  updateTool weather
+  updateTool crypt
+  updateTool movies
+  updateTool taste
+  updateTool short
+  updateTool geo
+  updateTool cheat
+  updateTool ytview
+  updateTool cloudup
+  updateTool qrify
 fi
 
 echo -n "( •_•)"
