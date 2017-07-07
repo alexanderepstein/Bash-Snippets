@@ -9,8 +9,10 @@ askInstall()
   read -r answer
   if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
     cd $1 || return 1
-    chmod a+x install.sh || return 1
-    ./install.sh || return 1
+    echo -n "Installing $1: "
+    chmod a+x $1
+    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    echo "Success"
     cd .. || return 1
   fi
 }
@@ -19,16 +21,20 @@ updateTool()
 {
   if [[ -f  /usr/local/bin/$1 ]];then
     cd $1 || return 1
-    chmod a+x install.sh || return 1
-    ./install.sh || return 1
+    echo -n "Installing $1: "
+    chmod a+x $1
+    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    echo "Success"
     cd .. || return 1
   fi
 }
 singleInstall()
 {
   cd $1 || exit 1
-  chmod a+x install.sh || return 1
-  ./install.sh || exit 1
+  echo -n "Installing $1: "
+  chmod a+x $1
+  cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  echo "Success"
   cd .. || exit 1
 }
 

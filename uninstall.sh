@@ -9,8 +9,9 @@ askUninstall()
     read -r answer
     if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
       cd $1 || return 1
-      chmod a+x uninstall.sh || return 1
-      ./uninstall.sh || return 1
+      echo -n "Removing $1: "
+      rm -f /usr/local/bin/$1 > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
+      echo "Success"
       cd .. || return 1
     fi
     unset answer
