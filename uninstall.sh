@@ -1,5 +1,6 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
+declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify)
 
 askUninstall()
 {
@@ -8,6 +9,7 @@ askUninstall()
     read -r answer
     if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
       cd $1 || return 1
+      chmod a+x uninstall.sh || return 1
       ./uninstall.sh || return 1
       cd .. || return 1
     fi
@@ -16,15 +18,7 @@ askUninstall()
 }
 
 
-askUninstall currency || exit 1
-askUninstall stocks || exit 1
-askUninstall weather || exit 1
-askUninstall crypt || exit 1
-askUninstall movies || exit 1
-askUninstall taste || exit 1
-askUninstall short || exit 1
-askUninstall geo || exit 1
-askUninstall cheat || exit 1
-askUninstall ytview || exit 1
-askUninstall cloudup || exit 1
-askUninstall qrify || exit 1
+for tool in "${tools[@]}"
+do
+  askUninstall $tool || exit 1
+done
