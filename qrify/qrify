@@ -2,7 +2,7 @@
 # Author: Linyos Torovoltos github.com/linyostorovovoltos
 
 currentVersion="1.10.1"
-multiline="0"
+multiline="0" # flag that indicates multiline option
 
 
 getConfiguredClient()
@@ -68,13 +68,13 @@ httpGet()
 
 makeqr()
 {
-  input=$(echo $input | sed s/" "/%20/g )
-  httpGet qrenco.de/$input
+  input=$(echo $input | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML encoded space %20
+  httpGet qrenco.de/$input ## get a response for the qrcode
 }
 
 makeMultiLineQr()
 {
-  if [[ $configuredClient != "curl" ]]; then
+  if [[ $configuredClient != "curl" ]]; then ## prevent usage without curl it is unreliable
     echo "Multiline currently only supports curl!"
     return 1
   else
@@ -132,7 +132,7 @@ else
     makeqr || exit 1
     exit 0
   else
-    makeMultiLineQr "${@:2}" || exit 1
+    makeMultiLineQr "${@:2}" || exit 1 ## if multiline that means a flag existed so start from the second argument
     exit 0
   fi
 fi
