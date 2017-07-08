@@ -221,6 +221,13 @@ Gets the link that is being masked by a url shortner
 
 ## Installing
 
+### For Mac via homebrew
+```bash
+brew install chainsawbaby/formula/bash-snippets
+```
+
+### Otherwise
+
 * First clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
@@ -244,6 +251,14 @@ this will let you choose which scripts to install
 ```
 
 ## Updating
+
+### For Mac if installed via homebrew
+```bash
+brew update bash-snippets
+```
+
+### Otherwise
+
 With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
 Ex.
 ```bash
@@ -257,6 +272,12 @@ This will clone the repository and install the new versions of scripts that were
 
 ## Uninstalling
 
+### For Mac if installed via homebrew
+```bash
+brew uninstall bash-snippets
+```
+
+### Otherwise
 * If you don't have the Bash-Snippets folder anymore clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
 
 * cd into the Bash-Snippets directory: ```cd Bash-Snippets```
