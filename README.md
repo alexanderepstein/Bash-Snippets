@@ -287,12 +287,6 @@ brew uninstall bash-snippets
 ./uninstall.sh
 ```
 
-#### To uninstall individual scripts
-Ex. Weather
-```bash
-cd weather
-./uninstall.sh
-```
 ## Donate
 If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
 
