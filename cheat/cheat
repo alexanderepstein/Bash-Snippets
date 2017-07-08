@@ -3,6 +3,7 @@
 
 currentVersion="1.10.1"
 configuredClient=""
+## rest of these variables are search flags
 search="0"
 insensitive=""
 recursive=""
@@ -126,17 +127,19 @@ getCheatSheet()
 
   if [[ $# == 2 ]];then
     if [[ $search == "1" ]];then
-      link+=/~$2
+      link+=/~$2 ## add this to end of link where ~ indicates search
     else
-      link+=/$2
+      link+=/$2 ## add this to end of link
     fi
   fi
 
-  if [[ $insensitive != "" || $recursive != "" || $boundry != "" ]];then link+=/$boundry$insensitive$recursive; fi
+  if [[ $insensitive != "" || $recursive != "" || $boundry != "" ]];then link+=/$boundry$insensitive$recursive; fi ## add this to the end of the link as flags
 
   httpGet $link
 }
 
+
+### This function just wraps some of the special pages provided by cheat.sh
 checkSpecialPage()
 {
   temp=$1
@@ -197,6 +200,7 @@ while getopts "ribuvhis" opt; do
   esac
 done
 
+### This functions sets arg 1 and arg 2 to be unqique items after the options
 for arg
 do
   if [[ $arg != "-r" && $arg != "-s" && $arg != "-b" && $arg != "-i" ]];then
@@ -209,6 +213,7 @@ do
   fi
 done
 
+## check for special pages before moving on
 checkSpecialPage $arg1 1
 checkSpecialPage $arg2 2
 
@@ -218,11 +223,11 @@ if [[ $# == 0 ]]; then
 elif [[ $1 == "update" ]];then
   update
   exit 0
-elif [[ $1 == "help" || $1 == ":help" ]];then
+elif [[ $1 == "help" || $1 == ":help" ]];then ## shows the help and prevents the user from seeing cheat.sh/:help
   usage
   exit 0
 else
-  if [[ $arg1 != $arg2 ]];then
+  if [[ $arg1 != $arg2 ]];then ## if they equal each other that means there was no arg 2 supplied
     getCheatSheet $arg1 $arg2
   else
     getCheatSheet $arg1
