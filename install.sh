@@ -28,6 +28,7 @@ updateTool()
     cd .. || return 1
   fi
 }
+
 singleInstall()
 {
   cd $1 || exit 1
@@ -38,24 +39,33 @@ singleInstall()
   cd .. || exit 1
 }
 
+copyManpage()
+{
+  cp bash-snippets.1 /usr/local/man/man1 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+}
+
 if [[ $# == 0 ]]; then
   for tool in "${tools[@]}"
   do
     askInstall $tool || exit 1
   done
+  copyManpage || exit 1
 elif [[ $1 == "update" ]]; then
   echo "Updating scripts..."
   for tool in "${tools[@]}"
   do
     updateTool $tool || exit 1
   done
+  copyManpage || exit 1
 elif [[ $1 == "all" ]];then
   for tool in "${tools[@]}"
   do
     singleInstall $tool || exit 1
   done
+  copyManpage || exit 1
 else
   singleInstall $1 || exit 1
+  copyManpage || exit 1
 fi
 
 

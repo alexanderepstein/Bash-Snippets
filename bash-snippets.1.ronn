@@ -1,0 +1,360 @@
+bash-snippets(1) -- A collection of small bash scripts for heavy terminal users
+====
+
+## Tools
+
+### Cheat
+Description: Cheatsheets for quick information about multiple programming languages along with terminal commands
+
+Usage: cheat [flags] [command] or cheat [flags] [programming language] [subject]
+
+  * -s Does a search for last argument rather than looking for exact match
+
+  * -i Case insensitive search
+
+  * -b Word boundaries in search
+
+  * -r Recursive search
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Special Pages:
+
+  * hello Describes building the hello world program written in the language
+
+  * list This lists all cheatsheets related to previous arg if none it lists all cheatsheets
+
+  * learn Shows a learn-x-in-minutes language cheat sheet perfect for getting started with the language
+
+  * 1line A collection of one-liners in this language
+
+  * weirdness A collection of examples of weird things in this language
+
+Examples:
+
+  * cheat rust hello
+
+  * cheat -r -b -i go
+
+  * cheat julia Functions
+
+  * cheat -i go operators
+
+### Cloudup
+Description: Backs up a users github repositories to your bitbucket account.
+  With no flags cloudup will guide you through backing up a single repository
+
+Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]
+
+  * -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)
+
+  * -a Backup all github repositories
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+   * cloudup
+
+   * cloudup -p -a
+
+   * cloudup -p nameOfRepo1 nameOf Repo2
+
+   * cloudup nameOfRep
+
+### Crypt
+Description: A wrapper around openssl that facilitates encrypting and decrypting files.
+
+Usage: crypt [flag] [inputFile] [outputFile]
+
+  * -e Encrypt the inputFile and store it in the outputFil
+
+  * -d Decrypt the inputFile and store it in the outputFil
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * crypt -e mySecretFile.txt myEncryptedFile.jpg (change filetype so default program is incorrect)
+
+  * crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)
+
+### Currency
+Description: A realtime currency converter.
+   With no flags it will guide you through the currency exchange
+
+Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Supported Currencies:
+ _______________________
+| AUD | BGN | BRL | CAD |
+| CHF | CNY | CZK | DKK |
+| EUR | GBP | HKD | HRK |
+| HUF | IDR | ILS | INR |
+| JPY | KRW | MXN | MYR |
+| NOK | NZD | PHP | PLN |
+| RON | RUB | SEK | SGD |
+| THB | TRY | USD | ZAR |
+ _______________________
+
+Examples:
+
+  * currency EUR USD 12.35
+
+  * currency
+
+### Geo
+Description: Provides quick access for wan, lan, router, dns, mac, and ip geolocation data
+
+Usage: geo [flag]
+
+  * -w  Returns WAN IP
+
+  * -l  Returns LAN IP(s)
+
+  * -r  Returns Router IP
+
+  * -d  Returns DNS Nameserver
+
+  * -m  Returns MAC address for interface. Ex. eth0
+
+  * -g  Returns Current IP Geodata
+
+Examples:
+
+  * geo -g
+
+  * geo -wlrdgm eth0
+
+Custom Geo Output =>
+[all] [query] [city] [region] [country] [zip] [isp]
+
+Example: geo -a 8.8.8.8 -o city,zip,isp
+
+  * -o  [options] Returns Specific Geodata
+
+  * -a  [address] For specific ip in -s
+
+  * -v  Returns Version
+
+  * -h  Returns Help Screen
+
+  * -u  Updates Bash-Snippets
+
+### Movies
+Description: Provides relevant information about a certain movie.
+
+Usage: movies [flag] or movies [movieToSearch]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * movies Argo
+
+  * movies Inception
+
+### Qrify
+Usage: qrify [stringtoturnintoqrcode]
+
+Description: Converts strings or urls into a qr code.
+
+    * -u Update Bash-Snippet Tools
+
+    * -m Enable multiline support
+
+    *  -h Show the help
+
+    * -v Get the tool version
+
+Examples:
+
+    * qrify this is a test string
+
+    * qrify -m two\\\\nlines
+
+    * qrify github.com # notice no http:// or https:// this will fail
+
+### Short
+Description: Unmasks shortended urls.
+
+Usage: short [shortURL] or short [flag]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Example:
+
+   * Input: short tinyurl.com/jhkj
+
+   * Output: http://possiblemaliciouswebsiteornot.com
+
+### Stocks
+Description: Finds the latest information on a certain stock.
+
+Usage: stocks [flag] or stocks [company/ticker]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * stocks AAPL
+
+  * stocks Tesla
+
+### Taste
+Description: A recommendation engine that provides 3 similar items based on some input topic.
+  Taste also has the ability to provide information on the item of interest.
+  Supports: shows, books, music, artists, movies, authors, games
+
+Usage: taste [flag] [item]
+
+  * -i Get more information on similar items
+
+  * -s Get information on the item itself
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * taste -i Kendrick Lamar
+
+  * taste Catcher in the Ry
+
+  * taste -s Red Hot Chili Peppers
+
+### Weather
+Description: Provides a 3 day forecast on your current location or a specified location.
+  With no flags Weather will default to your current location.
+
+Usage: weather or weather [flag] or weather [country] or weather [city] [state]
+
+  * weather [i] get weather in imperial units
+
+  * weather [m] get weather in metric units
+
+  * weather [Moon] grabs the phase of the moon
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * weather
+
+  * weather Tokyo
+
+  * weather Moon
+
+  * weather m
+
+### Ytview
+Description: Search and play youtube videos right from the terminal.
+
+Usage: ytview [flag] [string] or ytview [videoToSearch]
+
+  * -s Searches youtube
+
+  * -c Shows the latest videos of a channel
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * ytview -s Family Guy Chicken Fight
+
+  * ytview -c Numberphile
+
+
+## Updating
+
+  With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
+
+    * `stocks update`
+
+  or
+
+    * `stocks -u`
+
+  This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.
+
+## Uninstalling
+
+  If you don't have the Bash-Snippets folder anymore clone the repository:  git clone https://github.com/alexanderepstein/Bash-Snippets`
+
+  cd into the Bash-Snippets directory: `cd Bash-Snippets`
+
+    To go through a guided uninstall
+
+      * `./uninstall.sh`
+
+    To uninstall individual scripts
+
+      * `cd weather`
+
+      * `./uninstall.sh`
+
+## AUTHOR
+
+Alexander Epstein
+Github: https://github.com/alexanderepstein
+
+## Contributors
+
+Jake Meyer
+Github: https://github.com/jakewmeyer
+
+Linyos Torovoltos
+Github: https://gitbub.com/linyostorovovoltos
+
+## License
+
+MIT License
+
+Copyright (c) 2017 Alex Epstein
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
