@@ -147,11 +147,15 @@ update()
 
 usage()
 {
-  echo "Movies tool"
+  echo "Movies"
+  echo "Description: Provides relevant information about a certain movie."
   echo "Usage: movies [flag] or movies [movieToSearch]"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  movies Argo"
+  echo "  movies Inception"
 }
 
 getConfiguredPython || exit 1

@@ -196,11 +196,27 @@ update()
 
 usage()
 {
-  echo "Currency tool"
+  echo "Currency"
+  echo "Description: A realtime currency converter."
+  echo "   With no flags it will guide you through the currency exchange"
   echo "Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Supported Currencies:"
+  echo " _______________________"
+  echo "| AUD | BGN | BRL | CAD |"
+  echo "| CHF | CNY | CZK | DKK |"
+  echo "| EUR | GBP | HKD | HRK |"
+  echo "| HUF | IDR | ILS | INR |"
+  echo "| JPY | KRW | MXN | MYR |"
+  echo "| NOK | NZD | PHP | PLN |"
+  echo "| RON | RUB | SEK | SGD |"
+  echo "| THB | TRY | USD | ZAR |"
+  echo " _______________________"
+  echo "Examples:"
+  echo "  currency EUR USD 12.35"
+  echo "  currency"
 }
 
 getConfiguredClient || exit 1

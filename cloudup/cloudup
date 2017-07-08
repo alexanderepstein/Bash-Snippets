@@ -160,13 +160,20 @@ getGithubRepoNames()
 
 usage()
 {
-  echo "Cloudup tool"
-  echo "Usage: cloudup [flags] or cloudup or cloudup [listOfGHRepoNamesSplitBySpaces]"
+  echo "Cloudup"
+  echo "Description: Backs up a users github repositories to your bitbucket account."
+  echo "  With no flags cloudup will guide you through backing up a single repository"
+  echo "Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]"
   echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
   echo "  -a Backup all github repositories"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "   cloudup"
+  echo "   cloudup -p -a"
+  echo "   cloudup -p nameOfRepo1 nameOf Repo2"
+  echo "   cloudup nameOfRepo"
 }
 
 getConfiguredClient || exit 1

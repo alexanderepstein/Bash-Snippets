@@ -157,12 +157,17 @@ searchview()
 
 usage()
 {
+  echo "Ytview"
+  echo "Description: Search and play youtube videos right from the terminal."
   echo "Usage: ytview [flag] [string] or ytview [videoToSearch]"
   echo "  -s Searches youtube"
   echo "  -c Shows the latest videos of a channel"
 	echo "  -u Update Bash-Snippet Tools"
 	echo "  -h Show the help"
 	echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  ytview -s Family Guy Chicken Fight"
+  echo "  ytview -c Numberphile"
 }
 
 getConfiguredClient || exit 1

@@ -158,11 +158,15 @@ update()
 
 usage()
 {
-  echo "Stocks tool"
-  echo "Usage: stocks [flag or company]"
+  echo "Stocks"
+  echo "Description: Finds the latest information on a certain stock."
+  echo "Usage: stocks [flag] or stocks [company/ticker]"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  stocks AAPL"
+  echo "  stocks Tesla"
 }
 
 getConfiguredPython || exit 1

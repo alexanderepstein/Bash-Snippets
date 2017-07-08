@@ -73,13 +73,17 @@ update()
 
 usage()
 {
-  echo "Crypt tool"
+  echo "Crypt"
+  echo "Description: A wrapper around openssl that facilitates encrypting and decrypting files."
   echo "Usage: crypt [flag] [inputFile] [outputFile]"
   echo "  -e Encrypt the inputFile and store it in the outputFile"
   echo "  -d Decrypt the inputFile and store it in the outputFile"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  crypt -e mySecretFile.txt myEncryptedFile.jpg (change filetype so default program is incorrect)"
+  echo "  crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)"
 }
 
 checkOpenSSL || exit 1

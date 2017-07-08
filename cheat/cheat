@@ -89,7 +89,8 @@ update()
 
 usage()
 {
-  echo "Cheat tool"
+  echo "Cheat"
+  echo "Description: Cheatsheets for quick information about multiple programming languages along with terminal commands"
   echo "Usage: cheat [flags] [command] or cheat [flags] [programming language] [subject]"
   echo "  -s Does a search for last argument rather than looking for exact match"
   echo "  -i Case insensitive search"
@@ -104,6 +105,11 @@ usage()
   echo "  learn Shows a learn-x-in-minutes language cheat sheet perfect for getting started with the language"
   echo "  1line A collection of one-liners in this language"
   echo "  weirdness A collection of examples of weird things in this language"
+  echo "Examples:"
+  echo "  cheat rust hello"
+  echo "  cheat -r -b -i go"
+  echo "  cheat julia Functions"
+  echo "  cheat -i go operators"
 }
 
 getCheatSheet()

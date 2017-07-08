@@ -95,11 +95,17 @@ checkInternet()
 
 usage()
 {
+  echo "Qrify"
   echo "Usage: qrify [stringtoturnintoqrcode]"
+  echo "Description: Converts strings or urls into a qr code."
   echo "    -u Update Bash-Snippet Tools"
 	echo "    -m Enable multiline support (feature not working yet)"
   echo "    -h Show the help"
   echo "    -v Get the tool version"
+  echo "Examples:"
+  echo "    qrify this is a test string"
+  echo "    qrify -m two\\\\nlines"
+  echo "    qrify github.com # notice no http:// or https:// this will fail"
 
 }
 

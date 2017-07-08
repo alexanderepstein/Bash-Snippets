@@ -107,7 +107,9 @@ update()
 
 usage()
 {
-  echo "Weather tool"
+  echo "Weather"
+  echo "Description: Provides a 3 day forecast on your current location or a specified location."
+  echo "  With no flags Weather will default to your current location."
   echo "Usage: weather or weather [flag] or weather [country] or weather [city] [state]"
   echo "  weather [i] get weather in imperial units"
   echo "  weather [m] get weather in metric units"
@@ -115,6 +117,11 @@ usage()
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  weather"
+  echo "  weather Tokyo"
+  echo "  weather Moon"
+  echo "  weather m"
 }
 
 getConfiguredClient || exit 1

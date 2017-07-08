@@ -106,11 +106,15 @@ update()
 
 usage()
 {
-  echo "Short tool"
+  echo "Short"
+  echo "Description: Unmasks shortended urls."
   echo "Usage: short [shortURL] or short [flag]"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Example:"
+  echo "   Input: short tinyurl.com/jhkj"
+  echo "   Output: http://possiblemaliciouswebsiteornot.com"
 }
 
 expandURL()

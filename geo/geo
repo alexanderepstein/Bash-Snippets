@@ -36,6 +36,8 @@ httpGet()
 }
 # Parse arguments passed + help formatting
 usage() {
+    echo "Geo"
+    echo "Description: Provides quick access for wan, lan, router, dns, mac, and ip geolocation data"
     echo "Usage: geo [flag]"
     echo "  -w  Returns WAN IP"
     echo "  -l  Returns LAN IP(s)"
@@ -43,6 +45,9 @@ usage() {
     echo "  -d  Returns DNS Nameserver"
     echo "  -m  Returns MAC address for interface. Ex. eth0"
     echo "  -g  Returns Current IP Geodata"
+    echo "Examples:"
+    echo "  geo -g"
+    echo "  geo -wlrdgm eth0"
     echo "Custom Geo Output =>"
     echo "[all] [query] [city] [region] [country] [zip] [isp]"
     echo "Example: geo -a 8.8.8.8 -o city,zip,isp"

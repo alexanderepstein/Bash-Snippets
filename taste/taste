@@ -188,20 +188,27 @@ printInfo()
 
 usage()
 {
-  echo "Taste tool"
+  echo "Taste"
+  echo "Description: A recommendation engine that provides 3 similar items based on some input topic."
+  echo "  Taste also has the ability to provide information on the item of interest."
+  echo "  Supports: shows, books, music, artists, movies, authors, games"
   echo "Usage: taste [flag] [item]"
   echo "  -i Get more information on similar items"
   echo "  -s Get information on the item itself"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "  taste -i Kendrick Lamar"
+  echo "  taste Catcher in the Rye"
+  echo "  taste -s Red Hot Chili Peppers"
 }
 
 if [[ $apiKey == "" ]];then
   echo "Error: API key not setup properly"
   echo "To get an API key visit https://tastedive.com/account/api_access"
   echo 'After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"'
-  echo "After following all the steps and issues still persist try adding TASTE_API_KEY manually to your .bashrc"
+  echo "After following all the steps and issues still persist try adding export TASTE_API_KEY manually to your .bash_profile"
   exit 1
 fi
 getConfiguredPython || exit 1
