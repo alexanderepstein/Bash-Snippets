@@ -61,7 +61,7 @@ usage() {
 
 # Displays version number
 version() {
-  echo $currentVersion;
+  echo "Version $currentVersion";
 }
 
 # Fetches WAN ip address
