@@ -18,6 +18,30 @@
   [ "${lines[0]}" = "Taste" ]
 }
 
+@test "Testing short recommendations" {
+  run taste Kid Cudi
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "===================================" ]
+  [ "${lines[1]}" = "Lupe Fiasco: music" ]
+  [ "${lines[2]}" = "Shadows And Fog: movie" ]
+  [ "${lines[3]}" = "Lulu James: music" ]
+  [ "${lines[4]}" = "===================================" ]
+}
+
+@test "Testing long recommendations" {
+  run taste -i Sublime
+  [ "$status" -eq 0 ]
+  response=$(echo $(taste -i Sublime) | grep -Eo "Soundsystem is the fifth studio album by 311, released on October 12, 1999. Soundsystem, which was certified Gold by the RIAA,")
+  [ "$response" = "Soundsystem is the fifth studio album by 311, released on October 12, 1999. Soundsystem, which was certified Gold by the RIAA," ]
+}
+
+@test "Testing search on item" {
+  run taste -s Kendrick Lamar
+  [ "$status" -eq 0 ]
+  response=$(echo $(taste -s Kendrick Lamar) | grep -Eo "Kendrick Lamar Duckworth \(born June 17, 1987\) is an American rapper and songwriter.")
+  [ "$response" = "Kendrick Lamar Duckworth (born June 17, 1987) is an American rapper and songwriter." ]
+}
+
 @test "No arguments prints usage instructions" {
   run taste
   [ "$status" -eq 0 ]

@@ -16,6 +16,20 @@
   [ "${lines[0]}" = "Qrify" ]
 }
 
+@test "Getting the qr code for a test string" {
+  run qrify this is a test string
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "█████████████████████████████████" ]
+  [ "${lines[1]}" = "█████████████████████████████████" ]
+  [ "${lines[2]}" = "████ ▄▄▄▄▄ ██▀▄████ ██ ▄▄▄▄▄ ████" ]
+  [ "${lines[3]}" = "████ █   █ █▄▀█▄▀█ ▀▀█ █   █ ████" ]
+  [ "${lines[4]}" = "████ █▄▄▄█ ██▄▀▀  ▄ ▀█ █▄▄▄█ ████" ]
+}
+
+
+
+
+
 @test "No arguments prints usage instructions" {
   run qrify
   [ "$status" -eq 0 ]

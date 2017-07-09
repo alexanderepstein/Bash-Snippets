@@ -16,6 +16,12 @@
   [ "${lines[0]}" = "Weather" ]
 }
 
+@test "Testing weather with specified location" {
+  run weather Paramus
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "Weather report: Paramus, United States of America" ]
+}
+
 @test "Get the tools version with -v" {
   run weather -v
   [ "$status" -eq 0 ]
