@@ -22,6 +22,15 @@
   [ "${lines[0]}" = "Movies" ]
 }
 
+@test "Get information on a single movie" {
+  run movies Argo
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "==================================================" ]
+  [ "${lines[1]}" = "| Title: Argo" ]
+}
+
+
+
 @test "Get the tools version with -v" {
   run movies -v
   [ "$status" -eq 0 ]
