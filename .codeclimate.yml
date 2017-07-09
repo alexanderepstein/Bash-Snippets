@@ -1,0 +1,20 @@
+engines:
+  shellcheck:
+    enabled: true
+  markdownlint:
+    enabled: true
+ratings:
+  paths:
+    - "cheat/cheat"
+    - "cloudup/cloudup"
+    - "crypt/crypt"
+    - "currency/currency"
+    - "geo/geo"
+    - "movies/movies"
+    - "qrify/qrify"
+    - "short/short"
+    - "stocks/stocks"
+    - "taste/taste"
+    - "weather/weather"
+    - "ytview/ytview"
+    - "**.md"
