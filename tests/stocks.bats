@@ -22,6 +22,18 @@
   [ "${lines[0]}" = "Stocks" ]
 }
 
+@test "Get stock info by passing in ticker" {
+  run stocks AAPL
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "AAPL stock info" ]
+}
+
+@test "Get stock info by passing in company" {
+  run stocks Tesla
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "TSLA stock info" ]
+}
+
 @test "Get the tools version with -v" {
   run stocks -v
   [ "$status" -eq 0 ]
