@@ -17,4 +17,5 @@ ratings:
     - "taste/taste"
     - "weather/weather"
     - "ytview/ytview"
+    - "**.sh"
     - "**.md"
