@@ -229,8 +229,10 @@ elif [[ $1 == "help" || $1 == ":help" ]];then ## shows the help and prevents the
 else
   if [[ $arg1 != $arg2 ]];then ## if they equal each other that means there was no arg 2 supplied
     getCheatSheet $arg1 $arg2
+    exit 0
   else
     getCheatSheet $arg1
+    exit 0
   fi
   exit 0
 
