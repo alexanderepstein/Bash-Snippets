@@ -17,6 +17,12 @@
   [ "${lines[0]}" = "Cheat" ]
 }
 
+@test "The -h option should print usage" {
+  run cheat -h
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "Cheat" ]
+}
+
 @test "Grabbing information on a programming language (rust)" {
   run cheat rust
   [ "$status" -eq 0 ]
