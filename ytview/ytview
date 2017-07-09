@@ -174,7 +174,7 @@ getConfiguredClient || exit 1
 getConfiguredPlayer || exit 1
 checkInternet || exit 1
 
-while getopts uc:s:h*: option
+while getopts vuc:s:h*: option
 do
   case "${option}" in
     s)
