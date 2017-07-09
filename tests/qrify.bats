@@ -25,6 +25,6 @@
 @test "Get the tools version with -v" {
   run qrify -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(qrify -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }

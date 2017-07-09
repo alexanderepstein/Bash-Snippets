@@ -19,6 +19,6 @@
 @test "Get the tools version with -v" {
   run cloudup -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(cloudup -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }

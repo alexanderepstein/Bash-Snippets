@@ -25,6 +25,6 @@
 @test "Get the tools version with -v" {
   run movies -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(movies -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }

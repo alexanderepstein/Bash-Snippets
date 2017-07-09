@@ -25,6 +25,6 @@
 @test "Get the tools version with -v" {
   run taste -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(taste -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }

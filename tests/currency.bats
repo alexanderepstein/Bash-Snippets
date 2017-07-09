@@ -19,6 +19,6 @@
 @test "Get the tools version with -v" {
   run currency -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(currency -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }
