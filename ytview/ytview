@@ -197,6 +197,7 @@ do
     ;;
     h) usage && exit 0 ;;
     u) update && exit 0 ;;
+    v) echo "Version $currentVersion" && exit 0 ;;
     *) usage && exit 0 ;;
   esac
 done

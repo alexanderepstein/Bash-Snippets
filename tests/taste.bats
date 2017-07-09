@@ -2,7 +2,6 @@
 
 @test "Testing taste tool" {
    echo taste
-   export TASTE_API_KEY="275041-BashSnip-KQ51U8H8"
 }
 
 @test "Check for latest version of bash-snippets on update" {
