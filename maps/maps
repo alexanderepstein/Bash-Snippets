@@ -22,26 +22,6 @@ getConfiguredClient()
   fi
 }
 
-getConfiguredPython()
-{
-  if  command -v python2 &>/dev/null ; then
-    configuredPython="python2"
-  elif command -v python &>/dev/null ; then
-    configuredPython="python"
-  else
-    echo "Error: This tool requires python 2 to be installed."
-    return 1
-  fi
-}
-
-
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
@@ -192,7 +172,6 @@ getStaticMap()
   rm -rf ~/temp > /dev/null || return 1
 }
 
-getConfiguredPython || exit 1
 getConfiguredClient || exit 1
 checkInternet || exit 1
 getDirections Denver Boulder || exit 1
