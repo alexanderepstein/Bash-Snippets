@@ -5,7 +5,7 @@ currentVersion="1.11.0"
 configuredClient=""
 configuredPython=""
 source ~/.bash_profile ## allows grabbing enviornment variable
-apiKey=$MAPQUEST_API_KEY
+MAPQUEST_API_KEY=$MAPQUEST_API_KEY
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -105,28 +105,46 @@ update()
   fi
 }
 
-#first direction not grepped correctly cannot grep distances correctly all other directionms are grepped correctly.
+
 getDirections()
 {
-  response=$(httpGet "https://www.mapquestapi.com/directions/v2/route?key=$MAPQUEST_API_KEY&from=$1&to=$2&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=true&avoidTimedConditions=false")
-  firstDirection=$(echo $response | grep -Eo "origNarrative\":\"[a-Z -./0-9]*" | grep -Eo "[^origNarrative\":][a-Z -./0-9]*"   )
-  tempDirections=($(echo $response | grep -Eo "\"narrative\":\"[a-Z -./0-9]*"))
-  distances=($(echo $response | grep -Eo "distance\":[0-9]*[.][0-9]*"  | grep -Eo "[^distance\":][0-9]*[.][0-9]*"   ))
-  count="-1"
-  temp=${tempDirections[0]}
-  for direct in "${tempDirections[@]}"
-  do
+response=$(httpGet "https://www.mapquestapi.com/directions/v2/route?key=$MAPQUEST_API_KEY&from=$1&to=$2&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=true&avoidTimedConditions=false")
+firstDirection=$(echo $response | grep -Eo "origNarrative\":\"[a-Z -./0-9]*" | grep -Eo "[^origNarrative\":][a-Z -./0-9]*"   )
+tempDirections=($(echo $response | grep -Eo "\"narrative\":\"[a-Z -./0-9]*"))
+distances=($(echo $response | grep -Eo "distance\":[0-9]*[.][0-9]*"  | grep -Eo "[^distance\":][0-9]*[.][0-9]*"   ))
+count="-1"
+temp=${tempDirections[0]}
+for direct in "${tempDirections[@]}"
+do
   if [[ $(echo $direct | grep -Eo "narrative" ) == "narrative" ]];then
-      count=$(echo $count + 1 | bc )
-      directions[$count]=$temp
-      temp=$(echo $direct | grep -Eo "[^\"narrative:\"][a-Z 0-9./]*")
-  else
+    count=$(echo $count + 1 | bc )
+    directions[$count]=$temp
+    temp=$(echo $direct | grep -Eo "[^\"narrative:\"][a-Z 0-9./]*")
+    else
       temp="$temp $direct"
     fi
   done
-#for distance in $tempDistances
-directions[0]=$firstDirection
+  #for distance in $tempDistances
+  directions[0]=$firstDirection
+}
 
+getDirectionsMap()
+{
+  echo "Generating route map from $1 to $2"
+  if [[ "$OSTYPE" == "linux"* ]];then
+    if  command -v display &>/dev/null ;then
+      mkdir ~/temp || return 1
+      httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
+      display ~/temp/routeImage.png > /dev/null || return 1
+    else
+      echo "To use the map image features you must install imagemagick"
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    mkdir ~/temp
+    httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
+    open ~/temp/routeImage.png > /dev/null
+  fi
+    rm -rf ~/temp > /dev/null
 }
 
 printDirections()
@@ -135,7 +153,7 @@ printDirections()
   totalDist="0"
   for dist in "${distances[@]}"
   do
-  totalDist=$(echo $totalDist + $dist | bc)
+    totalDist=$(echo $totalDist + $dist | bc)
   done
   echo "From $1 to $2 ($totalDist mi)"
   echo "==================================================="
@@ -144,14 +162,34 @@ printDirections()
   do
     echo -n "$(echo $count + 1 | bc)). "
     if [[ $direct != "" ]];then # sometimes original Narrative is blank
-    direct="$direct (${distances[$count]} mi)"
-    count=$(echo $count + 1 | bc )
-    echo $direct
-  fi
+      direct="$direct (${distances[$count]} mi)"
+      count=$(echo $count + 1 | bc )
+      echo $direct
+    fi
   done
   echo "Welcome to $2"
   echo "==================================================="
   echo
+}
+
+
+getStaticMap()
+{
+  echo "Generating static map for $1"
+  if [[ "$OSTYPE" == "linux"* ]];then
+    if  command -v display &>/dev/null ;then
+      mkdir ~/temp || return 1
+      httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
+      display ~/temp/mapImage.png > /dev/null || return 1
+    else
+      echo "To use the map image features you must install imagemagick"
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    mkdir ~/temp || return 1
+    httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
+    open ~/temp/mapImage.png > /dev/null || return 1
+  fi
+  rm -rf ~/temp > /dev/null || return 1
 }
 
 getConfiguredPython || exit 1
@@ -159,3 +197,5 @@ getConfiguredClient || exit 1
 checkInternet || exit 1
 getDirections Denver Boulder || exit 1
 printDirections Denver Boulder || exit 1
+getDirectionsMap Denver Boulder || exit 1
+getStaticMap Paramus || exit 1
