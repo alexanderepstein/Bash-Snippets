@@ -3,10 +3,12 @@
 
 currentVersion="1.11.0"
 configuredClient=""
-configuredPython=""
+directionsFlag="0"
+directionsMapFlag="0"
+staticMapFlag="0"
 source ~/.bash_profile ## allows grabbing enviornment variable
 MAPQUEST_API_KEY=$MAPQUEST_API_KEY
-
+if [ -d ~/temp ];then rm -rf ~/temp;fi
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -110,6 +112,7 @@ do
 
 getDirectionsMap()
 {
+  checkImagemagick || exit 1
   echo "Generating route map from $1 to $2"
   if [[ "$OSTYPE" == "linux"* ]];then
     if  command -v display &>/dev/null ;then
@@ -124,7 +127,7 @@ getDirectionsMap()
     httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
     open ~/temp/routeImage.png > /dev/null
   fi
-    rm -rf ~/temp > /dev/null
+  rm -rf ~/temp > /dev/null
 }
 
 printDirections()
@@ -152,18 +155,43 @@ printDirections()
   echo
 }
 
+getLocations()
+{
+  echo -n "Enter your starting location: "
+  read fromLocation
+  echo -n "Enter your destination: "
+  read toLocation
+  unformattedFromLocation=$fromLocation
+  unformattedToLocation=$toLocation
+  fromLocation=$(echo $fromLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
+  toLocation=$(echo $toLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
+}
+
+checkImagemagick()
+{
+  if ! command -v display &>/dev/null ;then
+    echo "Error: you need to install imagemagick to use map features." &>2
+    return 1
+  else
+    return 0
+  fi
+
+}
+
+getMapLocation()
+{
+  echo -n "Enter the city or address you want to generate a map for: "
+  read mapLocation
+  echo "Generating static map for $mapLocation"
+  mapLocation==$(echo $mapLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
+}
 
 getStaticMap()
 {
-  echo "Generating static map for $1"
   if [[ "$OSTYPE" == "linux"* ]];then
-    if  command -v display &>/dev/null ;then
-      mkdir ~/temp || return 1
-      httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
-      display ~/temp/mapImage.png > /dev/null || return 1
-    else
-      echo "To use the map image features you must install imagemagick"
-    fi
+    mkdir ~/temp || return 1
+    httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
+    display ~/temp/mapImage.png > /dev/null || return 1
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     mkdir ~/temp || return 1
     httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
@@ -174,7 +202,68 @@ getStaticMap()
 
 getConfiguredClient || exit 1
 checkInternet || exit 1
-getDirections Denver Boulder || exit 1
-printDirections Denver Boulder || exit 1
-getDirectionsMap Denver Boulder || exit 1
-getStaticMap Paramus || exit 1
+## getDirections Denver Boulder || exit 1
+## printDirections Denver Boulder || exit 1
+## getDirectionsMap Denver Boulder || exit 1
+## getStaticMap Paramus || exit 1
+
+
+while getopts "drmuvh" opt; do
+  case $opt in
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+    ;;
+    h)
+      usage
+      exit 0
+    ;;
+    d)
+      directionsFlag="1"
+    ;;
+    m)
+      staticMapFlag="1"
+    ;;
+    r)
+      directionsMapFlag="1"
+    ;;
+    v)
+      echo "Version $currentVersion"
+      exit 0
+    ;;
+    u)
+      update
+      exit 0
+    ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+    ;;
+  esac
+done
+
+if [[ $# == 0 ]]; then
+  usage
+  exit 0
+elif [[ $# == "1" ]]; then
+  if [[ $1 == "update" ]];then
+    update
+    exit 0
+  elif [[ $1 == "help" ]]; then
+    usage
+    exit 0
+  fi
+fi
+
+if [[ $directionsFlag == "0" && $staticMapFlag == "1" ]];then
+  checkImagemagick || exit 1
+  getMapLocation || exit 1
+  getStaticMap $mapLocation || exit 1
+elif [[ $directionsFlag == "1" ]];then
+  getLocations || exit 1
+  getDirections $fromLocation $toLocation || exit 1
+  printDirections $fromLocation $toLocation || exit 1
+  checkImagemagick || exit 1
+  if [[ $directionsMapFlag == "1" ]];then getDirectionsMap $fromLocation $toLocation || exit 1;fi
+  if [[ $staticMapFlag = "1" ]];then echo "Generating static map for $unformattedFromLocation" && getStaticMap $fromLocation || exit 1 &&  echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation || exit 1; fi
+fi
