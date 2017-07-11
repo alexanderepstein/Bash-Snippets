@@ -104,6 +104,8 @@ If you have ever felt the fear of the github unicorn this could be your savior
 
 Furthermore you can backup the repositories of any github user to your bitbucket.
 
+Backup all github repositories of the designated user at once with the -a option.
+Or run it with no flags and backup individual repositories.
 
 <div align="center">
 
