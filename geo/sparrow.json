@@ -1,0 +1,7 @@
+{
+  "name" : "geo",
+  "description" : "Simple wrapper for geo script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#geo",
+  "category": "utilities"
+}

@@ -1,0 +1,7 @@
+{
+  "name" : "qrify",
+  "description" : "Simple wrapper for qrify script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#qrify",
+  "category": "utilities"
+}

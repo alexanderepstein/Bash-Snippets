@@ -1,0 +1,7 @@
+{
+  "name" : "currency",
+  "description" : "Simple wrapper for currency script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#currency",
+  "category": "utilities"
+}

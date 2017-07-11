@@ -1,25 +1,25 @@
 # SYNOPSIS
 
-Simple wrapper for `extras` script from Bash-Snippets.
+Simple wrapper for `ytview` script from Bash-Snippets.
 
 
 # INSTALL
 
-    $ sparrow plg install extras
+    $ sparrow plg install ytview
 
 # USAGE
 
 Basic usage:
 
-    $ sparrow plg run extras -- <params>
+    $ sparrow plg run ytview -- <params>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#extras](https://github.com/alexanderepstein/Bash-Snippets#extras)
+See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#ytview](https://github.com/alexanderepstein/Bash-Snippets#ytview)
 
 If you need some automation:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name extras
+    $ sparrow task add utils $task-name ytview
 
     $ sparrow task ini utils/$task-name
 

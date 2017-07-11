@@ -1,0 +1,7 @@
+{
+  "name" : "extras",
+  "description" : "Simple wrapper for extras script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#extras",
+  "category": "utilities"
+}

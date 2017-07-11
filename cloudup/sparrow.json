@@ -1,0 +1,7 @@
+{
+  "name" : "cloudup",
+  "description" : "Simple wrapper for cloudup script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#cloudup",
+  "category": "utilities"
+}

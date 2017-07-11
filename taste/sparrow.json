@@ -1,0 +1,7 @@
+{
+  "name" : "taste",
+  "description" : "Simple wrapper for taste script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#taste",
+  "category": "utilities"
+}

@@ -1,0 +1,7 @@
+{
+  "name" : "tests",
+  "description" : "Simple wrapper for tests script from Bash-Snippets",
+  "version" : "0.0.1",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets#tests",
+  "category": "utilities"
+}
