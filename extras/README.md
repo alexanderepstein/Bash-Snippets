@@ -1,8 +1,8 @@
-<div align="center"
+<div align="center">
 
 # Bash-Snippets Extras
 
-</div
+</div>
 
 ## Why are these here?
 
