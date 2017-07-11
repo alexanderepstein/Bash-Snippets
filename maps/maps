@@ -90,10 +90,12 @@ update()
 
 getDirections()
 {
-response=$(httpGet "https://www.mapquestapi.com/directions/v2/route?key=$MAPQUEST_API_KEY&from=$1&to=$2&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=true&avoidTimedConditions=false")
+response=$(httpGet "https://www.mapquestapi.com/directions/v2/route?key=$MAPQUEST_API_KEY&from=$1&to=$2&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=false&avoidTimedConditions=false")
 firstDirection=$(echo $response | grep -Eo "origNarrative\":\"[a-Z -./0-9]*" | grep -Eo "[^origNarrative\":][a-Z -./0-9]*"   )
 tempDirections=($(echo $response | grep -Eo "\"narrative\":\"[a-Z -./0-9]*"))
 distances=($(echo $response | grep -Eo "distance\":[0-9]*[.][0-9]*"  | grep -Eo "[^distance\":][0-9]*[.][0-9]*"   ))
+totalDist=${distances[0]}
+count="0"
 count="-1"
 temp=${tempDirections[0]}
 for direct in "${tempDirections[@]}"
@@ -112,19 +114,12 @@ do
 
 getDirectionsMap()
 {
-  checkImagemagick || exit 1
-  echo "Generating route map from $1 to $2"
+  echo "Generating route map from $unformattedFromLocation to $unformattedToLocation"
+  mkdir ~/temp || return 1
+  httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
   if [[ "$OSTYPE" == "linux"* ]];then
-    if  command -v display &>/dev/null ;then
-      mkdir ~/temp || return 1
-      httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
-      display ~/temp/routeImage.png > /dev/null || return 1
-    else
-      echo "To use the map image features you must install imagemagick"
-    fi
+    display ~/temp/routeImage.png > /dev/null || return 1
   elif [[ "$OSTYPE" == "darwin"* ]]; then
-    mkdir ~/temp
-    httpGet "https://www.mapquestapi.com/staticmap/v5/map?start=$1&end=$2&size=600,400@2x&key=$MAPQUEST_API_KEY" >> ~/temp/routeImage.png || return 1
     open ~/temp/routeImage.png > /dev/null
   fi
   rm -rf ~/temp > /dev/null
@@ -133,24 +128,19 @@ getDirectionsMap()
 printDirections()
 {
   echo
-  totalDist="0"
-  for dist in "${distances[@]}"
-  do
-    totalDist=$(echo $totalDist + $dist | bc)
-  done
-  echo "From $1 to $2 ($totalDist mi)"
+  echo "From $unformattedFromLocation to $unformattedToLocation ($totalDist mi)"
   echo "==================================================="
   count=0
   for direct in "${directions[@]}"
   do
-    echo -n "$(echo $count + 1 | bc)). "
+    if [ $count -ne 0 ];then echo -n "$(echo $count  | bc)). ";fi
     if [[ $direct != "" ]];then # sometimes original Narrative is blank
-      direct="$direct (${distances[$count]} mi)"
+      direct="$direct (${distances[$(echo $count + 1 | bc)]} mi)"
+      if [ $count -ne 0 ];then echo $direct;fi
       count=$(echo $count + 1 | bc )
-      echo $direct
     fi
   done
-  echo "Welcome to $2"
+  echo "Welcome to $unformattedToLocation"
   echo "==================================================="
   echo
 }
@@ -163,15 +153,19 @@ getLocations()
   read toLocation
   unformattedFromLocation=$fromLocation
   unformattedToLocation=$toLocation
-  fromLocation=$(echo $fromLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
-  toLocation=$(echo $toLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
+  fromLocation=$(echo $fromLocation | sed  s/','/"+"/g | sed  s/' '/"+"/g )
+  toLocation=$(echo $toLocation | sed  s/','/"+"/g | sed  s/' '/"+"/g )
 }
 
 checkImagemagick()
 {
-  if ! command -v display &>/dev/null ;then
-    echo "Error: you need to install imagemagick to use map features." &>2
-    return 1
+  if [[ "$OSTYPE" == "linux"* ]];then
+    if ! command -v display &>/dev/null ;then
+      echo "Error: you need to install imagemagick to use map features." &>2
+      return 1
+    else
+      return 0
+    fi
   else
     return 0
   fi
@@ -183,18 +177,16 @@ getMapLocation()
   echo -n "Enter the city or address you want to generate a map for: "
   read mapLocation
   echo "Generating static map for $mapLocation"
-  mapLocation==$(echo $mapLocation | sed  s/','/""/g | sed  s/' '/"+"/g )
+  mapLocation==$(echo $mapLocation | sed  s/','/"+"/g | sed  s/' '/"+"/g )
 }
 
 getStaticMap()
 {
+  mkdir ~/temp || return 1
+  httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
   if [[ "$OSTYPE" == "linux"* ]];then
-    mkdir ~/temp || return 1
-    httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
     display ~/temp/mapImage.png > /dev/null || return 1
   elif [[ "$OSTYPE" == "darwin"* ]]; then
-    mkdir ~/temp || return 1
-    httpGet "https://www.mapquestapi.com/staticmap/v5/map?key=$MAPQUEST_API_KEY&center=$1&zoom=15&type=hyb&size=600,400@2x" >> ~/temp/mapImage.png || return 1
     open ~/temp/mapImage.png > /dev/null || return 1
   fi
   rm -rf ~/temp > /dev/null || return 1
@@ -265,5 +257,8 @@ elif [[ $directionsFlag == "1" ]];then
   printDirections $fromLocation $toLocation || exit 1
   checkImagemagick || exit 1
   if [[ $directionsMapFlag == "1" ]];then getDirectionsMap $fromLocation $toLocation || exit 1;fi
-  if [[ $staticMapFlag = "1" ]];then echo "Generating static map for $unformattedFromLocation" && getStaticMap $fromLocation || exit 1 &&  echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation || exit 1; fi
+  if [[ $staticMapFlag = "1" ]];then
+  echo "Generating static map for $unformattedFromLocation" && getStaticMap $fromLocation || exit 1
+  echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation || exit 1
+  fi
 fi
