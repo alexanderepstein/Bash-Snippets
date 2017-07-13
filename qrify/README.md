@@ -11,7 +11,7 @@ Simple wrapper for `qrify` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run qrify -- <params>
+    $ sparrow plg run qrify -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#qrify](https://github.com/alexanderepstein/Bash-Snippets#qrify)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

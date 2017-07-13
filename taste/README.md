@@ -11,7 +11,7 @@ Simple wrapper for `taste` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run taste -- <params>
+    $ sparrow plg run taste -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#taste](https://github.com/alexanderepstein/Bash-Snippets#taste)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

@@ -11,7 +11,7 @@ Simple wrapper for `cheat` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run cheat -- <params>
+    $ sparrow plg run cheat -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#cheat](https://github.com/alexanderepstein/Bash-Snippets#cheat)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

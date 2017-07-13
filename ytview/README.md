@@ -11,7 +11,7 @@ Simple wrapper for `ytview` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run ytview -- <params>
+    $ sparrow plg run ytview -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#ytview](https://github.com/alexanderepstein/Bash-Snippets#ytview)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

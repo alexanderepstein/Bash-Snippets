@@ -11,7 +11,7 @@ Simple wrapper for `geo` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run geo -- <params>
+    $ sparrow plg run geo -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#geo](https://github.com/alexanderepstein/Bash-Snippets#geo)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

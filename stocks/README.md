@@ -11,7 +11,7 @@ Simple wrapper for `stocks` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run stocks -- <params>
+    $ sparrow plg run stocks -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#stocks](https://github.com/alexanderepstein/Bash-Snippets#stocks)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

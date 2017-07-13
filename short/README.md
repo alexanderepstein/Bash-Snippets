@@ -11,7 +11,7 @@ Simple wrapper for `short` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run short -- <params>
+    $ sparrow plg run short -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#short](https://github.com/alexanderepstein/Bash-Snippets#short)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

@@ -11,7 +11,7 @@ Simple wrapper for `weather` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run weather -- <params>
+    $ sparrow plg run weather -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#weather](https://github.com/alexanderepstein/Bash-Snippets#weather)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

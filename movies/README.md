@@ -11,7 +11,7 @@ Simple wrapper for `movies` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run movies -- <params>
+    $ sparrow plg run movies -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#movies](https://github.com/alexanderepstein/Bash-Snippets#movies)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 

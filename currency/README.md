@@ -11,7 +11,7 @@ Simple wrapper for `currency` script from Bash-Snippets.
 
 Basic usage:
 
-    $ sparrow plg run currency -- <params>
+    $ sparrow plg run currency -- <args>
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#currency](https://github.com/alexanderepstein/Bash-Snippets#currency)
 
@@ -25,7 +25,10 @@ If you need some automation:
 
       ---
 
-      params: <parameters here>
+      args:
+        - foo
+        - bar
+        - so on ...
 
     $ sparrow task run utils/$task-name
 
