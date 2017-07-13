@@ -128,7 +128,7 @@ channelview()
 
 
   # Play the video with your player
-  $player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1  & # grep is not needed here but I'm lazy
+  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1 &  
 }
 
 searchview()
@@ -143,13 +143,13 @@ httpGet https://www.youtube.com/results\?search_query\=$search | grep "Duration"
   #Get video urls
   httpGet https://www.youtube.com/results\?search_query\=$search | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// |sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt || return 1
   #Print 20 first video titles for the user to choose from
-  head -n 20 $HOME/.cache/ytview/searches/$search/titles.txt || return 1
+  cat $HOME/.cache/ytview/searches/$search/titles.txt || return 1
 
   #Let the user choose the video number
   read -p "Choose a video: " titlenumber
 
   #Play the video with your favorite player
-  $player $(grep $titlenumber  $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
+  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
 
 
 
