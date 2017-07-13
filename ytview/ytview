@@ -128,7 +128,7 @@ channelview()
 
 
   # Play the video with your player
-  $player $(grep $titlenumber  $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1  & # grep is not needed here but I'm lazy
+  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1 &  
 }
 
 searchview()
