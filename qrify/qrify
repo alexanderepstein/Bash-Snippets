@@ -9,7 +9,7 @@ getConfiguredClient()
 {
   if command -v curl &> /dev/null ; then
     configuredClient="curl"
-  elif command -v wget &v/dev/null ; then
+  elif command -v wget &> /dev/null ; then
     configuredClient="wget"
   else
     echo "Error: This tool requires either curl or  wget to be installed." >&2
