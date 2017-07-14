@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.11.1
+
+</div>
+
+### Bugfixes
+* Fixed issue in ytview where it was playing wrong video
+* Fixed wget check in qrify
+
+<div align="center">
+
 ## Version 1.11.0
 
 </div>

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Linyos Torovoltos github.com/linyostorovovoltos
 
-currentVersion="1.11.0"
+currentVersion="1.11.1"
 multiline="0" # flag that indicates multiline option
 
 
