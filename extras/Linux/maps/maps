@@ -6,7 +6,7 @@ configuredClient=""
 directionsFlag="0"
 directionsMapFlag="0"
 staticMapFlag="0"
-source ~/.bash_profile ## allows grabbing enviornment variable
+source ~/.bash_profile 2> /dev/null ## allows grabbing enviornment variable
 MAPQUEST_API_KEY=$MAPQUEST_API_KEY
 if [ -d ~/temp ];then rm -rf ~/temp;fi
 ## This function determines which http get tool the system has installed and returns an error if there isnt one

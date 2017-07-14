@@ -4,7 +4,7 @@
 currentVersion="1.11.1"
 configuredClient=""
 configuredPython=""
-source ~/.bash_profile ## allows grabbing enviornment variable
+source ~/.bash_profile 2> /dev/null ## allows grabbing enviornment variable
 apiKey=$TASTE_API_KEY
 info="0" ## indicates if we want extra info
 search="0" ## indivates that we want results on the item itself
