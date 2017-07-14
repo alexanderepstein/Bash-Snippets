@@ -1,0 +1,28 @@
+#!/bin/bash
+if [[ -z $1 ]]; then
+  echo "usage: siteciphers <domain>"
+  exit
+fi
+SERVER=$1:443
+DELAY=1
+ciphers=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/ /g')
+
+for cipher in ${ciphers[@]}
+do
+result=$(echo -n | openssl s_client -cipher "$cipher" -connect $SERVER 2>&1)
+if [[ "$result" =~ ":error:" ]] ; then
+  if [[ -z $2 ]]; then
+    error=$(echo -n $result | cut -d':' -f6)
+    echo "${cipher} - NO (${error})"
+  fi
+else
+  if [[ "$result" =~ "Cipher is ${cipher}" || "$result" =~ "Cipher    :" ]] ; then
+    echo "${cipher} - YES"
+  else
+    if [[ -z $2 ]]; then
+      echo "${cipher} - UNKNOWN RESPONSE - ${result}"
+    fi
+  fi
+fi
+sleep $DELAY
+done
