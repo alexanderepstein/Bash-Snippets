@@ -77,7 +77,8 @@ getMovieInfo()
   # The rest of the code is just extrapolating the data with python from the JSON response
   title=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Title']" 2> /dev/null)
   year=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Year']" 2> /dev/null)
-  score=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
+  imdbScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][0]['Value']" 2> /dev/null)
+  tomatoScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
   rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']" 2> /dev/null)
   genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']" 2> /dev/null)
   director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']" 2> /dev/null)
@@ -94,7 +95,8 @@ printMovieInfo()
   echo '=================================================='
   echo "| Title: $title"
   echo "| Year: $year"
-  if [[ $score != "" ]];then echo "| Tomato: $score";fi
+  if [[ $imdbScore != "" ]];then echo "| IMDB: $imdbScore";fi
+  if [[ $tomatoScore != "" ]];then echo "| Tomato: $tomatoScore";fi
   if [[ $rated != "N/A" && $rated != "" ]];then echo "| Rated: $rated";fi
   echo "| Genre: $genre"
   echo "| Director: $director"
