@@ -7,7 +7,7 @@ askInstall()
 {
   echo -n "Do you wish to install $1 [Y/n]: "
   read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+  if [[ "$answer" == "Y" || "$answer" == "y" || "$answer" == ""]] ;then
     cd $1 || return 1
     echo -n "Installing $1: "
     chmod a+x $1
