@@ -71,7 +71,7 @@ Provides information about a certain stock symbol
 
 
 ## Geo
-  Provides date for  wan, lan, router, dns, mac, and ip geolocation
+  Provides data for  wan, lan, router, dns, mac, and ip geolocation
 
 
   <div align="center">
