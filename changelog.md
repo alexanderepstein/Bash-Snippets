@@ -6,6 +6,21 @@
 
 </div>
 
+### Changes
+* Now supporting the use of proxies
+* Typo fixes
+* Adding IMDB rating to movies tool
+
+### Bugfixes
+* Suppressing ```source ~/.bash_profile``` error
+
+
+<div align="center">
+
+## Version 1.11.1
+
+</div>
+
 ### Bugfixes
 * Fixed issue in ytview where it was playing wrong video
 * Fixed wget check in qrify

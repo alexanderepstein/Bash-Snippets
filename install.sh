@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.11.1"
+currentVersion="1.11.2"
 declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify)
 
 askInstall()

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.11.1"
+currentVersion="1.11.2"
 configuredClient=""
 directionsFlag="0"
 directionsMapFlag="0"
