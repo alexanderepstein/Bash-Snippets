@@ -8,16 +8,16 @@ configuredPython=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-    if  command -v curl &>/dev/null ; then
-      configuredClient="curl"
-    elif command -v wget &>/dev/null ; then
-      configuredClient="wget"
-    elif command -v fetch &>/dev/null ; then
-      configuredClient="fetch"
-    else
-      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
-      return 1
-    fi
+  if  command -v curl &>/dev/null ; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null ; then
+    configuredClient="wget"
+  elif command -v fetch &>/dev/null ; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+    return 1
+  fi
 
 }
 
@@ -54,13 +54,7 @@ httpGet()
 
 checkInternet()
 {
-  echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 # query google with a get request
-  if [ $? -eq 0 ]; then #check if the output is 0, if so no errors have occured and we have connected to google successfully
-    return 0
-  else
-    echo "Error: no active internet connection" >&2 #sent to stderr
-    return 1
-  fi
+  httpGet google.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query google with a get request
 }
 
 ## This function grabs information about a stock and using python parses the
