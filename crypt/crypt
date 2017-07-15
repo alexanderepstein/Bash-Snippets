@@ -169,6 +169,7 @@ if [[ $# == 0 ]]; then
   usage
   exit 0
 elif [[ $1 == "update" ]];then
+  getConfiguredClient || exit 1
   update
   exit 0
 elif [[ $1 == "help" ]];then
