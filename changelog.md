@@ -2,6 +2,18 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.12.0
+
+</div>
+
+### Changes
+* Added siteciphers component
+
+### Bugfixes
+* Crypt was still using only curl to get tags for update
+
+<div align="center">
+
 ## Version 1.11.1
 
 </div>

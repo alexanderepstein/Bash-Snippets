@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.11.2"
+currentVersion="1.12.0"
 configuredClient=""
 configuredPython=""
 source ~/.bash_profile 2> /dev/null ## allows grabbing enviornment variable
