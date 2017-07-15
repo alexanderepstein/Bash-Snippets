@@ -113,7 +113,19 @@ Or run it with no flags and backup individual repositories.
 
 </div>
 
+## Siteciphers
 
+Check which ciphers are enabled / disabled for a given https site.
+
+Sometimes ciphers are deemed vulnerable, so when you are changing configuration, this can be used to confirm that the cipher truly is disabled.
+
+Some browsers (For example old versions of IE) don't support some of the newer ciphers, which would be a good example of when a SysAdmin would need a list of currently supported ciphers so that changes can be made.
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/siteciphers/siteciphers.png?raw=true">
+
+</div>
 
 ## Crypt
 

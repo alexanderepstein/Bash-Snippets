@@ -214,6 +214,25 @@ Example:
 
    * Output: http://possiblemaliciouswebsiteornot.com
 
+### Siteciphers
+Description: Checks the available ciphers for the SSL of an https site.
+
+Usage: siteciphers [flag] or siteciphers [optionalDFlag] [website]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+  * -d Set the delay between requests sent to the site (default is 1 sec)
+
+Examples:
+
+  * siteciphers github.com
+
+  * siteciphers -d 0.75 google.com
+
 ### Stocks
 Description: Finds the latest information on a certain stock.
 
