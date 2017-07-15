@@ -1,3 +1,5 @@
+#!/bin/env bats
+
 @test "Testing siteciphers tool" {
    echo siteciphers
 }
@@ -30,6 +32,6 @@
 @test "Get the tools version with -v" {
   run siteciphers -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(siteciphers -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }
