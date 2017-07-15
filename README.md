@@ -322,17 +322,19 @@ If this project helped you in any way and you feel like buying a broke college k
 
 #### Favorite Tool?
 
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Weather)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Weather/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Yotube-Viewer)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Yotube-Viewer/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Stocks)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Stocks/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Geo)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Geo/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Currency)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Currency/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cloudup)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cloudup/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Crypt)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Crypt/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Movies)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Movies/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cheat)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Cheat/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Taste)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Taste/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Short)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BM73YVF896YZJ5GQE77VDCMJ/Short/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cheat)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cheat/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cloudup)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cloudup/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Crypt)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Crypt/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Currency)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Currency/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Geo)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Geo/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Movies)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Movies/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Qrify)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Qrify/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Short)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Short/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Siteciphers)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Siteciphers/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Stocks)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Stocks/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Taste)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Taste/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Weather)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Weather/vote)
+[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Ytview)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Ytview/vote)
 
 </div>
 
