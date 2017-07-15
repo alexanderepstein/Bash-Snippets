@@ -3,6 +3,7 @@
 
 currentVersion="1.11.2"
 state=""
+configuredClient=""
 
 checkOpenSSL()
 {
@@ -13,6 +14,31 @@ checkOpenSSL()
     return 0
   fi
 }
+
+getConfiguredClient()
+{
+    if  command -v curl &>/dev/null ; then
+      configuredClient="curl"
+    elif command -v wget &>/dev/null ; then
+      configuredClient="wget"
+    elif command -v fetch &>/dev/null ; then
+      configuredClient="fetch"
+    else
+      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+      return 1
+    fi
+}
+
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl) curl -A curl -s "$@";;
+    wget) wget -qO- "$@";;
+    fetch) fetch -o "...";;
+  esac
+}
+
 ## uses openssl aes 256 cbc encryption to encrypt file salting it with password designated by user
 encrypt()
 {
@@ -37,7 +63,7 @@ update()
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
-  latestVersion=$(curl -s https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+  latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
   if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
     echo "Error: update utility has not been configured correctly." >&2
@@ -120,6 +146,7 @@ while getopts "huve:d:" opt; do ## alows for using options in bash
       fi
     ;;
     u)
+      getConfiguredClient || exit 1
       update
       exit 0
     ;;
