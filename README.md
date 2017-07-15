@@ -230,6 +230,8 @@ Gets the link that is being masked by a url shortner
 * To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
 * To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
 * To encode text into a qr code: <a href="http://qrenco.de">qrenco.de</a>
+* To grab a list of a users repositories: <a href="https://developer.github.com/v3/">github.com</a>
+* To upload a repository to bitbucket: <a href="https://developer.atlassian.com/bitbucket/api/2/reference/">bitbucket.org</a>
 
 #### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
 
