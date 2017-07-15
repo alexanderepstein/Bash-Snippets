@@ -240,6 +240,11 @@ Gets the link that is being masked by a url shortner
 brew install chainsawbaby/formula/bash-snippets
 ```
 
+### For Sparrowhub users
+```bash
+sparrow plg install [tool]
+```
+
 ### Otherwise
 
 * First clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
