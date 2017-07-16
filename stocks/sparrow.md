@@ -17,8 +17,6 @@ For example:
 
     $ sparrow pl run stocks -- Google
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#stocks](https://github.com/alexanderepstein/Bash-Snippets#stocks)
-
 Running via task:
 
     $ sparrow project create utils
@@ -33,8 +31,10 @@ Running via task:
         - Google
 
     $ sparrow task run utils/google-stocks
+    
+See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#stocks](https://github.com/alexanderepstein/Bash-Snippets#stocks)
 
-# Author
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
