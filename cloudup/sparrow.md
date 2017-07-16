@@ -12,6 +12,10 @@ Simple wrapper for `cloudup` script from Bash-Snippets.
 Basic usage:
 
     $ sparrow plg run cloudup -- <args>
+    
+For example:
+
+    $ sparrow plg run cloudup -- -p repo1 repo2 repo3
 
 See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#cloudup](https://github.com/alexanderepstein/Bash-Snippets#cloudup)
 
@@ -19,16 +23,17 @@ If you need some automation:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name cloudup
+    $ sparrow task add utils backup-top-repos cloudup
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/$backup-top-repos
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-p'
+        - repo1
+        - repo2
+        - repo3
 
     $ sparrow task run utils/$task-name
 
