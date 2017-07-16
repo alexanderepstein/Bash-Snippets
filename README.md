@@ -324,29 +324,6 @@ If this project helped you in any way and you feel like buying a broke college k
 [![Donate](https://img.shields.io/badge/Donate-Venmo-blue.svg)](https://venmo.com/AlexanderEpstein)
 [![Donate](https://img.shields.io/badge/Donate-SquareCash-green.svg)](https://cash.me/$AlexEpstein)
 
-<div align="center">
-
-## Poll
-
-
-
-#### Favorite Tool?
-
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cheat)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cheat/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cloudup)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Cloudup/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Crypt)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Crypt/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Currency)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Currency/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Geo)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Geo/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Movies)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Movies/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Qrify)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Qrify/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Short)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Short/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Siteciphers)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Siteciphers/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Stocks)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Stocks/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Taste)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Taste/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Weather)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Weather/vote)
-[![](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Ytview)](https://m131jyck4m.execute-api.us-west-2.amazonaws.com/prod/poll/01BN3N5Q3041M8DE2PZZAZN6JD/Ytview/vote)
-
-</div>
 
 ## License
 
