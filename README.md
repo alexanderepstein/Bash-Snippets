@@ -285,7 +285,7 @@ this will let you choose which scripts to install
 
 ### For Mac if installed via homebrew
 ```bash
-brew update bash-snippets
+brew upgrade bash-snippets
 ```
 
 ### Otherwise
