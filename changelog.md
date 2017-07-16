@@ -2,6 +2,18 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.13.0
+
+</div>
+
+### Changes
+* Added todo component
+
+### Bugfixes
+* Forcing ytview to search in english
+
+<div align="center">
+
 ## Version 1.12.0
 
 </div>

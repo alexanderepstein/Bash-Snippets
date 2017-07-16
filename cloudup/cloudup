@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.12.0"
+currentVersion="1.13.0"
 configuredClient=""
 private="0" ## state of private flag
 all="0" ## state of all flag
