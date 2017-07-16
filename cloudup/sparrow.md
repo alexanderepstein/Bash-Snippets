@@ -35,7 +35,7 @@ If you need some automation:
         - repo2
         - repo3
 
-    $ sparrow task run utils/bacup-top-repos
+    $ sparrow task run utils/backup-top-repos
 
 # Author
 
