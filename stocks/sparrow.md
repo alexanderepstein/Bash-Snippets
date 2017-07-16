@@ -12,27 +12,29 @@ Simple wrapper for `stocks` script from Bash-Snippets.
 Basic usage:
 
     $ sparrow plg run stocks -- <args>
+    
+For example:
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#stocks](https://github.com/alexanderepstein/Bash-Snippets#stocks)
+    $ sparrow pl run stocks -- Google
 
-If you need some automation:
+Running via task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name stocks
+    $ sparrow task add utils google-stocks stocks
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/google-stocks
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - Google
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/google-stocks
+    
+See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#stocks](https://github.com/alexanderepstein/Bash-Snippets#stocks)
 
-# Author
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
