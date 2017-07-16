@@ -125,6 +125,25 @@ getTasks()
   fi
 }
 
+usage()
+{
+  echo "Todo"
+  echo "Description: A simplistic commandline todo list."
+  echo "Usage: todo [flags] or todo [flags] [arguments]"
+  echo "  -c Clear all the current tasks"
+  echo "  -r Remove the following task number"
+  echo "  -g Get the current tasks"
+  echo "  -a Add the following task"
+  echo "  -u Update Bash-Snippet Tools"
+  echo "  -h Show the help"
+  echo "  -v Get the tool version"
+  echo "Examples:"
+  echo "   todo -a My very first task"
+  echo "   todo -r 1"
+  echo "   todo -g"
+  echo "   todo -c"
+}
+
 clearAllTasks()
 {
   rm -f ~/.todo/list.txt || return 1
