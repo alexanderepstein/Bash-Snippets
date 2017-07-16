@@ -26,14 +26,14 @@
 @test "Adding task" {
   run todo -a First task ever
   [ "$status" -eq 0 ]
-  result=$( echo $(todo -g) | grep -Eo "01). First task ever" )
+  result=$( echo $(todo -g) | grep -Eo "01\). First task ever" )
   [ "$result" = "01). First task ever" ]
 }
 
 @test "Getting task" {
   run todo -g
   [ "$status" -eq 0 ]
-  result=$( echo $(todo -g) | grep -Eo "01). First task ever" )
+  result=$( echo $(todo -g) | grep -Eo "01\). First task ever" )
   [ "$result" = "01). First task ever" ]
 }
 
