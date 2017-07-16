@@ -274,6 +274,34 @@ Examples:
   * taste Catcher in the Ry
 
   * taste -s Red Hot Chili Peppers
+### Todo
+Description: A simplistic commandline todo list.
+
+Usage: todo [flags] or todo [flags] [arguments]
+
+  * -c Clear all the current tasks
+
+  * -r Remove the following task number
+
+  * -g Get the current tasks
+
+  * -a Add the following task
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Examples:
+
+  * todo -a My very first task
+
+  * todo -r 1
+
+  * todo -g
+
+  * todo -c
 
 ### Weather
 Description: Provides a 3 day forecast on your current location or a specified location.
