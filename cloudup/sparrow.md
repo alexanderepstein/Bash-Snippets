@@ -25,7 +25,7 @@ If you need some automation:
 
     $ sparrow task add utils backup-top-repos cloudup
 
-    $ sparrow task ini utils/$backup-top-repos
+    $ sparrow task ini utils/backup-top-repos
 
       ---
 
@@ -35,7 +35,7 @@ If you need some automation:
         - repo2
         - repo3
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/bacup-top-repos
 
 # Author
 
