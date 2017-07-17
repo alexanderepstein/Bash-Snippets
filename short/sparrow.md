@@ -13,26 +13,28 @@ Basic usage:
 
     $ sparrow plg run short -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#short](https://github.com/alexanderepstein/Bash-Snippets#short)
+For example:
 
-If you need some automation:
+    $ sparrow plg run short -- tinyurl.com/jhkj
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name short
+    $ sparrow task add utils short-unmusk-jhkj short
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/short-unmusk-jhkj
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - tinyurl.com/jhkj
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/short-unmusk-jhkj
 
-# Author
+For short's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#short](https://github.com/alexanderepstein/Bash-Snippets#short)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

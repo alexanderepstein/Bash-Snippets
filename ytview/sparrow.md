@@ -13,26 +13,29 @@ Basic usage:
 
     $ sparrow plg run ytview -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#ytview](https://github.com/alexanderepstein/Bash-Snippets#ytview)
+For example:
 
-If you need some automation:
+    $ sparrow plg run ytview -- -s Family Guy Chicken Fight
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name ytview
+    $ sparrow task add utils ytview-fg ytview
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/ytview-fg
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-s'
+        - Family Guy Chicken Fight
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/ytview-fg
 
-# Author
+For ytview's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#ytview](https://github.com/alexanderepstein/Bash-Snippets#ytview)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

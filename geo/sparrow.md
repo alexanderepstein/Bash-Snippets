@@ -13,30 +13,31 @@ Basic usage:
 
     $ sparrow plg run geo -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#geo](https://github.com/alexanderepstein/Bash-Snippets#geo)
+For example:
 
-If you need some automation:
+    $ sparrow plg run geo -- -r -d -m eth0
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name geo
+    $ sparrow task add utils geo-data geo
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/geo-data
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-r'
+        - '-d'
+        - '~m' : eth0
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/geo-data
 
-# Author
+For geo's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#geo](https://github.com/alexanderepstein/Bash-Snippets#geo)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
 * The plugin maintainer is [Alexey Melezhik](https://github.com/melezhik/)
-
-
-

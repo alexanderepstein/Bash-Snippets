@@ -13,26 +13,28 @@ Basic usage:
 
     $ sparrow plg run movies -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#movies](https://github.com/alexanderepstein/Bash-Snippets#movies)
+For example:
 
-If you need some automation:
+    $ sparrow plg run movies -- Argo
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name movies
+    $ sparrow task add utils movies-argo movies
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/movies-argo
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - Argo
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/movies-argo
 
-# Author
+For movies's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#movies](https://github.com/alexanderepstein/Bash-Snippets#movies)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
