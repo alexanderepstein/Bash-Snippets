@@ -17,8 +17,6 @@ For example:
 
     $ sparrow plg run cloudup -- -p repo1 repo2 repo3
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#cloudup](https://github.com/alexanderepstein/Bash-Snippets#cloudup)
-
 If you need some automation:
 
     $ sparrow project create utils
@@ -37,7 +35,9 @@ If you need some automation:
 
     $ sparrow task run utils/backup-top-repos
 
-# Author
+See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#cloudup](https://github.com/alexanderepstein/Bash-Snippets#cloudup)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
