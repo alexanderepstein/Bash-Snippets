@@ -90,8 +90,8 @@ checkInternet()
 usage()
 {
   echo "Qrify"
-  echo "Usage: qrify [stringtoturnintoqrcode]"
   echo "Description: Converts strings or urls into a qr code."
+  echo "Usage: qrify [stringtoturnintoqrcode]"
   echo "    -u Update Bash-Snippet Tools"
 	echo "    -m Enable multiline support (feature not working yet)"
   echo "    -h Show the help"
