@@ -13,26 +13,26 @@ Basic usage:
 
     $ sparrow plg run crypt -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#crypt](https://github.com/alexanderepstein/Bash-Snippets#crypt)
-
-If you need some automation:
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name crypt
+    $ sparrow task add utils enc-file crypt
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/enc-file
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-e'
+        - /tmp/file.txt
+        - /tmp/file.txt.inc
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/enc-file
 
-# Author
+For crypt's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#cheat](https://github.com/alexanderepstein/Bash-Snippets#crypt)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
