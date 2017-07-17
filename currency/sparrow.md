@@ -13,26 +13,30 @@ Basic usage:
 
     $ sparrow plg run currency -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#currency](https://github.com/alexanderepstein/Bash-Snippets#currency)
+For example:
 
-If you need some automation:
+    $ sparrow plg run currency -- USD RUB 100
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name currency
+    $ sparrow task add utils currency-usd-rub currency
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/currency-usd-rub
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - USD
+        - RUB
+        - 100
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/currency-usd-rub
 
-# Author
+For currency's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#currency](https://github.com/alexanderepstein/Bash-Snippets#currency)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

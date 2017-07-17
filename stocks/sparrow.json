@@ -1,7 +1,7 @@
 {
   "name" : "stocks",
   "description" : "Simple wrapper for stocks script from Bash-Snippets",
-  "version" : "0.0.4",
+  "version" : "0.0.5",
   "url" : "https://github.com/alexanderepstein/Bash-Snippets#stocks",
   "category": "utilities",
   "sparrow_version" : "0.2.47",

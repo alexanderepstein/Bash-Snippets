@@ -13,26 +13,30 @@ Basic usage:
 
     $ sparrow plg run cheat -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#cheat](https://github.com/alexanderepstein/Bash-Snippets#cheat)
+For example:
 
-If you need some automation:
+    $ sparrow plg run cheat -- -i Perl
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name cheat
+    $ sparrow task add utils cheat-perl cheat
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/cheat-perl
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-i'
+        - Perl
+        - lwp-request
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/cheat-perl
 
-# Author
+For cheat's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#cheat](https://github.com/alexanderepstein/Bash-Snippets#cheat)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

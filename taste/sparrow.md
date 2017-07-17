@@ -13,26 +13,29 @@ Basic usage:
 
     $ sparrow plg run taste -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#taste](https://github.com/alexanderepstein/Bash-Snippets#taste)
+For example:
 
-If you need some automation:
+    $ sparrow plg run taste -- -s Red Hot Chili Peppers
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name taste
+    $ sparrow task add utils taste-rhcp taste
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/taste-rhcp
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - '-s'
+        - Red Hot Chili Peppers
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/taste-rchp
 
-# Author
+For taste's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#taste](https://github.com/alexanderepstein/Bash-Snippets#taste)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

@@ -13,26 +13,28 @@ Basic usage:
 
     $ sparrow plg run weather -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#weather](https://github.com/alexanderepstein/Bash-Snippets#weather)
+For example:
 
-If you need some automation:
+    $ sparrow plg run weather -- Saint-Petersburg
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name weather
+    $ sparrow task add utils weather-spb weather
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/weather-spb
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - Saint-Petersburg
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/weather-spb
 
-# Author
+For weather's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#weather](https://github.com/alexanderepstein/Bash-Snippets#weather)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 

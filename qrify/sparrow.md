@@ -13,26 +13,28 @@ Basic usage:
 
     $ sparrow plg run qrify -- <args>
 
-See parameters description at [https://github.com/alexanderepstein/Bash-Snippets#qrify](https://github.com/alexanderepstein/Bash-Snippets#qrify)
+For example:
 
-If you need some automation:
+    $ sparrow plg run qrify -- hello world
+
+Run as sparrow task:
 
     $ sparrow project create utils
 
-    $ sparrow task add utils $task-name qrify
+    $ sparrow task add utils qrify-text qrify
 
-    $ sparrow task ini utils/$task-name
+    $ sparrow task ini utils/qrify-text
 
       ---
 
       args:
-        - foo
-        - bar
-        - so on ...
+        - Hello world
 
-    $ sparrow task run utils/$task-name
+    $ sparrow task run utils/qrify-text
 
-# Author
+For qrify's arguments description follow [https://github.com/alexanderepstein/Bash-Snippets#qrify](https://github.com/alexanderepstein/Bash-Snippets#qrify)
+
+# Authors
 
 * The author of main script is [Alex Epstein](https://github.com/alexanderepstein)
 
