@@ -41,12 +41,9 @@ singleInstall()
 
 copyManpage()
 {
-  if [[ "$(uname)" == "Darwin" ]]; then
-    manPath="/usr/local/share/man/man1"
-  else
-    manPath="/usr/local/man/man1"
-  fi
-    cp bash-snippets.1 $manPath 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  if [[ "$(uname)" == "Darwin" ]]; then manPath="/usr/local/share/man/man1"
+  else manPath="/usr/local/man/man1" ;fi
+  cp bash-snippets.1 $manPath 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
 
 if [[ $# == 0 ]]; then
