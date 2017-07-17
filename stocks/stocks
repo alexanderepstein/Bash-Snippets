@@ -104,7 +104,8 @@ printStockInformation()
 ## and it will determine the stock symbol for apple is AAPL and move on from there
 getTicker()
 {
-  response=$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$1+$2+$3+$4+$5+$6+$7+$8+$9&region=1&lang=en%22") > /dev/null
+  input=$(echo "$@" | tr " " +)
+  response=$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$input&region=1&lang=en%22") > /dev/null
   symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']") # using python to extrapolate the stock symbol
   unset response #just unsets the entire response after using it since all I need is the stock ticker
 }
