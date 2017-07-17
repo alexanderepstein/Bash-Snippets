@@ -101,6 +101,7 @@ removeTask()
   rm -f ~/.todo/list.txt
   cp  ~/.todo/temp.txt ~/.todo/list.txt
   rm -f ~/.todo/temp.txt
+  echo "Sucessfully removed task number $1"
 }
 
 getTasks()
@@ -212,7 +213,7 @@ elif [[ $# == "1" ]];then
   elif [[ $flag == "get" ]];then getTasks || exit 1
   fi
 else
-  if [[ $flag == "add" ]];then addTask "${*:2}" && getTasks|| exit 1
-  elif [[ $flag == "remove" ]];then removeTask $2 || exit 1
+  if [[ $flag == "add" || $1 == "add" ]];then addTask "${*:2}" && getTasks|| exit 1
+  elif [[ $flag == "remove" || $1 == "remove" ]];then removeTask $2 || exit 1
   else usage;fi
 fi
