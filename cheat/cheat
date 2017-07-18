@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.13.1"
+currentVersion="1.13.2"
 configuredClient=""
 ## rest of these variables are search flags
 search="0"

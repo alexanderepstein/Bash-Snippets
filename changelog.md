@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.13.2
+
+</div>
+
+
+### Changes
+* Updated installer not allow updates if bash-snippets was installed through package manager
+
+<div align="center">
+
 ## Version 1.13.1
 
 </div>

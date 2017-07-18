@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.13.1"
+currentVersion="1.13.2"
 declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
 usedGithubInstallMethod="0"
 
@@ -61,8 +61,7 @@ elif [[ $1 == "update" ]]; then
     updateTool $tool || exit 1
   done
   if [[ $usedGithubInstallMethod == "1" ]]; then copyManpage || exit 1
-  else { echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."; \
-         rm -rf  ~/Bash-Snippets || echo "Error: cannot remove temp files located at ~/Bash-Snippets you must delete them manually"; exit 0; } ;fi
+else { echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."; exit 0; } ;fi
 elif [[ $1 == "all" ]];then
   for tool in "${tools[@]}"
   do
