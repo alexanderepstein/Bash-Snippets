@@ -89,7 +89,9 @@ checkInternet()
 removeTask()
 {
   touch ~/.todo/temp.txt
-  taskNumber=$1
+  oldTaskNumber=$1
+  taskNumber=$( echo $1 | grep -Eo "[0-9]*" )
+  if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]];then echo "Error: $oldTaskNumber is not a valid task number!" && return 1 ;fi
   count="1"
   IFS=$'\n'       # make newlines the only separator
   for task in $(cat ~/.todo/list.txt)
@@ -101,7 +103,8 @@ removeTask()
   rm -f ~/.todo/list.txt
   cp  ~/.todo/temp.txt ~/.todo/list.txt
   rm -f ~/.todo/temp.txt
-  echo "Sucessfully removed task number $1"
+  if [ $count -lt $taskNumber ];then echo "Error: task number $taskNumber does not exist!" && return 1
+  else echo "Sucessfully removed task number $taskNumber";fi
 }
 
 getTasks()
