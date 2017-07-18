@@ -2,6 +2,18 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.13.1
+
+</div>
+
+### Changes
+* Preventing bad input in ```todo -r```
+* Stocks was using unnecessary characters in the URL
+* Cloudup's private option now works
+* Cloudup's all option now looks to backup the first 10,000 repositories versus 100
+
+<div align="center">
+
 ## Version 1.13.0
 
 </div>
