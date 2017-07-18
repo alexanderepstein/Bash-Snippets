@@ -150,7 +150,7 @@ update()
 {
   # Author: Alexander Epstein https://github.com/alexanderepstein
   # Update utility version 1.2.0
-  # To test the tool enter in the defualt values that are in the examples for each variable
+  # To test the tool enter in the default values that are in the examples for each variable
   repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
   githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
