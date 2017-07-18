@@ -139,7 +139,7 @@ crypt -d [encrypted file] [output file] # decrypts files
 * Uses AES 256 level encryption
 * Key is salted before creation
 * Password is never in plain text, and OpenSSL generates key based on password
-* Data is encrypted in Base64, so it can be used as plain text in an email. (Not usually necessary if attached as a file)
+* Encrypted data is encoded in Base64, so it can be used as plain text in an email. (Not usually necessary if attached as a file)
 
 **Tested With**  .pdf, .txt, .docx, .doc, .png, .jpeg
 
