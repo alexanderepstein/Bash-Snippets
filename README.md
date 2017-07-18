@@ -10,7 +10,7 @@
 
 
 
-### All of these scripts have been heavily tested on OSX and Linux
+### All of these scripts have been heavily tested on macOS and Linux
 ### Most of these scripts have been tested on Windows 10 and the official developer bash instance. Does not work with Cygwin or Mysys2.
 
 </div>
@@ -247,7 +247,7 @@ Gets the link that is being masked by a url shortner
 
 ## Installing
 
-### For Mac via homebrew
+### For macOS via homebrew
 ```bash
 brew install chainsawbaby/formula/bash-snippets
 ```
@@ -283,7 +283,7 @@ this will let you choose which scripts to install
 
 ## Updating
 
-### For Mac if installed via homebrew
+### For macOS if installed via homebrew
 ```bash
 brew upgrade bash-snippets
 ```
@@ -303,7 +303,7 @@ This will clone the repository and install the new versions of scripts that were
 
 ## Uninstalling
 
-### For Mac if installed via homebrew
+### For macOS if installed via homebrew
 ```bash
 brew uninstall bash-snippets
 ```
