@@ -2,6 +2,7 @@
 # Author: Alexander Epstein https://github.com/alexanderepstein
 currentVersion="1.13.1"
 declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
+usedGithubInstallMethod="0"
 
 askInstall()
 {
@@ -20,6 +21,7 @@ askInstall()
 updateTool()
 {
   if [[ -f  /usr/local/bin/$1 ]];then
+    usedGithubInstallMethod="1"
     cd $1 || return 1
     echo -n "Installing $1: "
     chmod a+x $1
@@ -42,7 +44,7 @@ singleInstall()
 copyManpage()
 {
   if [[ "$(uname)" == "Darwin" ]]; then manPath="/usr/local/share/man/man1"
-  else manPath="/usr/local/man/man1" ;fi
+else manPath="/usr/local/man/man1" ;fi
   cp bash-snippets.1 $manPath 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
 
@@ -58,7 +60,9 @@ elif [[ $1 == "update" ]]; then
   do
     updateTool $tool || exit 1
   done
-  copyManpage || exit 1
+  if [[ $usedGithubInstallMethod == "1" ]]; then copyManpage || exit 1
+  else { echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."; \
+         rm -rf  ~/Bash-Snippets || echo "Error: cannot remove temp files located at ~/Bash-Snippets you must delete them manually"; exit 0; } ;fi
 elif [[ $1 == "all" ]];then
   for tool in "${tools[@]}"
   do
