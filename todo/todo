@@ -209,8 +209,8 @@ elif [[ $# == "1" ]];then
   elif [[ $1 == "help" ]]; then
     usage
     exit 0
-  elif [[ $flag == "clear" ]];then clearAllTasks || exit 1
-  elif [[ $flag == "get" ]];then getTasks || exit 1
+  elif [[ $flag == "clear" || $1 == "clear" ]];then clearAllTasks || exit 1
+  elif [[ $flag == "get" || $1 == "list" || $1 == "get" ]];then getTasks || exit 1
   fi
 else
   if [[ $flag == "add" || $1 == "add" ]];then addTask "${*:2}" && getTasks|| exit 1
