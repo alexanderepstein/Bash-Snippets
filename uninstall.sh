@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
 all="1"
