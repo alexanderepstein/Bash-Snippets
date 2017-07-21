@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 flag=""
 currentVersion="1.13.2"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: Linyos Torovoltos github.com/linyostorovovoltos
 
 currentVersion="1.13.2"
