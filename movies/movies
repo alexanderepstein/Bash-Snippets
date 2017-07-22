@@ -18,7 +18,6 @@ getConfiguredClient()
       echo "Error: This tool reqires either curl, wget, or fetch to be installed."
       return 1
     fi
-
 }
 
 getConfiguredPython()
@@ -66,6 +65,9 @@ getMovieInfo()
   movie=$(echo "$@" | tr " " + ) ## format the inputs to use for the api
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
+
+  # echo $movieInfo
+
   checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
   if [[ $checkResponse == "False" ]];then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python from the JSON response
@@ -73,13 +75,13 @@ getMovieInfo()
   year=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Year']" 2> /dev/null)
   imdbScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][0]['Value']" 2> /dev/null)
   tomatoScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
+  metacriticScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][2]['Value']" 2> /dev/null)
   rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']" 2> /dev/null)
   genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']" 2> /dev/null)
   director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']" 2> /dev/null)
+  production=$(echo $production | python -c "import sys, json; print json.load(sys.stdin)['Production']" 2> /dev/null) 
   actors=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Actors']" 2> /dev/null)
   plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Plot']" 2> /dev/null)
-  unset movieInfo # don't need this anymore
-  unset checkResponse # don't need this anymore
 }
 
 # Prints the movie information out in a human readable format
@@ -91,9 +93,11 @@ printMovieInfo()
   echo "| Year: $year"
   if [[ $imdbScore != "" ]];then echo "| IMDB: $imdbScore";fi
   if [[ $tomatoScore != "" ]];then echo "| Tomato: $tomatoScore";fi
+  if [[ $metacriticScore != "" ]];then echo "| Metascore: $metacriticScore";fi 
   if [[ $rated != "N/A" && $rated != "" ]];then echo "| Rated: $rated";fi
   echo "| Genre: $genre"
   echo "| Director: $director"
+  echo "| Production: $production" 
   echo "| Actors: $actors"
   if [[ $plot != "N/A" && $plot != "" ]];then echo "| Plot: $plot"; fi
   echo '=================================================='
