@@ -33,11 +33,6 @@ getConfiguredPython()
   fi
 }
 
-detail()
-{
-  detail=true
-}
-
 python()
 {
   case "$configuredPython" in
@@ -171,47 +166,17 @@ getConfiguredPython || exit 1
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-: <<'END'
-while getopts "uvhd" opt; do
-case $opt in
-  \?)
-    echo "Invalid option: -$OPTARG" >&2
-    exit 1
-  ;;
-  d)
-    detail
-  ;;  
-  h)
-    usage
-    exit 0
-  ;;
-  v)
-    echo "Version $currentVersion"
-    exit 0
-  ;;
-  u)
-    update
-    exit 0
-  ;;
-  :)
-    echo "Option -$OPTARG requires an argument." >&2
-    exit 1
-  ;;
-esac
-done
-END
-
 while getopts 'ud:hv' flag; do
   case "${flag}" in
     u) update
        exit 0 ;;
-    d) name="${OPTARG}" 
-       detail ;;
+    d) detail=true ;; 
     h) usage 
        exit 0 ;;
     v) echo "Version $currentVersion"
        exit 0 ;;
-    *) error "Invalid option ${flag}" ;;
+    *) error "Invalid option ${flag}" 
+       exit 1 ;;
   esac
 done
 
