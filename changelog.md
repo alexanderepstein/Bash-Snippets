@@ -2,6 +2,19 @@
 
 # Bash-Snippets Changelog
 
+
+## Version 1.14.0
+
+</div>
+
+### Changes
+* Shebang changed to ```/usr/bin/env bash``` for more portability
+* Todo has more error checking for bad input
+* Added the ```-s``` option to cloudup which will prevent the backup of forked repositories
+* Added the ```-t``` option to cloudup to give the user the ability to create a unique repo or just update the old one
+
+<div align="center">
+
 ## Version 1.13.2
 
 </div>

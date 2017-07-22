@@ -54,6 +54,10 @@ Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]
 
   * -a Backup all github repositories
 
+  * -s Only backup repositories that you have created (no forks) (only works in conjunction with the -a flag)
+
+  * -t Backup the repository with a timestamp added to the repostiory name (will always create a new unique bitbucket repo)
+
   * -u Update Bash-Snippet Tools
 
   * -h Show the help
@@ -274,7 +278,7 @@ Examples:
   * taste Catcher in the Ry
 
   * taste -s Red Hot Chili Peppers
-  
+
 ### Todo
 Description: A simplistic commandline todo list.
 

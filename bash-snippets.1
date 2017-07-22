@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BASH\-SNIPPETS" "1" "July 2017" "" ""
+.TH "BASH\-SNIPPETS" "1" "July 2017" "ff" ""
 .
 .SH "NAME"
 \fBbash\-snippets\fR \- A collection of small bash scripts for heavy terminal users
@@ -85,6 +85,12 @@ Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]
 .
 .IP "\(bu" 4
 \-a Backup all github repositories
+.
+.IP "\(bu" 4
+\-s Only backup repositories that you have created (no forks) (only works in conjunction with the \-a flag)
+.
+.IP "\(bu" 4
+\-t Backup the repository with a timestamp added to the repostiory name (will always create a new unique bitbucket repo)
 .
 .IP "\(bu" 4
 \-u Update Bash\-Snippet Tools
