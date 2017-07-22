@@ -99,7 +99,8 @@ backupRepo()
 {
 
   cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
-  if [[ $tStamp == "0" ]];then { echo "Attempting to delete existing bitbucket repostiory"; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoName"  > /dev/null ||  echo "Error: Could not delete the remote bitbucket repostiory." && echo  "Ignore this error if the repository was never uploaded to bitbucket";};fi
+  repoSlug=$(echo $repoName | tr '[:upper:]' '[:lower:]')
+  if [[ $tStamp == "0" ]];then { echo "Attempting to delete existing bitbucket repostiory"; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoSlug"  > /dev/null;};fi
   if [[ $tStamp == "1" ]];then
     timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
   if [[ $private == "1" ]];then
@@ -244,6 +245,7 @@ done
 
 
 if [[ $source == "1" && $all == "0" ]];then { echo "Error: the -s flag only works in conjunction with the -a flag."; exit 1; };fi
+if [[ $configuredClient != "curl" ]];then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1;};fi
 if [[ $# == "1" ]]; then
   if [[ $1 == "update" ]];then
     update
@@ -290,7 +292,6 @@ if [[ $all == "0" ]];then
     exit 0
   fi
 else
-  if [[ $configuredClient != "curl" ]];then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1;};fi
   getGitHubUserInfo || exit 1
   getGithubRepoNames || exit 1
   getBitbucketInfo || exit 1
