@@ -175,11 +175,9 @@ while getopts 'ud:hv' flag; do
        exit 0 ;;
     v) echo "Version $currentVersion"
        exit 0 ;;
-    *) error "Invalid option ${flag}" 
-       exit 1 ;;
+    *) exit 1 ;;
   esac
 done
-
 
 if [[ $# == 0 ]]; then
   usage
