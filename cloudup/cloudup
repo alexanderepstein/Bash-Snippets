@@ -99,6 +99,7 @@ backupRepo()
 {
 
   cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
+  if [[ $tStamp == "0" ]];then { echo "Attempting to delete existing bitbucket repostiory"; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoName"  > /dev/null ||  echo "Error: Could not delete the remote bitbucket repostiory." && echo  "Ignore this error if the repository was never uploaded to bitbucket";};fi
   if [[ $tStamp == "1" ]];then
     timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
   if [[ $private == "1" ]];then
@@ -107,21 +108,23 @@ backupRepo()
   else
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null || { echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
   fi
+    git remote set-url origin "https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git" > /dev/null || return 1 ## switch the remote over to bitbucket rather than github
 else
   if [[ $private == "1" ]];then
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName --data is_private=true > /dev/null
   else
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName > /dev/null
   fi
+    git remote set-url origin "https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName.git" > /dev/null || return 1 ## switch the remote over to bitbucket rather than github
 fi
   originalRepoName=$repoName
   repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
   timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
-  git remote set-url origin "https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git" > /dev/null || return 1 ## switch the remote over to bitbucket rather than github
+
   echo "Uploading $originalRepoName to bitbucket"
   git push -q --progress origin --all > /dev/null || return 1 ## pushes al files to github and most of the repo history
   echo "Uploading the tags for $originalRepoName"
-  git push -q --progress origin --tags > /dev/null || return 1 ## have to push tags here since --tags and --all are mutually exclusive
+  git push -q --progress origin --tags > /dev/null || { echo "Tags for $originalRepoName not succesfully backed up."; return 1;}  ## have to push tags here since --tags and --all are mutually exclusive
   echo "Successfully backedup $originalRepoName"
   rm -rf ~/temp #if we have succesfully backedup the repo we dion't need this anymore and if we do we will recreate it
 }
@@ -287,6 +290,7 @@ if [[ $all == "0" ]];then
     exit 0
   fi
 else
+  if [[ $configuredClient != "curl" ]];then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1;};fi
   getGitHubUserInfo || exit 1
   getGithubRepoNames || exit 1
   getBitbucketInfo || exit 1
