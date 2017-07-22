@@ -7,6 +7,8 @@ private="0" ## state of private flag
 all="0" ## state of all flag
 if [ -d ~/temp ];then rm -rf ~/temp; fi ## if the temp folder exists we want to delete it just in case it was left over from a fatal error
 source="0"
+tStamp="0"
+
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -95,14 +97,23 @@ getBitbucketInfo()
 
 backupRepo()
 {
-  timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
+
   cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
+  if [[ $tStamp == "1" ]];then
+    timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
   if [[ $private == "1" ]];then
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private=true > /dev/null || { echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     echo "private"
   else
     httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null || { echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
   fi
+else
+  if [[ $private == "1" ]];then
+    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName --data is_private=true > /dev/null
+  else
+    httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName > /dev/null
+  fi
+fi
   originalRepoName=$repoName
   repoName=$(echo $repoName | tr '[:upper:]' '[:lower:]')
   timestamp=$(echo $timestamp | tr '[:upper:]' '[:lower:]')
@@ -173,12 +184,16 @@ usage()
   echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
   echo "  -a Backup all github repositories"
   echo "  -s Only backup repositories that you have created (no forks) (only works in conjunction with the -a flag)"
+  echo "  -t Backup the repository with a timestamp added to the repostiory name (will always create a new unique bitbucket repo)"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
   echo "Examples:"
   echo "   cloudup"
   echo "   cloudup -p -a"
+  echo "   cloudup -a -s"
+  echo "   cloudup -t"
+  echo "   cloudup -a -s -t -p"
   echo "   cloudup -p nameOfRepo1 nameOfRepo2"
   echo "   cloudup nameOfRepo"
   echo "   cloudup -a"
@@ -187,7 +202,7 @@ usage()
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
-while getopts "spauvh" opt; do
+while getopts "tspauvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -198,6 +213,9 @@ while getopts "spauvh" opt; do
     ;;
     p)
       private="1"
+    ;;
+    t)
+      tStamp="1"
     ;;
     h)
       usage
@@ -235,7 +253,7 @@ fi
 
 
 if [[ $all == "0" ]];then
-  if [[ $private == "0" && $2 != "" ]];then
+  if [[ ($private == "0" && $tStamp == "0" && $1 != "")]];then
     getGitHubUserInfo || exit 1
     getBitbucketInfo || exit 1
     for i in "$@"; do  ## if private is not on as a flag start rpping through them
@@ -246,7 +264,7 @@ if [[ $all == "0" ]];then
       echo
     done
     exit 0
-  elif [[ ( $private == "0" &&  $1 == "" ) || ( $private == "1"  && $2 == "" )  ]];then
+  elif [[ ( $private == "0" && $tStamp == "0" &&  $1 == "" ) || ( $private == "1" && $tStamp == "0" && $2 == "" ) || ( $private == "0" && $tStamp == "1" && $2 == "" ) || ( $private == "1" && $tStamp == "1" && $3 == "" )  ]];then
     getGitHubUserInfo || exit 1
     getGitHubRepoInfo || exit 1
     getBitbucketInfo || exit 1
@@ -254,10 +272,12 @@ if [[ $all == "0" ]];then
     cloneGitHubRepo || exit 1
     backupRepo  || { echo "Error: couldnt backup $originalRepoName to bitbucket"; exit 1; }
     exit 0
+
   else
+    firstArg=$(echo $private + $tStamp + 1 | bc)
     getGitHubUserInfo || exit 1
     getBitbucketInfo || exit 1
-    for i in "${@:2}"; do
+    for i in "${@:$firstArg}"; do
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
