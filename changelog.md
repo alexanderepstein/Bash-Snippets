@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.14.1
+
+</div>
+
+### Bugfixes
+* Fixing issue in cloudup remote url was not set correctly if the ```-t``` option was not used
+* Fixing issue in cloudup where tags were causing conflicts, solved by deleting bitbucket repo first
+
+<div align="center">
 
 ## Version 1.14.0
 
