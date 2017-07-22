@@ -6,7 +6,7 @@ configuredClient=""
 private="0" ## state of private flag
 all="0" ## state of all flag
 if [ -d ~/temp ];then rm -rf ~/temp; fi ## if the temp folder exists we want to delete it just in case it was left over from a fatal error
-
+source="0"
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -147,11 +147,19 @@ getGithubRepoNames()
 {
   for pageNumber in {1..100}
   do
-    response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100&page=$pageNumber"  | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g)
-    if [[ $response == "" ]];then break;fi ## will only break if the page is empty
-    for repo in $response
+    response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100&page=$pageNumber")
+    repoResponse=$(echo $response | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g )
+    forkResponse=($(echo $response | grep -Eo '"fork": [a-Z]*' | cut -d " " -f 2 | sed  s/"'"//g  ))
+    count=0
+    if [[ $repoResponse == "" ]];then break;fi ## will only break if the page is empty
+    for repo in $repoResponse
     do
-      repoNames+=("$repo")
+      if [[ $source == "1" ]];then
+        if [[ ${forkResponse[$count]} == "false" ]];then repoNames+=("$repo"); fi
+        count=$(echo $count + 1 | bc)
+      else
+        repoNames+=("$repo")
+      fi
     done
   done
 }
@@ -164,6 +172,7 @@ usage()
   echo "Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]"
   echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
   echo "  -a Backup all github repositories"
+  echo "  -s Only backup repositories that you have created (no forks) (only works in conjunction with the -a flag)"
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
@@ -178,11 +187,14 @@ usage()
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
-while getopts "pauvh" opt; do
+while getopts "spauvh" opt; do
   case $opt in
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
+    ;;
+    s)
+      source="1"
     ;;
     p)
       private="1"
@@ -210,7 +222,7 @@ while getopts "pauvh" opt; do
 done
 
 
-
+if [[ $source == "1" && $all == "0" ]];then { echo "Error: the -s flag only works in conjunction with the -a flag."; exit 1; };fi
 if [[ $# == "1" ]]; then
   if [[ $1 == "update" ]];then
     update
