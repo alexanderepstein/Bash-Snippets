@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.14.2
+
+</div>
+
+### Bugfixes
+* Fixing bug where cloudup was incorrectly deleting the remote bitbucket repository.
+
+<div align="center">
+
 ## Version 1.14.1
 
 </div>

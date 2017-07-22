@@ -263,7 +263,7 @@ sparrow plg install [tool]
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.14.1```
+* Git checkout to the latest stable release ```git checkout v1.14.2```
 
 * Run the guided install script with
 ```bash
