@@ -96,6 +96,22 @@ If you want to bypass to guided input you can pass in 3 arguments and it will ru
 ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
 so a valid use case would be ```currency USD EUR 12.35```
 
+## CryptoCurrency
+
+Converts cryptocurrency based on realtime exchange rates
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cryptocurrency/cryptocurrency.png?raw=true">
+
+</div>
+
+If you want to bypass to guided input you can pass in 3 arguments and it will run from there
+ex.```cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
+so a valid use case would be ```currency BTC EUR 12.35```
+
+Written by: <a href="https://github.com/elsesiy">Jonas-Taha El Sesiy</a>
+
 ## Cloudup
 
 A tool that facilitates backing up github repositories to bitbucket
