@@ -110,7 +110,7 @@ If you want to bypass the guided input you can pass in 3 arguments and it will r
 ex.  
 ```cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```  
 
-so a valid use case would be: ```currency BTC EUR 12.35```
+so a valid use case would be: ```cryptocurrency BTC EUR 12.35```
 
 Written by: <a href="https://github.com/elsesiy">Jonas-Taha El Sesiy</a>
 
