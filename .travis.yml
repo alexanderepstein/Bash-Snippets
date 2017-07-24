@@ -9,5 +9,5 @@ before_install:
   - cpanm https://github.com/melezhik/outthentic.git
 
 script:
-- bats tests
 - cd outthentic-test/ && strun --cwd $PWD/..
+- bats tests
