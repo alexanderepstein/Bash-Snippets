@@ -117,7 +117,7 @@ do
   esac
 done
 
-if [[ ${#} == "0" ]]; then
+if [[ $# == "0" ]]; then
   usage
   exit 0
 elif [[ ${1} == "help" ]]; then
