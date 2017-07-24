@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo 'help'
 bash cheat/cheat
 echo

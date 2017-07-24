@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo 'help'
 bash currency/currency -h
 echo 
