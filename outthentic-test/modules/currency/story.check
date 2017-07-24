@@ -1,0 +1,28 @@
+begin:
+help
+Currency
+Description: A realtime currency converter.
+end:
+
+between: {example} {example}
+
+begin:
+example1
+regexp: ^=+$
+| USD to RUB
+regexp: ^\|\s+Rate:\s+\d+.\d+$
+regexp: ^\|\s+USD:\s+\d+$
+regexp: ^\|\s+RUB:\s+\d+.\d+$
+regexp: ^=+$
+end:
+
+
+begin:
+example2
+regexp: ^=+$
+| USD to RUB
+regexp: ^\|\s+Rate:\s+\d+.\d+$
+regexp: ^\|\s+USD:\s+0$
+regexp: ^\|\s+RUB:\s+0$
+regexp: ^=+$
+end:

@@ -6,5 +6,8 @@ before_install:
   - sudo apt-get install -qq bats
   - sudo apt-get install -qq vlc
   - sudo apt-get install -qq openssl
+  - cpanm https://github.com/melezhik/outthentic.git
+
 script:
 - bats tests
+- cd outthentic-test/ && strun --cwd $PWD/..

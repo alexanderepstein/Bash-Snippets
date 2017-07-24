@@ -1,0 +1,3 @@
+pwd
+bash cheat/cheat
+
