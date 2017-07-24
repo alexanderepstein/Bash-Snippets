@@ -37,13 +37,15 @@ getConfiguredPython()
 }
 
 
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
+if [[ $(uname) != "Darwin" ]];then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@";;
+      python) python "$@";;
+    esac
+  }
+fi
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
@@ -205,7 +207,7 @@ if [[ $apiKey == "" ]];then
   echo "After following all the steps and issues still persist try adding export TASTE_API_KEY manually to your .bash_profile"
   exit 1
 fi
-getConfiguredPython || exit 1
+if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
