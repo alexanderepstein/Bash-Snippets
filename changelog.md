@@ -2,6 +2,18 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.14.3
+
+</div>
+
+### Changes
+* Adding new progress echos to cloudup
+
+### Bugfixes
+* Fixed bug in all tools using python for OSX where it would result caught in a segfault
+
+<div align="center">
+
 ## Version 1.14.2
 
 </div>
