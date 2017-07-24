@@ -27,10 +27,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) # always grabs the tag without the v option
 
-  if [[ ${currentVersion} = "" || ${repositoryName} = "" || ${githubUserName} = "" || ${nameOfInstallFile} = "" ]]; then
+  if [[ ${currentVersion} == "" || ${repositoryName} == "" || ${githubUserName} == "" || ${nameOfInstallFile} == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ ${latestVersion} = "" ]];then
+  elif [[ ${latestVersion} == "" ]];then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -38,7 +38,7 @@ update()
       echo "Version ${latestVersion} available"
       echo -n "Do you wish to update ${repositoryName} [Y/n]: "
       read -r answer
-      if [[ "${answer}" = [Yy] ]]; then
+      if [[ "${answer}" == [Yy] ]]; then
         cd ~ || { echo 'Update Failed'; exit 1; }
         if [[ -d  ~/${repositoryName} ]]; then rm -r -f ${repositoryName} || { echo "Permissions Error: try running the update as sudo"; exit 1; }; fi
         git clone "https://github.com/$githubUserName/${repositoryName}" || { echo "Couldn't download latest version"; exit 1; }
@@ -117,17 +117,17 @@ do
   esac
 done
 
-if [[ ${#} = "0" ]]; then
+if [[ ${#} == "0" ]]; then
   usage
   exit 0
-elif [[ ${1} = "help" ]]; then
+elif [[ ${1} == "help" ]]; then
   usage
   exit 0
-elif [[ ${1} = "update" ]]; then
+elif [[ ${1} == "update" ]]; then
   update || exit 1
   exit 0
 else
-  if [[ ${multiline} = "0" ]]; then
+  if [[ ${multiline} == "0" ]]; then
     input=$(printf '%s ' "$@")
     makeqr || exit 1
     exit 0
