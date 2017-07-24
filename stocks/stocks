@@ -33,14 +33,15 @@ getConfiguredPython()
   fi
 }
 
-
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
+if [[ $(uname) != "Darwin" ]];then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@";;
+      python) python "$@";;
+    esac
+  }
+fi
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
@@ -164,7 +165,7 @@ usage()
   echo "  stocks Tesla"
 }
 
-getConfiguredPython || exit 1
+if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
