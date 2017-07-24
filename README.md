@@ -15,6 +15,183 @@
 
 </div>
 
+## Cheat
+
+The fastest way to find {command options|code pieces} you need
+
+Supports multiple languages and many bash commands
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
+
+</div>
+
+## Cloudup
+
+A tool that facilitates backing up github repositories to bitbucket
+
+If you have ever felt the fear of the github unicorn this could be your savior
+
+Furthermore you can backup the repositories of any github user to your bitbucket.
+
+Backup all github repositories of the designated user at once with the -a option.
+Or run it with no flags and backup individual repositories.
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cloudup/cloudup.png?raw=true">
+
+</div>
+
+## Crypt
+
+A wrapper for openssl that allows for quickly encrypting and decrypting files
+
+```bash
+crypt -e [original file] [encrypted file] # encrypts files
+crypt -d [encrypted file] [output file] # decrypts files
+```
+#### Encryption Details
+* Uses AES 256 level encryption
+* Key is salted before creation
+* Password is never in plain text, and OpenSSL generates key based on password
+* Encrypted data is encoded in Base64, so it can be used as plain text in an email. (Not usually necessary if attached as a file)
+
+**Tested With**  .pdf, .txt, .docx, .doc, .png, .jpeg
+
+**CAUTION**  Make sure to use different filenames, otherwise your file will be overwritten!
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/crypt/crypt.png?raw=true">
+
+</div>
+
+
+## Currency
+
+Converts currency based on realtime exchange rates
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/currency/currency.png?raw=true">
+
+</div>
+
+If you want to bypass to guided input you can pass in 3 arguments and it will run from there
+ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
+so a valid use case would be ```currency USD EUR 12.35```
+
+
+## Geo
+
+Provides data for  wan, lan, router, dns, mac, and ip geolocation
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/geo/geo.png?raw=true">
+
+</div>
+
+Written by: <a href="https://github.com/jakewmeyer">Jake Meyer</a>
+
+## Movies
+
+Quick search that grabs relevant information about a movie
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/movies/movies.png?raw=true">
+
+</div>
+
+
+## Qrify
+
+Takes any string of text and turns it into a qr code
+
+This is useful for sending links or saving a string of commands to your phone
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/qrify/qrify.png?raw=true">
+
+</div>
+
+Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
+
+
+## Short
+
+Gets the link that is being masked by a url shortner
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/short/short.png?raw=true">
+
+</div>
+
+
+## Siteciphers
+
+Check which ciphers are enabled / disabled for a given https site.
+
+Sometimes ciphers are deemed vulnerable, so when you are changing configuration, this can be used to confirm that the cipher truly is disabled.
+
+Some browsers (For example old versions of IE) don't support some of the newer ciphers, which would be a good example of when a SysAdmin would need a list of currently supported ciphers so that changes can be made.
+
+<div align="center">
+
+<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/siteciphers/siteciphers.png?raw=true">
+
+</div>
+
+
+## Stocks
+
+Provides information about a certain stock symbol
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/stocks/stocks.png?raw=true">
+
+</div>
+
+
+## Taste
+
+Recommendation engine that provides three similar items like the supplied item
+
+Also can provide information on a given item
+
+Valid items are: shows, books, music, artists, movies, authors, games
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/taste/taste.png?raw=true">
+
+</div>
+
+### Needs an API Key (don't worry it's free)
+* Get the API key here: <a href="https://tastedive.com/account/api_access">taste dive</a>
+* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"```
+
+
+## todo
+
+A simplistic command line todo list
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/todo/todo.png?raw=true">
+
+</div>
 
 
 ## Weather
@@ -58,177 +235,6 @@ You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]```
 
 Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
 
-## Stocks
-
-Provides information about a certain stock symbol
-
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/stocks/stocks.png?raw=true">
-
-</div>
-
-
-## Geo
-  Provides data for  wan, lan, router, dns, mac, and ip geolocation
-
-
-  <div align="center">
-
-  <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/geo/geo.png?raw=true">
-
-  </div>
-
-  Written by: <a href="https://github.com/jakewmeyer">Jake Meyer</a>
-
-## Currency
-
-Converts currency based on realtime exchange rates
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/currency/currency.png?raw=true">
-
-</div>
-
-If you want to bypass to guided input you can pass in 3 arguments and it will run from there
-ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
-so a valid use case would be ```currency USD EUR 12.35```
-
-## Cloudup
-
-A tool that facilitates backing up github repositories to bitbucket
-
-If you have ever felt the fear of the github unicorn this could be your savior
-
-Furthermore you can backup the repositories of any github user to your bitbucket.
-
-Backup all github repositories of the designated user at once with the -a option.
-Or run it with no flags and backup individual repositories.
-
-<div align="center">
-
-<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cloudup/cloudup.png?raw=true">
-
-</div>
-
-## Siteciphers
-
-Check which ciphers are enabled / disabled for a given https site.
-
-Sometimes ciphers are deemed vulnerable, so when you are changing configuration, this can be used to confirm that the cipher truly is disabled.
-
-Some browsers (For example old versions of IE) don't support some of the newer ciphers, which would be a good example of when a SysAdmin would need a list of currently supported ciphers so that changes can be made.
-
-<div align="center">
-
-<img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/siteciphers/siteciphers.png?raw=true">
-
-</div>
-
-## Crypt
-
-A wrapper for openssl that allows for quickly encrypting and decrypting files
-
-```bash
-crypt -e [original file] [encrypted file] # encrypts files
-crypt -d [encrypted file] [output file] # decrypts files
-```
-#### Encryption Details
-* Uses AES 256 level encryption
-* Key is salted before creation
-* Password is never in plain text, and OpenSSL generates key based on password
-* Encrypted data is encoded in Base64, so it can be used as plain text in an email. (Not usually necessary if attached as a file)
-
-**Tested With**  .pdf, .txt, .docx, .doc, .png, .jpeg
-
-**CAUTION**  Make sure to use different filenames, otherwise your file will be overwritten!
-
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/crypt/crypt.png?raw=true">
-
-</div>
-
-## Movies
-
-Quick search that grabs relevant information about a movie
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/movies/movies.png?raw=true">
-
-</div>
-
-
-## Cheat
-
-
-The fastest way to find {command options|code pieces} you need
-
-Supports multiple languages and many bash commands
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
-
-</div>
-
-## todo
-
-A simplistic command line todo list
-
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/todo/todo.png?raw=true">
-
-</div>
-
-## Taste
-
-Recommendation engine that provides three similar items like the supplied item
-
-Also can provide information on a given item
-
-Valid items are: shows, books, music, artists, movies, authors, games
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/taste/taste.png?raw=true">
-
-</div>
-
-### Needs an API Key (don't worry it's free)
-* Get the API key here: <a href="https://tastedive.com/account/api_access">taste dive</a>
-* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"```
-
-## Qrify
-
-Takes any string of text and turns it into a qr code
-
-This is useful for sending links or saving a string of commands to your phone
-
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/qrify/qrify.png?raw=true">
-
-</div>
-
-Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
-
-## Short
-
-Gets the link that is being masked by a url shortner
-
-<div align="center">
-
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/short/short.png?raw=true">
-
-</div>
 
 ## API's Used
 * To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
