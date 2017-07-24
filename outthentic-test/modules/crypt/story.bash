@@ -1,2 +1,3 @@
-pwd
 bash crypt/crypt
+
+
