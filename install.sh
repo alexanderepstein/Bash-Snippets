@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.14.2"
+currentVersion="1.14.3"
 declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
+declare -a extraLinuxTools=(maps)
+declare -a extraDarwinTools
 usedGithubInstallMethod="0"
 
 askInstall()
@@ -27,6 +29,23 @@ updateTool()
     chmod a+x $1
     cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
     echo "Success"
+    cd .. || return 1
+  fi
+}
+
+extraUpdateTool()
+{
+  if [[ -f  /usr/local/bin/$1 ]];then
+    usedGithubInstallMethod="1"
+    cd extras || return 1
+    cd $2 || return 1
+    cd $1 || return 1
+    echo -n "Installing $1: "
+    chmod a+x $1
+    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    echo "Success"
+    cd .. || return 1
+    cd .. || return 1
     cd .. || return 1
   fi
 }
@@ -60,6 +79,18 @@ elif [[ $1 == "update" ]]; then
   do
     updateTool $tool || exit 1
   done
+  if [[ $(uname -s) == "Linux" ]];then
+    for tool in "${extraLinuxTools[@]}"
+    do
+      extraUpdateTool $tool Linux || exit 1
+    done
+  fi
+  if [[ $(uname) == "Darwin" ]];then
+    for tool in "${extraDarwinTools[@]}"
+    do
+      extraUpdateTool $tool Darwin || exit 1
+    done
+  fi
   if [[ $usedGithubInstallMethod == "1" ]]; then copyManpage || exit 1
 else { echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."; exit 0; } ;fi
 elif [[ $1 == "all" ]];then

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.2"
+currentVersion="1.14.3"
 configuredClient=""
 configuredPython=""
 
@@ -35,13 +35,15 @@ getConfiguredPython()
 }
 
 
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
+if [[ $(uname) != "Darwin" ]];then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@";;
+      python) python "$@";;
+    esac
+  }
+fi
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
@@ -142,7 +144,7 @@ printResults()
   echo "====================================================================="
 }
 
-getConfiguredPython || exit 1
+if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
 getConfiguredClient || exit 1
 checkInternet || exit 1
 

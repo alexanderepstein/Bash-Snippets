@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.2"
+currentVersion="1.14.3"
 configuredClient=""
 directionsFlag="0"
 directionsMapFlag="0"
@@ -186,6 +186,28 @@ getStaticMap()
   rm -rf ~/temp > /dev/null || return 1
 }
 
+usage()
+{
+  cat <<EOF
+Maps
+Description: Get directions between locations, generate static maps of locations, and generate route maps for directions.
+Usage: maps [flags]
+    -u  Update Bash-Snippet Tools
+    -d  Get directions from a location to a destination
+    -r  Generate route map (must be used with the -d flag)
+    -m  Generate static map
+          * By itself will ask for a location to generate a map
+          * In conjunction with the -d flag will generate maps for the start location and the destination
+    -h  Show the help
+    -v  Get the tool version
+Examples:
+    maps -d
+    maps -d -r -m
+    maps -m
+    maps -d -m
+EOF
+}
+
 getConfiguredClient || exit 1
 checkInternet || exit 1
 ## getDirections Denver Boulder || exit 1
@@ -228,6 +250,8 @@ while getopts "drmuvh" opt; do
   esac
 done
 
+if [[ $directionsMapFlag == "1" && $directionsFlag == "0" ]];then { echo "Error the -r flag only works in conjunction with the -d flag."; exit 1; };fi
+
 if [[ $# == 0 ]]; then
   usage
   exit 0
@@ -253,6 +277,6 @@ elif [[ $directionsFlag == "1" ]];then
   if [[ $directionsMapFlag == "1" ]];then getDirectionsMap $fromLocation $toLocation || exit 1;fi
   if [[ $staticMapFlag = "1" ]];then
   echo "Generating static map for $unformattedFromLocation" && getStaticMap $fromLocation || exit 1
-  echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation || exit 1
+  echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation  || exit 1 
   fi
 fi
