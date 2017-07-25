@@ -170,7 +170,7 @@ getConfiguredPython || exit 1
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-while getopts 'ud:hv' flag; do
+while getopts 'udhv' flag; do
   case "${flag}" in
     u) update
        exit 0 ;;
@@ -179,6 +179,8 @@ while getopts 'ud:hv' flag; do
        exit 0 ;;
     v) echo "Version $currentVersion"
        exit 0 ;;
+    :) echo "Option -$OPTARG requires an argument." >&2
+     exit 1 ;;
     *) exit 1 ;;
   esac
 done
