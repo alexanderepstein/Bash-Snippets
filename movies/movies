@@ -172,7 +172,7 @@ if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-while getopts 'udhv' flag; do
+while getopts 'ud:hv' flag; do
   case "${flag}" in
     u) update
        exit 0 ;;
