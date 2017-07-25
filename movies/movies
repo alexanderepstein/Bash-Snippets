@@ -4,6 +4,7 @@
 currentVersion="1.14.3"
 configuredClient=""
 configuredPython=""
+detail=false
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -18,7 +19,6 @@ getConfiguredClient()
       echo "Error: This tool reqires either curl, wget, or fetch to be installed."
       return 1
     fi
-
 }
 
 getConfiguredPython()
@@ -32,7 +32,6 @@ getConfiguredPython()
     return 1
   fi
 }
-
 
 if [[ $(uname) != "Darwin" ]];then
   python()
@@ -65,7 +64,7 @@ checkInternet()
 getMovieInfo()
 {
   apiKey=946f500a # try not to abuse this it is a key that came from the ruby-scripts repo I link to.
-  movie=$(echo "$@" | tr " " + ) ## format the inputs to use for the api
+  movie=$((echo "$@" | tr " " + ) | sed 's/-d+//g' ) ## format the inputs to use for the api. Added sed command to filter -d flag.
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
   checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
@@ -73,15 +72,18 @@ getMovieInfo()
   # The rest of the code is just extrapolating the data with python from the JSON response
   title=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Title']" 2> /dev/null)
   year=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Year']" 2> /dev/null)
+  runtime=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Runtime']" 2> /dev/null)
   imdbScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][0]['Value']" 2> /dev/null)
   tomatoScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
+  metacriticScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][2]['Value']" 2> /dev/null)
   rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']" 2> /dev/null)
   genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']" 2> /dev/null)
   director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']" 2> /dev/null)
+  production=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Production']" 2> /dev/null)
+  boxOffice=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['BoxOffice']" 2> /dev/null)
   actors=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Actors']" 2> /dev/null)
   plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Plot']" 2> /dev/null)
-  unset movieInfo # don't need this anymore
-  unset checkResponse # don't need this anymore
+  awards=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Awards']" 2> /dev/null)
 }
 
 # Prints the movie information out in a human readable format
@@ -91,13 +93,22 @@ printMovieInfo()
   echo '=================================================='
   echo "| Title: $title"
   echo "| Year: $year"
-  if [[ $imdbScore != "" ]];then echo "| IMDB: $imdbScore";fi
-  if [[ $tomatoScore != "" ]];then echo "| Tomato: $tomatoScore";fi
-  if [[ $rated != "N/A" && $rated != "" ]];then echo "| Rated: $rated";fi
+  echo "| Runtime: $runtime"
+  if [[ $imdbScore != "" ]];then echo "| IMDB: $imdbScore"; fi
+  if [[ $tomatoScore != "" ]];then echo "| Tomato: $tomatoScore"; fi
+  if $detail; then
+    if [[ $metacriticScore != "" ]]; then echo "| Metascore: $metacriticScore"; fi fi
+  if [[ $rated != "N/A" && $rated != "" ]]; then echo "| Rated: $rated"; fi
   echo "| Genre: $genre"
   echo "| Director: $director"
   echo "| Actors: $actors"
-  if [[ $plot != "N/A" && $plot != "" ]];then echo "| Plot: $plot"; fi
+  if [[ $plot != "N/A" && $plot != "" ]]; then echo "| Plot: $plot"; fi
+  if $detail; then
+    if [[ $boxOffice != "" ]]; then echo "| Box Office: $boxOffice"; fi fi
+  if $detail; then
+    if [[ $production != "" ]]; then echo "| Production: $production"; fi fi
+  if $detail; then
+    if [[ $awards != "" ]]; then echo "| Awards: $awards"; fi fi
   echo '=================================================='
   echo
 }
@@ -151,6 +162,7 @@ usage()
   echo "  -u Update Bash-Snippet Tools"
   echo "  -h Show the help"
   echo "  -v Get the tool version"
+  echo "  -d Show detailed information"
   echo "Examples:"
   echo "  movies Argo"
   echo "  movies Inception"
@@ -160,28 +172,18 @@ if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-while getopts "uvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+while getopts 'ud:hv' flag; do
+  case "${flag}" in
+    u) update
+       exit 0 ;;
+    d) detail=true ;;
+    h) usage
+       exit 0 ;;
+    v) echo "Version $currentVersion"
+       exit 0 ;;
+    :) echo "Option -$OPTARG requires an argument." >&2
+     exit 1 ;;
+    *) exit 1 ;;
   esac
 done
 
