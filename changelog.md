@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.15.0
+
+</div>
+
+### Changes
+* Added -d option to movies
+* Updating extra tools if installed in main update pipeline
+
+<div align="center">
+
 ## Version 1.14.3
 
 </div>

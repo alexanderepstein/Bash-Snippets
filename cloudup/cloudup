@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.3"
+currentVersion="1.15.0"
 configuredClient=""
 private="0" ## state of private flag
 all="0" ## state of all flag
