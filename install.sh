@@ -75,7 +75,7 @@ else manPath="/usr/local/man/man1" ;fi
 response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]];then
-  prefix=$(echo -n "$@" | sed  s/--prefix=//g | sed  s/all//g  )
+  prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/')
   mkdir -p $prefix/bin $prefix/share/man/man1
   for tool in "${tools[@]}"
   do
