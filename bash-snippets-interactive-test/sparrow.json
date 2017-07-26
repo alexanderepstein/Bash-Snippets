@@ -1,0 +1,9 @@
+{
+  "name" : "bash-snippets-interactive-test",
+  "description" : "Run tests against BashSnippets tools with interactive prompt",
+  "version" : "0.0.2",
+  "url" : "https://github.com/alexanderepstein/Bash-Snippets",
+  "category": "utilities",
+  "sparrow_version" : "0.2.48",
+  "doc" : "README.md"
+}
