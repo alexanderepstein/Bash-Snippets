@@ -75,7 +75,8 @@ else manPath="/usr/local/man/man1" ;fi
 response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]];then
-  prefix=$(echo "$@" | sed  s/--prefix=//g | sed  s/all//g  )
+  prefix=$(echo -n "$@" | sed  s/--prefix=//g | sed  s/all//g  )
+  mkdir -p $prefix/bin $prefix/share/man/man1
   for tool in "${tools[@]}"
   do
     singleInstall $tool || exit 1
