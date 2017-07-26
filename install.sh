@@ -7,12 +7,11 @@ declare -a extraDarwinTools
 usedGithubInstallMethod="0"
 prefix="usr/local"
 
-
 askInstall()
 {
   echo -n "Do you wish to install $1 [Y/n]: "
   read -r answer
-  if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+  if [[ "$answer" == [Yy] ]]; then
     cd $1 || return 1
     echo -n "Installing $1: "
     chmod a+x $1
@@ -24,7 +23,7 @@ askInstall()
 
 updateTool()
 {
-  if [[ -f  /usr/local/bin/$1 ]];then
+  if [[ -f  /usr/local/bin/$1 ]]; then
     usedGithubInstallMethod="1"
     cd $1 || return 1
     echo -n "Installing $1: "
@@ -37,7 +36,7 @@ updateTool()
 
 extraUpdateTool()
 {
-  if [[ -f  /usr/local/bin/$1 ]];then
+  if [[ -f  /usr/local/bin/$1 ]]; then
     usedGithubInstallMethod="1"
     cd extras || return 1
     cd $2 || return 1
@@ -64,53 +63,51 @@ singleInstall()
 
 copyManpage()
 {
-  if [[ "$(uname)" == "Darwin" ]]; then manPath="$prefix/share/man/man1"
-else manPath="/usr/local/man/man1" ;fi
-  cp bash-snippets.1 $manPath 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  if [[ "$(uname)" == "Darwin" ]]; then
+    manPath="$prefix/share/man/man1"
+  else
+    manPath="/usr/local/man/man1"
+  fi
+  cp bash-snippets.1 $manPath 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
-
-
-
 
 response=$( echo "$@" | grep -Eo "\-\-prefix")
 
-if [[ $response == "--prefix" ]];then
+if [[ $response == "--prefix" ]]; then
   prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/')
   mkdir -p $prefix/bin $prefix/share/man/man1
-  for tool in "${tools[@]}"
-  do
+  for tool in "${tools[@]}"; do
     singleInstall $tool || exit 1
   done
   copyManpage || exit 1
 elif [[ $# == 0 ]]; then
-  for tool in "${tools[@]}"
-  do
+  for tool in "${tools[@]}"; do
     askInstall $tool || exit 1
   done
   copyManpage || exit 1
 elif [[ $1 == "update" ]]; then
   echo "Updating scripts..."
-  for tool in "${tools[@]}"
-  do
+  for tool in "${tools[@]}"; do
     updateTool $tool || exit 1
   done
-  if [[ $(uname -s) == "Linux" ]];then
-    for tool in "${extraLinuxTools[@]}"
-    do
+  if [[ $(uname -s) == "Linux" ]]; then
+    for tool in "${extraLinuxTools[@]}"; do
       extraUpdateTool $tool Linux || exit 1
     done
   fi
   if [[ $(uname) == "Darwin" ]];then
-    for tool in "${extraDarwinTools[@]}"
-    do
+    for tool in "${extraDarwinTools[@]}"; do
       extraUpdateTool $tool Darwin || exit 1
     done
   fi
-  if [[ $usedGithubInstallMethod == "1" ]]; then copyManpage || exit 1
-else { echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."; exit 0; } ;fi
-elif [[ $1 == "all" ]];then
-  for tool in "${tools[@]}"
-  do
+  if [[ $usedGithubInstallMethod == "1" ]]; then
+    copyManpage || exit 1
+  else
+    echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."
+    exit 0
+  fi
+elif [[ $1 == "all" ]]; then
+  for tool in "${tools[@]}"; do
     singleInstall $tool || exit 1
   done
   copyManpage || exit 1
@@ -118,8 +115,6 @@ else
   singleInstall $1 || exit 1
   copyManpage || exit 1
 fi
-
-
 
 echo -n "( •_•)"
 sleep .75
