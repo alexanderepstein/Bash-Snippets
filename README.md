@@ -255,7 +255,7 @@ Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
 
 ### For macOS via homebrew
 ```bash
-brew install chainsawbaby/formula/bash-snippets
+brew install bash-snippets
 ```
 
 ### For Sparrowhub users
