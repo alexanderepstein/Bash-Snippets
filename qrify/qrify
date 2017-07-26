@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Linyos Torovoltos github.com/linyostorovovoltos
 
-currentVersion="1.15.0"
+currentVersion="1.15.1"
 multiline="0" # flag that indicates multiline option
 
 

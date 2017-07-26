@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.15.1
+
+</div>
+
+
+### Changes
+* Added --prefix option to installer for homebrew correctly
+
+<div align="center">
+
 ## Version 1.15.0
 
 </div>
