@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.15.2
+
+</div>
+
+### Bugfixes
+* Installer path was preventing install
+
+<div align="center">
+
 ## Version 1.15.1
 
 </div>
