@@ -5,6 +5,8 @@ declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytv
 declare -a extraLinuxTools=(maps)
 declare -a extraDarwinTools
 usedGithubInstallMethod="0"
+prefix="usr/local"
+
 
 askInstall()
 {
@@ -55,19 +57,31 @@ singleInstall()
   cd $1 || exit 1
   echo -n "Installing $1: "
   chmod a+x $1
-  cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  cp $1 $prefix/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
   echo "Success"
   cd .. || exit 1
 }
 
 copyManpage()
 {
-  if [[ "$(uname)" == "Darwin" ]]; then manPath="/usr/local/share/man/man1"
+  if [[ "$(uname)" == "Darwin" ]]; then manPath="$prefix/share/man/man1"
 else manPath="/usr/local/man/man1" ;fi
   cp bash-snippets.1 $manPath 2>&1  || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
 
-if [[ $# == 0 ]]; then
+
+
+
+response=$( echo "$@" | grep -Eo "\-\-prefix")
+
+if [[ $response == "--prefix" ]];then
+  prefix=$(echo "$@" | sed  s/--prefix=//g | sed  s/all//g  )
+  for tool in "${tools[@]}"
+  do
+    singleInstall $tool || exit 1
+  done
+  copyManpage || exit 1
+elif [[ $# == 0 ]]; then
   for tool in "${tools[@]}"
   do
     askInstall $tool || exit 1
