@@ -106,11 +106,7 @@ printMovieInfo()
   if [[ $plot != "N/A" && $plot != "" ]]; then echo "| Plot: $plot"; fi
   if $detail; then
     if [[ $boxOffice != "" ]]; then echo "| Box Office: $boxOffice"; fi
-  fi
-  if $detail; then
     if [[ $production != "" ]]; then echo "| Production: $production"; fi
-  fi
-  if $detail; then
     if [[ $awards != "" ]]; then echo "| Awards: $awards"; fi
   fi
   echo '=================================================='
