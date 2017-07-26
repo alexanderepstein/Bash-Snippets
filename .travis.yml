@@ -7,7 +7,9 @@ before_install:
   - sudo apt-get install -qq vlc
   - sudo apt-get install -qq openssl
   - cpanm https://github.com/melezhik/outthentic.git --sudo --notest -q
+  - sparrow index update
+  - sparrow plg install bash-snippets-interactive-test
 
 script:
-- strun --root outthentic-test/
+- sparrow plg run bash-snippets-interactive-test --param dir=.
 - bats tests
