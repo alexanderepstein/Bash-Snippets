@@ -5,7 +5,7 @@ declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytv
 declare -a extraLinuxTools=(maps)
 declare -a extraDarwinTools
 usedGithubInstallMethod="0"
-prefix="usr/local"
+prefix="/usr/local"
 
 askInstall()
 {
