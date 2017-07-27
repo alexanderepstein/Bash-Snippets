@@ -77,6 +77,13 @@ getConfiguredClient()
     fi
 }
 
+validateExpression()
+{
+  local parsedExpression
+  parsedExpression=$(echo $1 | grep -Eo "[0-9 + -- / * . a-Z ~ :]*")
+  if [[ $parsedExpression != $1 ]];then { echo "Error: Expression contains invalid characters";return 1;}; fi
+}
+
 encodeEquation()
 {
   originalEquation=$1
@@ -174,6 +181,7 @@ elif [ $# -gt 2 ];then echo "Error: newton only accepts two arguments, operation
 
 
 validateOperation $1 || exit 1
+validateExpression $2 || exit 1
 encodeEquation $2 || exit 1
 if [[ $opType == "simple" ]];then getSimpleResponse || exit 1;fi
 printAnswer
