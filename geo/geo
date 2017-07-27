@@ -32,7 +32,7 @@ httpGet() {
 
 # Parse arguments passed + help formatting
 usage() {
-cat <<EOF
+  cat <<EOF
 Geo
 Description: Provides quick access for wan, lan, router, dns, mac, and ip geolocation data
 Usage: geo [flag]
