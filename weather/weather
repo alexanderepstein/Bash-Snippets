@@ -9,34 +9,32 @@ configuredClient=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-    if  command -v curl &>/dev/null ; then
-      configuredClient="curl"
-    elif command -v wget &>/dev/null ; then
-      configuredClient="wget"
-    elif command -v fetch &>/dev/null ; then
-      configuredClient="fetch"
-    else
-      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
-      return 1
-    fi
-
+  if  command -v curl &>/dev/null; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null; then
+    configuredClient="wget"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+    return 1
+  fi
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
-
 
 getIPWeather()
 {
   country=$(httpGet ipinfo.io/country) > /dev/null ## grab the country
-  if [[ $country == "US" ]];then ## if were in the us id rather not use longitude and latitude so the output is nicer
+  if [[ $country == "US" ]]; then ## if were in the us id rather not use longitude and latitude so the output is nicer
     city=$(httpGet ipinfo.io/city) > /dev/null
     region=$(httpGet ipinfo.io/region) > /dev/null
     region=$(echo "$region" | tr -dc '[:upper:]')
@@ -68,10 +66,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -79,16 +77,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+      if [[ "$answer" == [Yy] ]]; then
+        cd ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -96,62 +94,55 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 usage()
 {
-  echo "Weather"
-  echo "Description: Provides a 3 day forecast on your current location or a specified location."
-  echo "  With no flags Weather will default to your current location."
-  echo "Usage: weather or weather [flag] or weather [country] or weather [city] [state]"
-  echo "  weather [i] get weather in imperial units"
-  echo "  weather [m] get weather in metric units"
-  echo "  weather [Moon] grabs the phase of the moon"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "  weather"
-  echo "  weather Tokyo"
-  echo "  weather Moon"
-  echo "  weather m"
+  cat <<EOF
+Weather
+Description: Provides a 3 day forecast on your current location or a specified location.
+  With no flags Weather will default to your current location.
+Usage: weather or weather [flag] or weather [country] or weather [city] [state]
+  weather [i] get weather in imperial units
+  weather [m] get weather in metric units
+  weather [Moon] grabs the phase of the moon
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  weather
+  weather Tokyo
+  weather Moon
+  weather m
+EOF
 }
 
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-
-
-
 while getopts "uvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
 if [[ $# == "0" ]]; then
   getIPWeather
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" ]]; then
   usage
 elif [[ $1 == "update" ]]; then
   update
