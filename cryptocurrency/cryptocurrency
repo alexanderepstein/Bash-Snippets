@@ -163,7 +163,7 @@ checkInternet()
 convertCurrency()
 {
   exchangeTo=$(echo "$exchangeTo" | tr '[:upper:]' '[:lower:]')
-  exchangeRate=$(httpGet "https://api.coinmarketcap.com/v1/ticker/$reqId/?convert=$exchangeTo" | pcregrep -o2 "(\"price_$exchangeTo\")\s*:\s*.([0-9]*[.][0-9]*)") > /dev/null
+  exchangeRate=$(httpGet "https://api.coinmarketcap.com/v1/ticker/$reqId/?convert=$exchangeTo" | grep -Eo "\"price_$exchangeTo\": \"[0-9 .]*" | sed s/"\"price_$exchangeTo\": \""//g) > /dev/null
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   exchangeTo=$(echo "$exchangeTo" | tr '[:lower:]' '[:upper:]')
   base=$(echo "$base" | tr '[:lower:]' '[:upper:]')
