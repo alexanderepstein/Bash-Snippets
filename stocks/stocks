@@ -151,6 +151,7 @@ update()
 }
 
 usage()
+{
   cat <<EOF
 Stocks
 Description: Finds the latest information on a certain stock.
