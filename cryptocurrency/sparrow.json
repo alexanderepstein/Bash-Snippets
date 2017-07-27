@@ -1,9 +1,0 @@
-{
-  "name" : "cryptocurrency",
-  "description" : "Simple wrapper for cryptocurrency script from Bash-Snippets",
-  "version" : "0.0.1",
-  "url" : "https://github.com/alexanderepstein/Bash-Snippets#cryptocurrency",
-  "category": "utilities",
-  "sparrow_version" : "0.2.47",
-  "doc" : "sparrow.md"
-}
