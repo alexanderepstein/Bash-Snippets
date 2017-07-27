@@ -96,7 +96,7 @@ Provides data for  wan, lan, router, dns, mac, and ip geolocation
 
 </div>
 
-Written by: <a href="https://github.com/jakewmeyer">Jake Meyer</a>
+Written by: [Jake Meyer](https://github.com/jakewmeyer)
 
 ## Movies
 
@@ -122,7 +122,7 @@ This is useful for sending links or saving a string of commands to your phone
 
 </div>
 
-Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
+Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 
 ## Short
@@ -178,8 +178,8 @@ Valid items are: shows, books, music, artists, movies, authors, games
 </div>
 
 ### Needs an API Key (don't worry it's free)
-* Get the API key here: <a href="https://tastedive.com/account/api_access">taste dive</a>
-* After getting the API key add the following line to your ~/.bash_profile: ```export TASTE_API_KEY="yourAPIKeyGoesHere"```
+* Get the API key [here](https://tastedive.com/account/api_access)
+* After getting the API key run the following line ```export TASTE_API_KEY="yourAPIKeyGoesHere" >> ~/.bash_profile```
 
 
 ## todo
@@ -233,23 +233,24 @@ You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]```
 
 </div>
 
-Written by: <a href="http://github.com/linyostorovovoltos">Linyos Torovoltos</a>
+Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 
 ## API's Used
-* To get location based on ip address: <a href="https://ipinfo.io">ipinfo.io</a>
-* To get and print weather based on a location: <a href="http://wttr.in">wttr.in</a>
-* To grab the stock information in JSON format: <a href="https://www.alphavantage.co">alphavantage.co</a>
-* To grab the latest exchange rate between currencies: <a href="http://fixer.io">fixer.io</a>
-* To grab information on movies: <a href="http://www.omdbapi.com/">omdbapi.com</a>
-* To grab recommendations based on an item: <a href="https://tastedive.com">tastedive.com</a>
-* To determine masked link behind url shortner: <a href="http://x.datasig.io">x.datasig.io</a>
-* To grab cheatsheets for commands and languages: <a href="http://cheat.sh/">cheat.sh</a>
-* To encode text into a qr code: <a href="http://qrenco.de">qrenco.de</a>
-* To grab a list of a users repositories: <a href="https://developer.github.com/v3/">github.com</a>
-* To upload a repository to bitbucket: <a href="https://developer.atlassian.com/bitbucket/api/2/reference/">bitbucket.org</a>
+* To get location based on ip address: [ipinfo.io](https://ipinfo.io)
+* To get and print weather based on a location: [wttr.in](http://wttr.in)
+* To grab the stock information in JSON format: [alphavantage.co](https://www.alphavantage.co)
+* To grab the latest exchange rate between currencies: [fixer.io](http://fixer.io)
+* To grab information on movies: [omdbapi.com](http://www.omdbapi.com/)
+* To grab recommendations based on an item: [tastedive.com](https://tastedive.com)
+* To determine masked link behind url shortner: [x.datasig.io](http://x.datasig.io)
+* To grab cheatsheets for commands and languages: [cheat.sh](http://cheat.sh/)
+* To encode text into a qr code: [qrenco.de](http://qrenco.de)
+* To grab a list of a users repositories: [github.com](https://developer.github.com/v3/)
+* To upload a repository to bitbucket: [bitbucket.org](https://developer.atlassian.com/bitbucket/api/2/reference/)
+* To get your WAN ip address: [ipify](https://www.ipify.org/)
 
-#### Inspired by: <a href="https://github.com/jakewmeyer/Ruby-Scripts">Ruby-Scripts</a>
+#### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 
 ## Installing
 
