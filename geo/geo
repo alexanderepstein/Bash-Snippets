@@ -66,7 +66,7 @@ version() {
 
 # Fetches WAN ip address
 wan_search() {
-  dig +short myip.opendns.com @resolver1.opendns.com
+  httpGet https://api.ipify.org?format=json | grep -Eo "[0-9.]*"
 }
 
 # Fetches current LAN ip address
@@ -186,7 +186,7 @@ optspec="uwlrdm:go:a:vh*:"
 while getopts "$optspec" optchar
 do
     case "${optchar}" in
-        w) wan_search ;;
+        w) getConfiguredClient && checkInternet && wan_search || exit 1;;
         l) lan_search ;;
         r) router_search ;;
         d) dns_search ;;
