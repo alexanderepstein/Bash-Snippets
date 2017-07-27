@@ -181,7 +181,7 @@ printInfo()
 usage()
 {
   cat <<EOF
-Taste"
+Taste
 Description: A recommendation engine that provides 3 similar items based on some input topic.
   Taste also has the ability to provide information on the item of interest.
   Supports: shows, books, music, artists, movies, authors, games
