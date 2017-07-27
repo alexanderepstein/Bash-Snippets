@@ -9,26 +9,25 @@ configuredClient=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-    if  command -v curl &>/dev/null ; then
+    if  command -v curl &>/dev/null; then
       configuredClient="curl"
-    elif command -v wget &>/dev/null ; then
+    elif command -v wget &>/dev/null; then
       configuredClient="wget"
-    elif command -v fetch &>/dev/null ; then
+    elif command -v fetch &>/dev/null; then
       configuredClient="fetch"
     else
       echo "Error: This tool reqires either curl, wget, or fetch to be installed."
       return 1
     fi
-
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -40,7 +39,7 @@ checkValidCurrency()
       && $1 != "IDR" && $1 != "ILS" && $1 != "INR" && $1 != "JPY" && $1 != "KRW" \
       && $1 != "MXN" && $1 != "MYR" && $1 != "NOK" && $1 != "NZD" && $1 != "PHP" \
       && $1 != "PLN" && $1 != "RON" && $1 != "RUB" && $1 != "SEK" && $1 != "SGD" \
-    && $1 != "THB" && $1 != "TRY" && $1 != "USD" && $1 != "ZAR" ]];then
+      && $1 != "THB" && $1 != "TRY" && $1 != "USD" && $1 != "ZAR" ]]; then
     echo "1"
   else
     echo "0"
@@ -54,19 +53,20 @@ getBase()
   echo -n "What is the base currency: "
   read -r base
   base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1"  ]];then
+  if [[ $(checkValidCurrency $base) == "1"  ]]; then
     unset base
     echo "Invalid base currency"
     getBase
   fi
 }
+
 ## Checks base currency from the user and validates it with all the possible currency
 ## types available on the API (requires argument)
 checkBase()
 {
   base=$1
   base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1" ]];then
+  if [[ $(checkValidCurrency $base) == "1" ]]; then
     unset base
     echo "Invalid base currency"
     exit 1
@@ -80,7 +80,7 @@ getExchangeTo()
   echo -n "What currency to exchange to: "
   read -r exchangeTo
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
+  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     getExchangeTo
@@ -93,7 +93,7 @@ checkExchangeTo()
 {
   exchangeTo=$1
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]];then
+  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     exit 1
@@ -136,14 +136,16 @@ checkInternet()
 convertCurrency()
 {
   exchangeRate=$(httpGet "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
-  exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
-  echo
-  echo "========================="
-  echo "| $base to $exchangeTo"
-  echo "| Rate: $exchangeRate"
-  echo "| $base: $amount"
-  echo "| $exchangeTo: $exchangeAmount"
-  echo "========================="
+  exchangeAmount=$(echo "$exchangeRate * $amount" | bc)
+  cat <<EOF
+
+=========================
+| $base to $exchangeTo
+| Rate: $exchangeRate
+| $base: $amount
+| $exchangeTo: $exchangeAmount
+=========================
+EOF
 }
 
 update()
@@ -156,10 +158,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -167,16 +169,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+      if [[ "$answer" == [Yy] ]]; then
+        cd  ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName || { echo 'Update Failed' ; exit 1 ;}
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -184,60 +186,56 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 
 usage()
 {
-  echo "Currency"
-  echo "Description: A realtime currency converter."
-  echo "   With no flags it will guide you through the currency exchange"
-  echo "Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Supported Currencies:"
-  echo " _______________________"
-  echo "| AUD | BGN | BRL | CAD |"
-  echo "| CHF | CNY | CZK | DKK |"
-  echo "| EUR | GBP | HKD | HRK |"
-  echo "| HUF | IDR | ILS | INR |"
-  echo "| JPY | KRW | MXN | MYR |"
-  echo "| NOK | NZD | PHP | PLN |"
-  echo "| RON | RUB | SEK | SGD |"
-  echo "| THB | TRY | USD | ZAR |"
-  echo " _______________________"
-  echo "Examples:"
-  echo "  currency EUR USD 12.35"
-  echo "  currency"
+  cat <<EOF
+Currency
+Description: A realtime currency converter.
+   With no flags it will guide you through the currency exchange
+Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Supported Currencies:
+ _______________________
+| AUD | BGN | BRL | CAD |
+| CHF | CNY | CZK | DKK |
+| EUR | GBP | HKD | HRK |
+| HUF | IDR | ILS | INR |
+| JPY | KRW | MXN | MYR |
+| NOK | NZD | PHP | PLN |
+| RON | RUB | SEK | SGD |
+| THB | TRY | USD | ZAR |
+ _______________________
+Examples:
+  currency EUR USD 12.35
+  currency
+EOF
 }
 
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
 while getopts "uvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
@@ -248,7 +246,7 @@ if [[ $# == 0 ]]; then
   convertCurrency # grab the exhange rate and perform the conversion
   exit 0
 elif [[ $# == "1" ]]; then
-  if [[ $1 == "update" ]];then
+  if [[ $1 == "update" ]]; then
     update
   elif [[ $1 == "help" ]]; then
     usage
@@ -261,7 +259,7 @@ elif [[ $# == "2" ]]; then
   echo "Not a valid argument"
   usage
   exit 1
-elif [[ $# == "3" ]];then
+elif [[ $# == "3" ]]; then
   checkBase $1
   checkExchangeTo $2
   checkAmount $3
