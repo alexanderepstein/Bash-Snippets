@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.2"
+currentVersion="1.15.2"
 state=""
 configuredClient=""
 
 checkOpenSSL()
 {
-  if  ! command -v openssl &>/dev/null ;then
+  if  ! command -v openssl &>/dev/null; then
     echo "Error: to use this tool openssl must be installed" >&2
     return 1
   else
@@ -17,25 +17,25 @@ checkOpenSSL()
 
 getConfiguredClient()
 {
-    if  command -v curl &>/dev/null ; then
-      configuredClient="curl"
-    elif command -v wget &>/dev/null ; then
-      configuredClient="wget"
-    elif command -v fetch &>/dev/null ; then
-      configuredClient="fetch"
-    else
-      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
-      return 1
-    fi
+  if command -v curl &>/dev/null; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null; then
+    configuredClient="wget"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, or fetch to be installed."
+    return 1
+  fi
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -65,10 +65,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -76,16 +76,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+      if [[ "$answer" == [Yy] ]]; then
+        cd  ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
         git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
-        chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
+        chmod a+x install.sh # This might be necessary in your case but wasn't in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -93,92 +93,88 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 
 usage()
 {
-  echo "Crypt"
-  echo "Description: A wrapper around openssl that facilitates encrypting and decrypting files."
-  echo "Usage: crypt [flag] [inputFile] [outputFile]"
-  echo "  -e Encrypt the inputFile and store it in the outputFile"
-  echo "  -d Decrypt the inputFile and store it in the outputFile"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "  crypt -e mySecretFile.txt myEncryptedFile.jpg (change filetype so default program is incorrect)"
-  echo "  crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)"
+  cat <<EOF
+Crypt
+Description: A wrapper around openssl that facilitates encrypting and decrypting files.
+Usage: crypt [flag] [inputFile] [outputFile]
+  -e  Encrypt the inputFile and store it in the outputFile
+  -d  Decrypt the inputFile and store it in the outputFile
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  crypt -e mySecretFile.txt myEncryptedFile.jpg (change filetype so default program is incorrect)
+  crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)
+EOF
 }
 
 checkOpenSSL || exit 1
 
 while getopts "huve:d:" opt; do ## alows for using options in bash
   case $opt in
-    e) ## when trying to encrypt run this
-      if [[ $state != "decrypt" ]];then
-        state="encrypt"
-      else
-        echo "Error: the -d and -e options are mutally exclusive" >&2
+    e)  ## when trying to encrypt run this
+        if [[ $state != "decrypt" ]]; then
+          state="encrypt"
+        else
+          echo "Error: the -d and -e options are mutally exclusive" >&2
+          exit 1
+        fi
+        if [[ $# -ne 3 ]]; then
+          echo "Option -e needs and only accepts two arguments [file to encrypt] [output file]" >&2
+          exit 1
+        fi
+        ;;
+    \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
-      fi
-      if [[ $# -ne 3 ]]; then
-        echo "Option -e needs and only accepts two arguments [file to encrypt] [output file]" >&2
+        ;;
+    d)  ## when trying to decrypt run this
+        if [[ $state != "encrypt" ]]; then
+          state="decrypt"
+        else
+          echo "Error: the -e and -d options are mutally exclusive" >&2
+          exit 1
+        fi
+        if [[ $# -ne 3 ]]; then
+          echo "Option -d needs and only accepts two arguments [file to decrypt] [output file]" >&2
+          exit 1
+        fi
+        ;;
+    u)  getConfiguredClient || exit 1
+        update
+        exit 0
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    :)  ## will run when no arguments are provided to to e or d options
+        echo "Option -$OPTARG requires an argument." >&2
         exit 1
-      fi
-
-    ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    d) ## when trying to decrypt run this
-      if [[ $state != "encrypt" ]];then
-        state="decrypt"
-      else
-        echo "Error: the -e and -d options are mutally exclusive" >&2
-        exit 1
-      fi
-      if [[ $# -ne 3 ]]; then
-        echo "Option -d needs and only accepts two arguments [file to decrypt] [output file]" >&2
-        exit 1
-      fi
-    ;;
-    u)
-      getConfiguredClient || exit 1
-      update
-      exit 0
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    :) ## will run when no arguments are provided to to e or d options
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+        ;;
   esac
 done
 
 if [[ $# == 0 ]]; then
   usage
   exit 0
-elif [[ $1 == "update" ]];then
+elif [[ $1 == "update" ]]; then
   getConfiguredClient || exit 1
   update
   exit 0
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" ]]; then
   usage
   exit 0
-elif [[ $state == "encrypt" ]];then
+elif [[ $state == "encrypt" ]]; then
   encrypt $2 $3 || exit 1
   exit 0
-elif [[ $state == "decrypt" ]];then
+elif [[ $state == "decrypt" ]]; then
   decrypt $2 $3 || exit 1
   exit 0
 fi

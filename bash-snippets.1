@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BASH\-SNIPPETS" "1" "July 2017" "ff" ""
+.TH "BASH\-SNIPPETS" "1" "July 2017" "" ""
 .
 .SH "NAME"
 \fBbash\-snippets\fR \- A collection of small bash scripts for heavy terminal users
@@ -262,6 +262,9 @@ Usage: movies [flag] or movies [movieToSearch]
 .
 .IP "\(bu" 4
 \-v Get the tool version
+.
+.IP "\(bu" 4
+\-d Show detailed information
 .
 .IP "" 0
 .
@@ -566,7 +569,7 @@ ytview \-c Numberphile
 With any of the installed tools you can automate the update by running it with the \-u option or passing in update as the arguments
 .
 .IP "\(bu" 4
-\fBstocks update\fR
+stocks update
 .
 .IP "" 0
 .
@@ -574,7 +577,7 @@ With any of the installed tools you can automate the update by running it with t
 or
 .
 .IP "\(bu" 4
-\fBstocks \-u\fR
+stocks \-u
 .
 .IP "" 0
 .
@@ -592,16 +595,13 @@ cd into the Bash\-Snippets directory: \fBcd Bash\-Snippets\fR
 .nf
 
 To go through a guided uninstall
-
-* `\./uninstall\.sh`
-
-To uninstall individual scripts
-
-* `cd weather`
-
-* `\./uninstall\.sh`
 .
 .fi
+.
+.IP "" 0
+.
+.IP "\(bu" 4
+\&\./uninstall\.sh
 .
 .IP "" 0
 .

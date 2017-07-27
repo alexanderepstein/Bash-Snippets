@@ -1,31 +1,30 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.2"
+currentVersion="1.15.2"
 configuredClient=""
 configuredPython=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."
     return 1
   fi
-
 }
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null ; then
+  if  command -v python2 &>/dev/null; then
     configuredPython="python2"
-  elif command -v python &>/dev/null ; then
+  elif command -v python &>/dev/null; then
     configuredPython="python"
   else
     echo "Error: This tool requires python 2 to be installed."
@@ -33,22 +32,23 @@ getConfiguredPython()
   fi
 }
 
-
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
+if [[ $(uname) != "Darwin" ]]; then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@" ;;
+      python)  python "$@" ;;
+    esac
+  }
+fi
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -63,7 +63,7 @@ getStockInformation()
 {
   stockInfo=$(httpGet  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$1&apikey=KPCCCRJVMOGN9L6T") > /dev/null #grab the JSON response
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol" ; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
+  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol"; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
   # The rest of the code is just extrapolating the data with python from the JSON response
   exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']")
   latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['03. Latest Price']")
@@ -87,9 +87,9 @@ printStockInformation()
   echo "============================================="
   echo "| Exchange Name: $exchangeName"
   echo "| Latest Price: $latestPrice"
-  if [[ $open != "--" ]];then echo "| Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
-  if [[ $high != "--" ]];then echo "| High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
-  if [[ $low != "--" ]];then echo "| Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
+  if [[ $open != "--" ]]; then echo "| Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
+  if [[ $high != "--" ]]; then echo "| High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
+  if [[ $low != "--" ]]; then echo "| Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
   echo "| Close (Previous Trading Day): $close"
   echo "| Price Change: $priceChange"
   if [[ $priceChangePercentage != "%" ]];then echo "| Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
@@ -120,10 +120,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -131,16 +131,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+      if [[ "$answer" == [Yy] ]]; then
+        cd  ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
         git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
-        ./$nameOfInstallFile "update" ||  exit 1
+        ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -148,60 +148,53 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 usage()
-{
-  echo "Stocks"
-  echo "Description: Finds the latest information on a certain stock."
-  echo "Usage: stocks [flag] or stocks [company/ticker]"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "  stocks AAPL"
-  echo "  stocks Tesla"
+  cat <<EOF
+Stocks
+Description: Finds the latest information on a certain stock.
+Usage: stocks [flag] or stocks [company/ticker]
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  stocks AAPL
+  stocks Tesla
+EOF
 }
 
-getConfiguredPython || exit 1
+if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
 
-
 while getopts "uvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
-
-if [[ $1 == "update" ]];then
+if [[ $1 == "update" ]]; then
   update
   exit 0
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" ]]; then
   usage
   exit 0
-elif [[ $# == "0" ]];then
+elif [[ $# == "0" ]]; then
   usage
   exit 0
 else
