@@ -8,25 +8,24 @@ configuredPython=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."
     return 1
   fi
-
 }
 
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null ; then
+  if  command -v python2 &>/dev/null; then
     configuredPython="python2"
-  elif command -v python &>/dev/null ; then
+  elif command -v python &>/dev/null; then
     configuredPython="python"
   else
     echo "Error: This tool requires python 2 to be installed."
@@ -34,13 +33,12 @@ getConfiguredPython()
   fi
 }
 
-
 if [[ $(uname) != "Darwin" ]];then
   python()
   {
     case "$configuredPython" in
-      python2) python2 "$@";;
-      python) python "$@";;
+      python2) python2 "$@" ;;
+      python)  python "$@" ;;
     esac
   }
 fi
@@ -49,9 +47,9 @@ fi
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -70,10 +68,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -81,16 +79,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+      if [[ "$answer" == [Yy] ]]; then
+        cd  ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
         git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -102,23 +100,25 @@ update()
 
 usage()
 {
-  echo "Short"
-  echo "Description: Unmasks shortended urls."
-  echo "Usage: short [shortURL] or short [flag]"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Example:"
-  echo "   Input: short tinyurl.com/jhkj"
-  echo "   Output: http://possiblemaliciouswebsiteornot.com"
+  cat <<EOF
+Short
+Description: Unmasks shortended urls.
+Usage: short [shortURL] or short [flag]
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Example:
+   Input:  short tinyurl.com/jhkj
+   Output: http://possiblemaliciouswebsiteornot.com
+EOF
 }
 
 expandURL()
 {
   testURL=$( echo $1 | cut -c1-8 )
-  if [[ $testURL != "https://" ]];then
+  if [[ $testURL != "https://" ]]; then
     testURL=$( echo $1 | cut -c1-7 )
-    if [[ $testURL != "http://" ]];then
+    if [[ $testURL != "http://" ]]; then
       url="http://$1"
     else
       url=$1
@@ -127,8 +127,8 @@ expandURL()
     url=$1
   fi
   response=$(httpGet http://x.datasig.io/short?url=$url)
-  errorCheck=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2>  /dev/null  )
-  if [[ $errorCheck == "Error in /short" ]];then
+  errorCheck=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2> /dev/null  )
+  if [[ $errorCheck == "Error in /short" ]]; then
   echo "Error: 404 could not find the website"
   return 1
 fi
@@ -138,38 +138,35 @@ fi
 
 printResults()
 {
-  echo "====================================================================="
-  echo "Short URL: $url"
-  echo "Expanded URL: $expandedURL"
-  echo "====================================================================="
+  cat <<EOF
+=====================================================================
+Short URL:    $url
+Expanded URL: $expandedURL
+=====================================================================
+EOF
 }
 
-if [[ $(uname) != "Darwin" ]];then getConfiguredPython || exit 1;fi
+if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
 while getopts "uvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
@@ -178,7 +175,7 @@ if [[ $# == 0 ]]; then
   usage
   exit 0
 elif [[ $# == "1" ]]; then
-  if [[ $1 == "update" ]];then
+  if [[ $1 == "update" ]]; then
     update
   elif [[ $1 == "help" ]]; then
     usage
