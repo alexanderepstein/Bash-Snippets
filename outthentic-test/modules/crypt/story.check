@@ -1,5 +1,0 @@
-begin:
-Crypt
-Description: A wrapper around openssl that facilitates encrypting and decrypting files.
-Usage: crypt [flag] [inputFile] [outputFile]
-end:

@@ -1,3 +1,0 @@
-* help info
-* USD -> RUB convertor
-* USD -> RUB convertor ( zero amount )
