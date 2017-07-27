@@ -5,7 +5,7 @@ currentVersion="1.15.2"
 configuredClient=""
 private="0" ## state of private flag
 all="0" ## state of all flag
-if [ -d ~/temp ];then rm -rf ~/temp; fi ## if the temp folder exists we want to delete it just in case it was left over from a fatal error
+if [ -d ~/temp ]; then rm -rf ~/temp; fi ## if the temp folder exists we want to delete it just in case it was left over from a fatal error
 source="0"
 tStamp="0"
 
@@ -13,17 +13,16 @@ tStamp="0"
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."
     return 1
   fi
-
 }
 
 checkInternet()
@@ -35,9 +34,9 @@ checkInternet()
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -52,10 +51,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -63,16 +62,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+      if [[ "$answer" == [Yy] ]] ;then
+        cd  ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName ||  { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -80,7 +79,6 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 ## This grabs the users bitbucket info could be improved by making sure username exists
@@ -88,7 +86,7 @@ getBitbucketInfo()
 {
   echo -n 'Enter your Bitbucket username: '
   read bbUsername
-  if [[ $bbUsername == "1" ]];then
+  if [[ $bbUsername == "1" ]]; then
     echo  "Using github username as bitbucket username"
     bbUsername=$ghUsername
   fi
@@ -98,15 +96,17 @@ getBitbucketInfo()
 
 backupRepo()
 {
-
   cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
   repoSlug=$(echo $repoName | tr '[:upper:]' '[:lower:]')
-  if [[ $tStamp == "0" ]];then { echo "Attempting to delete existing bitbucket repostiory"; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoSlug"  > /dev/null;};fi ## if no timestamp then repo will not be unique we must look to delete old repo
-  if [[ $private == "1" ]];then echo "Creating private repository for $repoName"
-  else echo "Creating public repository for $repoName";fi
-  if [[ $tStamp == "1" ]];then ## create the repository with a timestamp appended to repo name
+  if [[ $tStamp == "0" ]]; then { echo "Attempting to delete existing bitbucket repostiory"; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoSlug" > /dev/null; }; fi ## if no timestamp then repo will not be unique we must look to delete old repo
+  if [[ $private == "1" ]]; then
+    echo "Creating private repository for $repoName"
+  else
+    echo "Creating public repository for $repoName"
+  fi
+  if [[ $tStamp == "1" ]]; then ## create the repository with a timestamp appended to repo name
     timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
-    if [[ $private == "1" ]];then # if so we will use --data is_private=true when creating repository
+    if [[ $private == "1" ]]; then # if so we will use --data is_private=true when creating repository
       httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private=true > /dev/null || { echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     else
       httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null || { echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
@@ -114,7 +114,7 @@ backupRepo()
     echo "Setting new remote url"
     git remote set-url origin "https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git" > /dev/null || return 1 ## switch the remote over to bitbucket rather than github
   else # we are creating a reoo without a timestamp appended name
-    if [[ $private == "1" ]];then # if so we will use --data is_private=true when creating repository
+    if [[ $private == "1" ]]; then # if so we will use --data is_private=true when creating repository
       httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName --data is_private=true > /dev/null
     else
       httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName > /dev/null
@@ -125,11 +125,10 @@ backupRepo()
   echo "Uploading $repoName to bitbucket"
   git push -q --progress origin --all > /dev/null || return 1 ## pushes al files to github and most of the repo history
   echo "Uploading the tags for $repoName"
-  git push -q --progress origin --tags > /dev/null || { echo "Tags for $repoName not succesfully backed up."; return 1;}  ## have to push tags here since --tags and --all are mutually exclusive
+  git push -q --progress origin --tags > /dev/null || { echo "Tags for $repoName not succesfully backed up."; return 1; } ## have to push tags here since --tags and --all are mutually exclusive
   echo "Successfully backedup $repoName"
   rm -rf ~/temp #if we have succesfully backedup the repo we dion't need this anymore and if we do we will recreate it
 }
-
 
 ## When cloudup is called with no flags
 getGitHubRepoInfo()
@@ -160,17 +159,15 @@ cloneGitHubRepo()
 ## Grabs the last 100 updated repos and greps to grab the repository names and puts them in an array called repoNames
 getGithubRepoNames()
 {
-  for pageNumber in {1..100} ## iterate through 100 possible pages
-  do
+  for pageNumber in {1..100}; do ## iterate through 100 possible pages
     response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100&page=$pageNumber") ## grab the original response
     repoResponse=$(echo $response | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g ) ## extract the repo names from the response
     forkResponse=($(echo $response | grep -Eo '"fork": [a-Z]*' | cut -d " " -f 2 | sed  s/"'"//g  )) ## extract the fork status of each repo
     count=0  ## used to iterate through the fork statuses
-    if [[ $repoResponse == "" ]];then break;fi ## will only break if the page is empty
-    for repo in $repoResponse ## go through each repo
-    do
-      if [[ $source == "1" ]];then ## if the user set the source flag
-        if [[ ${forkResponse[$count]} == "false" ]];then repoNames+=("$repo"); fi ## if they are the owner of the repository add it to the list of repoNames
+    if [[ $repoResponse == "" ]]; then break; fi ## will only break if the page is empty
+    for repo in $repoResponse; do ## go through each repo
+      if [[ $source == "1" ]]; then ## if the user set the source flag
+        if [[ ${forkResponse[$count]} == "false" ]]; then repoNames+=("$repo"); fi ## if they are the owner of the repository add it to the list of repoNames
         count=$(echo $count + 1 | bc) ## increment the counter
       else ## the user didnt set the source flag
         repoNames+=("$repo") ## add all repos in repoResponse to repoNames
@@ -181,65 +178,64 @@ getGithubRepoNames()
 
 usage()
 {
-  echo "Cloudup"
-  echo "Description: Backs up a users github repositories to your bitbucket account."
-  echo "  With no flags cloudup will guide you through backing up a single repository"
-  echo "Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]"
-  echo "  -p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)"
-  echo "  -a Backup all github repositories"
-  echo "  -s Only backup repositories that you have created (no forks) (only works in conjunction with the -a flag)"
-  echo "  -t Backup the repository with a timestamp added to the repostiory name (will always create a new unique bitbucket repo)"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "   cloudup"
-  echo "   cloudup -p -a"
-  echo "   cloudup -a -s"
-  echo "   cloudup -t"
-  echo "   cloudup -a -s -t -p"
-  echo "   cloudup -p nameOfRepo1 nameOfRepo2"
-  echo "   cloudup nameOfRepo"
-  echo "   cloudup -a"
+  cat <<EOF
+Cloudup
+Description: Backs up a users github repositories to your bitbucket account.
+  With no flags cloudup will guide you through backing up a single repository
+Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]
+  -p  Upload the repositor(y)(ies) as private to bitbucket (must have private
+      repo ability on bitbucket)
+  -a  Backup all github repositories
+  -s  Only backup repositories that you have created (no forks) (only works in
+      conjunction with the -a flag)
+  -t  Backup the repository with a timestamp added to the repostiory name (will
+      always create a new unique bitbucket repo)
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  cloudup
+  cloudup -p -a
+  cloudup -a -s
+  cloudup -t
+  cloudup -a -s -t -p
+  cloudup -p nameOfRepo1 nameOfRepo2
+  cloudup nameOfRepo
+  cloudup -a
+EOF
 }
 
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
 while getopts "tspauvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
     s)  source="1"  ;;
     p)  private="1" ;;
     t)  tStamp="1"  ;;
-    h)
-      usage
-      exit 0
-    ;;
+    h)  usage
+        exit 0
+        ;;
     a)  all="1" ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
-
-if [[ $source == "1" && $all == "0" ]];then { echo "Error: the -s flag only works in conjunction with the -a flag."; exit 1; };fi ## check if the source flag was used correctly (no need to have source flag when specifying the repositories)
-if [[ $configuredClient != "curl" ]];then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1;};fi ## we have to have the ability to delete an unique repo which is possible with curl -X DELETE
+if [[ $source == "1" && $all == "0" ]]; then { echo "Error: the -s flag only works in conjunction with the -a flag."; exit 1; }; fi ## check if the source flag was used correctly (no need to have source flag when specifying the repositories)
+if [[ $configuredClient != "curl" ]]; then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1; }; fi ## we have to have the ability to delete an unique repo which is possible with curl -X DELETE
 if [[ $# == "1" ]]; then # check for keywords
-  if [[ $1 == "update" ]];then
+  if [[ $1 == "update" ]]; then
     update
     exit 0
   elif [[ $1 == "help" ]]; then
@@ -248,26 +244,25 @@ if [[ $# == "1" ]]; then # check for keywords
   fi
 fi
 
-
-if [[ $all == "0" ]];then
-  if [[ ($private == "0" && $tStamp == "0" && $1 != "")]];then ## checking for an arguments after possible flags if so then run through the arguments (repositories) and back them up
+if [[ $all == "0" ]]; then
+  if [[ ($private == "0" && $tStamp == "0" && $1 != "")]]; then ## checking for an arguments after possible flags if so then run through the arguments (repositories) and back them up
     getGitHubUserInfo || exit 1
     getBitbucketInfo || exit 1
-    for i in "$@"; do  ## if private is not on as a flag start rpping through them
+    for i in "$@"; do ## if private is not on as a flag start rpping through them
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
-      backupRepo  || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
+      backupRepo || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
       echo
     done
     exit 0
-  elif [[ ( $private == "0" && $tStamp == "0" &&  $1 == "" ) || ( $private == "1" && $tStamp == "0" && $2 == "" ) || ( $private == "0" && $tStamp == "1" && $2 == "" ) || ( $private == "1" && $tStamp == "1" && $3 == "" )  ]];then ## check for empty arguments after all possible flags, this will intiate a guided backup
+  elif [[ ( $private == "0" && $tStamp == "0" &&  $1 == "" ) || ( $private == "1" && $tStamp == "0" && $2 == "" ) || ( $private == "0" && $tStamp == "1" && $2 == "" ) || ( $private == "1" && $tStamp == "1" && $3 == "" )  ]]; then ## check for empty arguments after all possible flags, this will intiate a guided backup
     getGitHubUserInfo || exit 1
     getGitHubRepoInfo || exit 1
     getBitbucketInfo || exit 1
     echo
     cloneGitHubRepo || exit 1
-    backupRepo  || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
+    backupRepo || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
     exit 0
   else ## flags are set but arguments are also provided
     firstArg=$(echo $private + $tStamp + 1 | bc)
@@ -277,7 +272,7 @@ if [[ $all == "0" ]];then
       repoName=$i
       echo "Starting to backup $repoName"
       cloneGitHubRepo || exit 1
-      backupRepo  || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
+      backupRepo || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
       echo
     done
     exit 0
@@ -287,8 +282,7 @@ else
   getGithubRepoNames || exit 1
   getBitbucketInfo || exit 1
   echo
-  for repo in "${repoNames[@]}"
-  do
+  for repo in "${repoNames[@]}"; do
     repoName=$repo
     echo "Starting to backup $repoName"
     cloneGitHubRepo || exit 1
