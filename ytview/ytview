@@ -2,24 +2,24 @@
 # Author: Linyos Torovoltos https://github.com/linyostorovovoltos
 # Modifications: Alexander Epstein https://github.com/alexanderepstein
 
-if [[ -d $HOME/.cache/ytview ]];then  rm -rf $HOME/.cache/ytview/ ;fi
+if [[ -d $HOME/.cache/ytview ]]; then rm -rf $HOME/.cache/ytview/; fi
 
 player=""
 configuredClient=""
-currentVersion="1.14.2"
+currentVersion="1.15.2"
 flag=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
-    echo "Error: This tool reqires either curl, wget, or fetch to be installed."  >&2
+    echo "Error: This tool reqires either curl, wget, or fetch to be installed." >&2
     return 1
   fi
 }
@@ -33,9 +33,9 @@ checkInternet()
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
 
@@ -49,10 +49,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -60,16 +60,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+      if [[ "$answer" == [Yy] ]]; then
+        cd ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; }; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -81,45 +81,40 @@ update()
 
 getConfiguredPlayer()
 {
-  if [[ "$OSTYPE" == "linux"* ]];then
-    if command -v vlc &>/dev/null;then
+  if [[ $(uname -s) == "Linux" ]]; then
+    if command -v vlc &>/dev/null; then
       player="vlc"
-    elif  command -v mpv &>/dev/null;then
+    elif  command -v mpv &>/dev/null; then
       player="mpv"
-    elif command -v mplayer &>/dev/null;then
+    elif command -v mplayer &>/dev/null; then
       player="mplayer"
     else
-      echo "Error: no supported video player installed (vlc, mpv or mplayer)"  >&2
+      echo "Error: no supported video player installed (vlc, mpv or mplayer)" >&2
       return 1
     fi
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    if [[ -f /Applications/VLC.app/Contents/MacOS/VLC ]];then
+  elif [[ $(uname -s) == "Darwin" ]]; then
+    if [[ -f /Applications/VLC.app/Contents/MacOS/VLC ]]; then
       player="/Applications/VLC.app/Contents/MacOS/VLC"
     else
-      echo "Error: vlc is not installed and it is required to play videos"  >&2
+      echo "Error: vlc is not installed and it is required to play videos" >&2
       return 1
     fi
   fi
 }
 
-
 # Get the video titles
 channelview()
 {
-
   mkdir -p $HOME/.cache/ytview/channels/$channel || return 1
-  httpGet "https://www.youtube.com/user/$channel/videos?hl=en" | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}'  | sed  s/'&#39;'/"'"/g | sed  s/'&amp;'/'and'/g > $HOME/.cache/ytview/channels/$channel/titles.txt || return 1
+  httpGet "https://www.youtube.com/user/$channel/videos?hl=en" | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}'  | sed  s/'&#39;'/"'"/g | sed s/'&amp;'/'and'/g > $HOME/.cache/ytview/channels/$channel/titles.txt || return 1
 
   # Get the video urls
-  httpGet "https://www.youtube.com/user/$channel/Videos?hl=en" | grep "watch?v=" | awk '{print $6}' | sed s/spf-link//  | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' |  awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/urls.txt || return 1
-
+  httpGet "https://www.youtube.com/user/$channel/Videos?hl=en" | grep "watch?v=" | awk '{print $6}' | sed s/spf-link// | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/urls.txt || return 1
 
   # Print 20 first video titles for the user to choose from
   head -n 20 $HOME/.cache/ytview/channels/$channel/titles.txt || return 1
   # Prompt the user for video number
   read -p "Choose a video: " titlenumber
-
-
 
   # Play the video with your player
   $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
@@ -127,15 +122,14 @@ channelview()
 
 searchview()
 {
-
   search=$(echo $search | tr " " + )
   mkdir -p $HOME/.cache/ytview/searches/$search
 
   #Get video titles
-  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "Duration" | grep "watch?v=" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $23}' | sed 's/aria-describedby="description-id.*//g' | sed s/title=// | sed 's/"//g' | sed  s/spf-link// | sed 's/data-session-link=itct*.//' | sed s/spf-prefetch//g | sed 's/rel=//g' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' | sed  s/'&#39;'/"'"/g | sed  s/'&amp;'/'and'/g  >   $HOME/.cache/ytview/searches/$search/titles.txt || return 1
+  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "Duration" | grep "watch?v=" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $23}' | sed 's/aria-describedby="description-id.*//g' | sed s/title=// | sed 's/"//g' | sed s/spf-link// | sed 's/data-session-link=itct*.//' | sed s/spf-prefetch//g | sed 's/rel=//g' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' | sed  s/'&#39;'/"'"/g | sed  s/'&amp;'/'and'/g  > $HOME/.cache/ytview/searches/$search/titles.txt || return 1
 
   #Get video urls
-  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// |sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}'  > $HOME/.cache/ytview/searches/$search/urls.txt || return 1
+  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// | sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt || return 1
   #Print 20 first video titles for the user to choose from
   cat $HOME/.cache/ytview/searches/$search/titles.txt || return 1
 
@@ -143,52 +137,48 @@ searchview()
   read -p "Choose a video: " titlenumber
 
   #Play the video with your favorite player
-  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}')  > /dev/null 2>&1 &
-
-
-
+  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
 }
 
 usage()
 {
-  echo "Ytview"
-  echo "Description: Search and play youtube videos right from the terminal."
-  echo "Usage: ytview [flag] [string] or ytview [videoToSearch]"
-  echo "  -s Searches youtube"
-  echo "  -c Shows the latest videos of a channel"
-	echo "  -u Update Bash-Snippet Tools"
-	echo "  -h Show the help"
-	echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "  ytview -s Family Guy Chicken Fight"
-  echo "  ytview -c Numberphile"
+  cat <<EOF
+Ytview
+Description: Search and play youtube videos right from the terminal.
+Usage: ytview [flag] [string] or ytview [videoToSearch]
+  -s  Searches youtube
+  -c  Shows the latest videos of a channel
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  ytview -s Family Guy Chicken Fight
+  ytview -c Numberphile
+EOF
 }
 
 getConfiguredClient || exit 1
 getConfiguredPlayer || exit 1
 checkInternet || exit 1
 
-while getopts vuc:s:h*: option
-do
+while getopts "vuc:s:h*:" option; do
   case "${option}" in
-    s)
-      if [[ $flag != "channel" ]];then
-        search=$(printf '%s ' "$@")
-        flag="search"
-      else
-        echo "Error: search and channel options are mutually exclusive" >&2
-        exit 1
-      fi
-    ;;
-    c)
-      if [[ $flag != "search" ]];then
-        channel="$OPTARG"
-        flag="channel"
-      else
-        echo "Error: search and channel options are mutually exclusive" >&2
-        exit 1
-      fi
-    ;;
+    s) if [[ $flag != "channel" ]]; then
+         search=$(printf '%s ' "$@")
+         flag="search"
+       else
+         echo "Error: search and channel options are mutually exclusive" >&2
+         exit 1
+       fi
+        ;;
+    c) if [[ $flag != "search" ]]; then
+         channel="$OPTARG"
+         flag="channel"
+       else
+         echo "Error: search and channel options are mutually exclusive" >&2
+         exit 1
+       fi
+       ;;
     h) usage && exit 0 ;;
     u) update && exit 0 ;;
     v) echo "Version $currentVersion" && exit 0 ;;
@@ -199,7 +189,7 @@ done
 if [[ $# == "0" ]]; then
   usage
   exit 0
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" ]]; then
   usage
   exit 0
 elif [[ $1 == "update" ]]; then
@@ -210,6 +200,6 @@ elif [[ $flag == "search" ]]; then
 elif [[ $flag == "channel" ]]; then
   channelview || exit 1
 else
-	search=$(printf '%s ' "$@")
+  search=$(printf '%s ' "$@")
   searchview || exit 1
 fi
