@@ -80,8 +80,8 @@ getConfiguredClient()
 validateExpression()
 {
   local parsedExpression
-  parsedExpression=$(echo $1 | grep -Eo "[0-9 + -- / * . a-Z ~ :]*")
-  if [[ $parsedExpression != $1 ]];then { echo "Error: Expression contains invalid characters";return 1;}; fi
+  parsedExpression=$(echo $1 | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ :]*")
+  if [[ "$parsedExpression" != "$1" ]];then { echo "Error: Expression contains invalid characters"; return 1; }; fi
 }
 
 encodeEquation()
@@ -103,7 +103,7 @@ validateOperation()
 
 getSimpleResponse()
 {
-  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g)
+  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g)
   if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi
 }
 
