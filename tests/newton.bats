@@ -23,6 +23,18 @@
   [ "${lines[3]}" = "|Result: 8 x^4 + 28 x^2" ]
 }
 
+@test "Testing newton bad characters in expression " {
+  run newton simplify 3x#
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "Error: Expression contains invalid characters" ]
+}
+
+@test "Testing newton bad operation " {
+  run newton jokes 2x^2
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "Error: invalid operation, run newton -h to get a list of valid operations" ]
+}
+
 @test "Get the tools version with -v" {
   run newton -v
   [ "$status" -eq 0 ]
