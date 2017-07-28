@@ -84,8 +84,8 @@ update()
 getDirections()
 {
   response=$(httpGet "https://www.mapquestapi.com/directions/v2/route?key=$MAPQUEST_API_KEY&from=$1&to=$2&outFormat=json&ambiguities=ignore&routeType=fastest&doReverseGeocode=false&enhancedNarrative=false&avoidTimedConditions=false")
-  firstDirection=$(echo $response | grep -Eo "origNarrative\":\"[a-Z -./0-9]*" | grep -Eo "[^origNarrative\":][a-Z -./0-9]*")
-  tempDirections=($(echo $response | grep -Eo "\"narrative\":\"[a-Z -./0-9]*"))
+  firstDirection=$(echo $response | grep -Eo "origNarrative\":\"[a-z A-Z -./0-9]*" | grep -Eo "[^origNarrative\":][a-z A-Z -./0-9]*")
+  tempDirections=($(echo $response | grep -Eo "\"narrative\":\"[a-z A-Z -./0-9]*"))
   distances=($(echo $response | grep -Eo "distance\":[0-9]*[.][0-9]*" | grep -Eo "[^distance\":][0-9]*[.][0-9]*"))
   totalDist=${distances[0]}
   count="0"
@@ -95,7 +95,7 @@ getDirections()
     if [[ $(echo $direct | grep -Eo "narrative") == "narrative" ]]; then
       count=$(echo $count + 1 | bc)
       directions[$count]=$temp
-      temp=$(echo $direct | grep -Eo "[^\"narrative:\"][a-Z 0-9./]*")
+      temp=$(echo $direct | grep -Eo "[^\"narrative:\"][a-z A-Z 0-9./]*" | sed s/'","iconUrl"'//g)
     else
       temp="$temp $direct"
     fi
@@ -167,7 +167,7 @@ getMapLocation()
   echo -n "Enter the city or address you want to generate a map for: "
   read mapLocation
   echo "Generating static map for $mapLocation"
-  mapLocation==$(echo $mapLocation | sed  s/','/"+"/g | sed  s/' '/"+"/g )
+  mapLocation=$(echo $mapLocation | sed  s/','/"+"/g | sed  s/' '/"+"/g )
 }
 
 getStaticMap()
@@ -261,6 +261,6 @@ elif [[ $directionsFlag == "1" ]]; then
   if [[ $directionsMapFlag == "1" ]]; then getDirectionsMap $fromLocation $toLocation || exit 1; fi
   if [[ $staticMapFlag = "1" ]]; then
     echo "Generating static map for $unformattedFromLocation" && getStaticMap $fromLocation || exit 1
-    echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation  || exit 1 
+    echo "Generating static map for $unformattedToLocation" && getStaticMap $toLocation  || exit 1
   fi
 fi
