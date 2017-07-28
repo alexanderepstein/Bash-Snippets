@@ -39,6 +39,6 @@ $exp->expect(120,
           );
 
 
-$exp->soft_close();
+$exp->hard_close();
 
 
