@@ -83,6 +83,8 @@ If you want to bypass to guided input you can pass in 3 arguments and it will ru
 ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
 so a valid use case would be ```currency BTC USD 12.35```
 
+Written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
+
 ## Currency
 
 Converts currency based on realtime exchange rates
@@ -271,6 +273,8 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 * To grab a list of a users repositories: [github.com](https://developer.github.com/v3/)
 * To upload a repository to bitbucket: [bitbucket.org](https://developer.atlassian.com/bitbucket/api/2/reference/)
 * To get your WAN ip address: [ipify](https://www.ipify.org/)
+* To grab the latest exchange rate between cryptocurrencies to standard currencies: [coinmarketcap](https://coinmarketcap.com/api/)
+* To perform symbolic math and other computations: [newton](https://newton.now.sh)
 
 #### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 
