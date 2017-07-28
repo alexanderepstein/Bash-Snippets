@@ -80,34 +80,33 @@ getConfiguredClient()
 
 validateExpression()
 {
-  local parsedExpression
-  originalExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g")
-  parsedExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*")
-  if [[ "$parsedExpression" != "$originalExpression" ]];then { echo "Error: Expression contains invalid characters"; return 1; }; fi
+  local parsedExpression # only used here
+  originalEquation=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g") # accont for the fact that we have to use brackets and not parenthesis
+  parsedExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*") # only grepping valid characters
+  if [[ "$parsedExpression" != "$originalEquation" ]];then { echo "Error: Expression contains invalid characters"; return 1; }; fi # compare result to original
   return 0
 }
 
 encodeEquation()
 {
-  originalEquation=$1
-  equation=$(echo $originalEquation | sed "s:\[:\(:g" | sed "s:\]:\):g"  | sed "s:/:(over):g" | sed "s/~/|/g" | sed "s/-/%2D/g")
+  equation=$(echo $originalEquation | sed "s:/:(over):g" | sed "s/~/|/g" | sed "s/-/%2D/g") # encode all the special characters
 }
 
 validateOperation()
 {
-  operation=$(echo $1 | tr "[[:upper:]]" "[[:lower:]]")
-  validOp="false"
-  for op in "${simpleOperations[@]}"; do
-    if [[ "$op" == "$operation" ]]; then { opType="simple"; validOp="true"; break; }; fi
+  operation=$(echo $1 | tr "[[:upper:]]" "[[:lower:]]") # get rid of case being an issue
+  validOp="false" # lets us know if oeration is valid
+  for op in "${simpleOperations[@]}"; do # go through all valid simple operations
+    if [[ "$op" == "$operation" ]]; then { opType="simple"; validOp="true"; break; }; fi # if the operation matches leave the loop
   done
-  if ! $validOp; then { echo "Error: invalid operation, run newton -h to get a list of valid operations"; return 1; }; fi
-  if [[ $operation == "roots" ]]; then operation=zeroes;fi
+  if ! $validOp; then { echo "Error: invalid operation, run newton -h to get a list of valid operations"; return 1; }; fi # if not a valid operation error out
+  if [[ $operation == "roots" ]]; then operation=zeroes;fi # I gave the ability to use root or zeores but real op is zeroes
 }
 
 getSimpleResponse()
 {
-  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g)
-  if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi
+  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g) # get reponse, grab result
+  if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi # if result is empty sometthing went wrong...
 }
 
 printAnswer()
@@ -115,7 +114,7 @@ printAnswer()
   cat <<EOF
 ================================
 |Operation: $operation
-|Expression: $originalExpression
+|Expression: $originalEquation
 |Result: $result
 ================================
 EOF
@@ -195,11 +194,13 @@ elif [[ $# == "1" ]]; then
   else echo "Error: newton needs two arguments, operation and expression" && exit 1;fi
 elif [ $# -gt 3 ];then echo "Error: newton only accepts two arguments, operation and expression" && exit 1;fi
 
-
+# flagCount helps us determine what argument to pass to the functions
+# flow: validateOperation, validateExpression, encodeEquation, getResponse, print Answer/Result
 if [[ $flagCount == "0" ]];then validateOperation $1 || exit 1
 elif [[ $flagCount == "1" ]];then validateOperation $2 || exit 1; fi
-if [[ $flagCount == "0" ]];then validateExpression $2 && encodeEquation $2 || exit 1
-elif [[ $flagCount == "1" ]];then validateExpression $3 && encodeEquation $3 || exit 1; fi
+if [[ $flagCount == "0" ]];then validateExpression $2 || exit 1
+elif [[ $flagCount == "1" ]];then validateExpression $3 || exit 1; fi
+encodeEquation || exit 1
 if [[ $opType == "simple" ]];then getSimpleResponse || exit 1;fi
 if [ -z $resultOnly ];then printAnswer
 else echo $result; fi
