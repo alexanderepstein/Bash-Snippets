@@ -12,5 +12,4 @@ before_install:
 
 script:
 #- sparrow plg run bash-snippets-interactive-test --param dir=$PWD
-- curl --verbose -D - http://cheat.sh
 - bats tests
