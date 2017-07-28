@@ -3,6 +3,7 @@
 
 currentVersion="1.16.0"
 configuredClient=""
+flagCount="0"
 declare -a simpleOperations=(simplify factor derive integrate zeroes roots tangent area cos sin tan arccos arcsin arctan abs log)
 
 ## Allows to call the users configured client without if statements everywhere
@@ -83,6 +84,7 @@ validateExpression()
   originalExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g")
   parsedExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*")
   if [[ "$parsedExpression" != "$originalExpression" ]];then { echo "Error: Expression contains invalid characters"; return 1; }; fi
+  return 0
 }
 
 encodeEquation()
@@ -119,12 +121,14 @@ printAnswer()
 EOF
 }
 
+
 usage()
 {
   cat <<EOF
 Newton
 Description: Performs numerical calculations all the way up to symbolic math parsing.
-Usage: newton [operation] [expression] or newton [flag]
+Usage: newton [optionalFlags] [operation] [expression] or newton [flag]
+  -r  Only print the result, useful for piping output elsewhere
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
@@ -163,7 +167,7 @@ EOF
 checkInternet || exit 1
 getConfiguredClient || exit 1
 
-while getopts "uvh" opt; do
+while getopts "ur:vh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
@@ -177,6 +181,7 @@ while getopts "uvh" opt; do
     u)  update
         exit 0
         ;;
+    r)  resultOnly="true" && flagCount=$((flagCount + 1 ));;
     :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
         ;;
@@ -188,11 +193,13 @@ elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then update && exit 0 || exit 1
   elif [[ $1 == "help" ]]; then usage && exit 0 || exit 1
   else echo "Error: newton needs two arguments, operation and expression" && exit 1;fi
-elif [ $# -gt 2 ];then echo "Error: newton only accepts two arguments, operation and expression" && exit 1;fi
+elif [ $# -gt 3 ];then echo "Error: newton only accepts two arguments, operation and expression" && exit 1;fi
 
 
-validateOperation $1 || exit 1
-validateExpression $2 || exit 1
-encodeEquation $2 || exit 1
+if [[ $flagCount == "0" ]];then validateOperation $1 || exit 1
+elif [[ $flagCount == "1" ]];then validateOperation $2 || exit 1; fi
+if [[ $flagCount == "0" ]];then validateExpression $2 && encodeEquation $2 || exit 1
+elif [[ $flagCount == "1" ]];then validateExpression $3 && encodeEquation $3 || exit 1; fi
 if [[ $opType == "simple" ]];then getSimpleResponse || exit 1;fi
-printAnswer
+if [ -z $resultOnly ];then printAnswer
+else echo $result; fi
