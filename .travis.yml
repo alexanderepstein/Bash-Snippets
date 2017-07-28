@@ -11,5 +11,5 @@ before_install:
   - sparrow plg install bash-snippets-interactive-test
 
 script:
-- sparrow plg run bash-snippets-interactive-test --param dir=$PWD
+#- sparrow plg run bash-snippets-interactive-test --param dir=$PWD
 - bats tests
