@@ -2,6 +2,17 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.16.0
+
+</div>
+
+### Changes
+* Added cryptocurrency component
+* Added newton component
+* Changed WAN Call in geo
+
+<div align="center">
+
 ## Version 1.15.2
 
 </div>
