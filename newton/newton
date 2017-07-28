@@ -156,7 +156,7 @@ Valid Symbols:
   / divide
   ^ power
   : between the range of left and right side (only for area under curve)
-  ~ parmeter on right side (only for area, tangent line and log)
+  ~ parameter on right side (only for area, tangent line and log)
 EOF
 }
 
