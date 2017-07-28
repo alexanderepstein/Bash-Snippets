@@ -1,0 +1,15 @@
+begin:
+What is the base currency: USD
+What currency to exchange to: RUB
+What is the amount being exchanged: 0
+end:
+
+begin:
+=========================
+| USD to RUB
+regexp: ^\|\s+Rate:\s+\d+\.\d+\s*$
+| USD: 0
+| RUB: 0
+=========================
+end:
+
