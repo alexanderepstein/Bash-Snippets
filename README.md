@@ -69,6 +69,19 @@ crypt -d [encrypted file] [output file] # decrypts files
 
 </div>
 
+## Cryptocurrency
+
+Converts Cryptocurrency based on realtime exchange rates
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cryptocurrency/cryptocurrency.png?raw=true">
+
+</div>
+
+If you want to bypass to guided input you can pass in 3 arguments and it will run from there
+ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
+so a valid use case would be ```currency BTC USD 12.35```
 
 ## Currency
 
@@ -108,6 +121,15 @@ Quick search that grabs relevant information about a movie
 
 </div>
 
+## Newton
+
+Performs numerical calculations all the way up to symbolic math parsing.
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/newton/newton.png?raw=true">
+
+</div>
 
 ## Qrify
 
