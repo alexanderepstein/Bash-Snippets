@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.14.2"
+currentVersion="1.16.0"
 configuredClient=""
 configuredPython=""
 source ~/.bash_profile 2> /dev/null ## allows grabbing enviornment variable
@@ -12,11 +12,11 @@ search="0" ## indivates that we want results on the item itself
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."
@@ -26,9 +26,9 @@ getConfiguredClient()
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null ; then
+  if  command -v python2 &>/dev/null; then
     configuredPython="python2"
-  elif command -v python &>/dev/null ; then
+  elif command -v python &>/dev/null; then
     configuredPython="python"
   else
     echo "Error: This tool requires python 2 to be installed."
@@ -36,25 +36,25 @@ getConfiguredPython()
   fi
 }
 
-
-python()
-{
-  case "$configuredPython" in
-    python2) python2 "$@";;
-    python) python "$@";;
-  esac
-}
+if [[ $(uname) != "Darwin" ]]; then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@" ;;
+      python)  python "$@" ;;
+    esac
+  }
+fi
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
-
 
 checkInternet()
 {
@@ -71,10 +71,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -82,16 +82,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+      if [[ "$answer" == [Yy] ]]; then
+        cd ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; }; fi
         git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -99,7 +99,6 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 ## This function gets 3 results similar to the item of interest
@@ -156,7 +155,7 @@ printResults()
     echo $nameThree: $typeThree
     echo $wikiThree
     echo
-    if [[ $youtube != "None" ]];then echo $youtube;fi
+    if [[ $youtube != "None" ]]; then echo $youtube; fi
     echo
     echo "==================================="
   else
@@ -175,92 +174,87 @@ printInfo()
   echo $name: $type
   echo $wiki
   echo
-  if [[ $youtube != "None" ]];then echo $youtube;fi
+  if [[ $youtube != "None" ]]; then echo $youtube; fi
   echo "==================================="
 }
 
-
 usage()
 {
-  echo "Taste"
-  echo "Description: A recommendation engine that provides 3 similar items based on some input topic."
-  echo "  Taste also has the ability to provide information on the item of interest."
-  echo "  Supports: shows, books, music, artists, movies, authors, games"
-  echo "Usage: taste [flag] [item]"
-  echo "  -i Get more information on similar items"
-  echo "  -s Get information on the item itself"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "  taste -i Kendrick Lamar"
-  echo "  taste Catcher in the Rye"
-  echo "  taste -s Red Hot Chili Peppers"
+  cat <<EOF
+Taste
+Description: A recommendation engine that provides 3 similar items based on some input topic.
+  Taste also has the ability to provide information on the item of interest.
+  Supports: shows, books, music, artists, movies, authors, games
+Usage: taste [flag] [item]
+  -i  Get more information on similar items
+  -s  Get information on the item itself
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+  taste -i Kendrick Lamar
+  taste Catcher in the Rye
+  taste -s Red Hot Chili Peppers
+EOF
 }
 
-if [[ $apiKey == "" ]];then
-  echo "Error: API key not setup properly"
-  echo "To get an API key visit https://tastedive.com/account/api_access"
-  echo 'After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"'
-  echo "After following all the steps and issues still persist try adding export TASTE_API_KEY manually to your .bash_profile"
+if [[ $apiKey == "" ]]; then
+  cat <<EOF
+Error: API key not setup properly
+To get an API key visit https://tastedive.com/account/api_access
+After getting the API key run the following command: export TASTE_API_KEY="yourAPIKeyGoesHere"
+After following all the steps and issues still persist try adding export TASTE_API_KEY manually to your .bash_profile
+EOF
   exit 1
 fi
-getConfiguredPython || exit 1
+if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 checkInternet || exit 1
 
-
 while getopts "uvhis" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    u)
-      update
-      exit 0
-    ;;
-    i)
-      if [[ $search == "0" ]];then
-        info="1"
-      else
-        echo "Error: the options -i and -s are mutually exclusive (-s already uses -i)"
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
-      fi
-    ;;
-    s)
-      if [[ $info != "1" ]];then
-        search="1"
-        info="1"
-      else
-        echo "Error: the options -i and -s are mutually exclusive (-s already uses -i)"
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  update
+        exit 0
+        ;;
+    i)  if [[ $search == "0" ]]; then
+          info="1"
+        else
+          echo "Error: the options -i and -s are mutually exclusive (-s already uses -i)"
+          exit 1
+        fi
+        ;;
+    s)  if [[ $info != "1" ]]; then
+          search="1"
+          info="1"
+        else
+          echo "Error: the options -i and -s are mutually exclusive (-s already uses -i)"
+          exit 1
+        fi
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
-      fi
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+        ;;
   esac
 done
 
 if [[ $# == 0 ]]; then
   usage
-elif [[ $1 == "update" ]];then
+elif [[ $1 == "update" ]]; then
   update
-elif [[ $1 == "help" ]];then
+elif [[ $1 == "help" ]]; then
   usage
 else
-  if [[ $search == "0" ]];then
-    if [[ $info == "0" ]];then
+  if [[ $search == "0" ]]; then
+    if [[ $info == "0" ]]; then
       getSimilar "$@" || exit 1 ## exit if we return 1 (chances are movie was not found)
       printResults
     else

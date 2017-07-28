@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-declare -a tools=(currency stocks weather crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
+declare -a tools=(currency cryptocurrency stocks weather newton crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
 all="1"
 
 askUninstall()
 {
-  if [[ -f  /usr/local/bin/$1 ]];then
+  if [[ -f  /usr/local/bin/$1 ]]; then
     echo -n "Do you wish to uninstall $1 [Y/n]: "
     read -r answer
-    if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
+    if [[ "$answer" == [Yy] ]]; then
       cd $1 || return 1
       echo -n "Removing $1: "
       rm -f /usr/local/bin/$1 > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
@@ -26,9 +26,10 @@ removeManpage()
   rm -f /usr/local/man/man1/bash-snippets.1 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
 }
 
-for tool in "${tools[@]}"
-do
+for tool in "${tools[@]}"; do
   askUninstall $tool || exit 1
 done
 
-if [[ $all == "1" ]];then removeManpage || exit 1;fi
+if [[ $all == "1" ]]; then
+  removeManpage || exit 1
+fi

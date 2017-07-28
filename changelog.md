@@ -2,6 +2,58 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.16.0
+
+</div>
+
+### Changes
+* Added cryptocurrency component
+* Added newton component
+* Changed WAN Call in geo
+
+<div align="center">
+
+## Version 1.15.2
+
+</div>
+
+### Bugfixes
+* Installer path was preventing install
+
+<div align="center">
+
+## Version 1.15.1
+
+</div>
+
+
+### Changes
+* Added --prefix option to installer for homebrew correctly
+
+<div align="center">
+
+## Version 1.15.0
+
+</div>
+
+### Changes
+* Added -d option to movies
+* Updating extra tools if installed in main update pipeline
+
+<div align="center">
+
+## Version 1.14.3
+
+</div>
+
+### Changes
+* Adding new progress echos to cloudup
+
+### Bugfixes
+* Fixed bug in all tools using python for OSX where it would result caught in a segfault
+
+<div align="center">
+
 ## Version 1.14.2
 
 </div>

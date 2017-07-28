@@ -95,6 +95,37 @@ Examples:
 
   * crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)
 
+### CryptoCurrency
+Description: A realtime cryptocurrency converter.
+With no flags it will guide you through the cryptocurrency exchange
+
+Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [base] [exchangeTo] [amount]
+
+  * -u Update Bash-Snippet Tools
+
+  * -h Show the help
+
+  * -v Get the tool version
+
+Supported Base Currencies:
+ ___________________________
+| BTC | ETH | XRP  | LTC   |
+| XEM | ETC | DASH | MIOTA |
+| XMR | STRAT              |
+ ___________________________
+
+Supported Target Currencies:
+ ________________________
+| AUD | BRL | CAD | CHF |
+| CNY | EUR | GBP | HKD |
+| IDR | INR | JPY | KRW |
+| MXN | RUB | USD       |
+ _______________________
+
+Examples:
+  cryptocurrency BTC USD 12.35
+  cryptocurrency
+
 ### Currency
 Description: A realtime currency converter.
    With no flags it will guide you through the currency exchange
@@ -173,6 +204,50 @@ Usage: movies [flag] or movies [movieToSearch]
   * -h Show the help
 
   * -v Get the tool version
+
+  * -d Show detailed information
+
+### Newton
+Description: Performs numerical calculations all the way up to symbolic math parsing.
+
+Usage: newton [operation] [expression] or newton [flag]
+
+  * -u  Update Bash-Snippet Tools
+
+  * -h  Show the help
+
+  * -v  Get the tool version
+
+
+|Operations     Sample Expression      Sample Result|
+|---------------------------------------------------|
+|Simplify       [[2x^2]+7]*[4x^2]    8 x^4 + 28 x^2 |
+|Factor             x^2 + 2x             x (x + 2)  |
+|Derive              x^2+2x               2 x + 2   |
+|Integrate           x^2+2x         1/3 x^3 + x^2 +C|
+|Roots/Zeroes        x^2+2x                2, 0     |
+|Tangent             2~x^3              12 x + -16  | (Finding tangent line when x=2 for expression x^3)
+|Area               2:4~x^3                 60      | (Finding area under curve from 2 to 4 for expression x^3)
+|Cos                   pi                   -1      |
+|Sin                   pi                    0      |
+|Tan                  pi/4                   1      |
+|ArcCos                 1                    0      |
+|ArcSin                 0                    0      |
+|ArcTan                pi                arcsin(pi) |
+|Abs                   -2                    2      |
+|Log                   2~8                   3      | (Log base 2 of eight)
+
+
+  Valid Symbols:
+    + add
+    - subtract
+    [ left parenthesis (you must use brackets bash has a bultin for parenthesis)
+    ] right parenthesis (you must use brackets bash has a bultin for parenthesis)
+    * multiply
+    / divide
+    ^ power
+    : between the range of left and right side (only for area under curve)
+    ~ parameter on right side (only for area, tangent line and log)
 
 Examples:
 
@@ -362,11 +437,11 @@ Examples:
 
   With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
 
-  * `stocks update`
+  * stocks update
 
   or
 
-  * `stocks -u`
+  * stocks -u
 
   This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.
 
@@ -378,13 +453,8 @@ Examples:
 
     To go through a guided uninstall
 
-    * `./uninstall.sh`
+  *  ./uninstall.sh
 
-    To uninstall individual scripts
-
-    * `cd weather`
-
-    * `./uninstall.sh`
 
 ## AUTHOR
 

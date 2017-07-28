@@ -1,35 +1,33 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 flag=""
-currentVersion="1.14.2"
+currentVersion="1.16.0"
 configuredClient=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null ; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &>/dev/null ; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v fetch &>/dev/null ; then
+  elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
     echo "Error: This tool reqires either curl, wget, or fetch to be installed."
     return 1
   fi
-
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-    fetch) fetch -o "...";;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    fetch) fetch -o "..." ;;
   esac
 }
-
 
 update()
 {
@@ -41,10 +39,10 @@ update()
   nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
   latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
 
-  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]];then
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
     echo "Error: update utility has not been configured correctly." >&2
     exit 1
-  elif [[ $latestVersion == "" ]];then
+  elif [[ $latestVersion == "" ]]; then
     echo "Error: no active internet connection" >&2
     exit 1
   else
@@ -52,16 +50,16 @@ update()
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == "Y" || "$answer" == "y" ]] ;then
-        cd  ~ || { echo 'Update Failed' ; exit 1 ; }
-        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName  ||  { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version" ; exit 1; }
-        cd $repositoryName ||  { echo 'Update Failed' ; exit 1 ;}
+      if [[ "$answer" == [Yy] ]]; then
+        cd ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
         git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
         chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
         ./$nameOfInstallFile "update" || exit 1
         cd ..
-        rm -r -f $repositoryName ||  { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
       else
         exit 1
       fi
@@ -69,13 +67,12 @@ update()
       echo "$repositoryName is already the latest version"
     fi
   fi
-
 }
 
 addTask()
 {
   if [ ! -f ~/.todo/list.txt ]; then
-    if [ ! -d ~/.todo ];then mkdir ~/.todo;fi
+    if [ ! -d ~/.todo ]; then mkdir ~/.todo; fi
     touch ~/.todo/list.txt
   fi
   echo "$1       ;      $(date)" >> ~/.todo/list.txt
@@ -91,33 +88,36 @@ removeTask()
   touch ~/.todo/temp.txt
   oldTaskNumber=$1
   taskNumber=$( echo $1 | grep -Eo "[0-9]*" )
-  if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]];then echo "Error: $oldTaskNumber is not a valid task number!" && return 1 ;fi
+  if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]]; then echo "Error: $oldTaskNumber is not a valid task number!" && return 1; fi
   count="1"
   IFS=$'\n'       # make newlines the only separator
-  for task in $(cat ~/.todo/list.txt)
-  do
-    if [[ $count != $taskNumber ]];then
+  for task in $(cat ~/.todo/list.txt); do
+    if [[ $count != $taskNumber ]]; then
     echo "$task" >> ~/.todo/temp.txt;fi
     count=$(echo $count + 1 | bc)
   done
   rm -f ~/.todo/list.txt
   cp  ~/.todo/temp.txt ~/.todo/list.txt
   rm -f ~/.todo/temp.txt
-  if [ $count -lt $taskNumber ];then echo "Error: task number $taskNumber does not exist!" && return 1
-  else echo "Sucessfully removed task number $taskNumber";fi
+  if [ $count -lt $taskNumber ]; then
+    echo "Error: task number $taskNumber does not exist!"
+    return 1
+  else
+    echo "Sucessfully removed task number $taskNumber"
+  fi
 }
 
 getTasks()
 {
   if [ -f ~/.todo/list.txt ]; then
     checkEmpty=$(cat ~/.todo/list.txt)
-    if [[ $checkEmpty == "" ]];then echo "No tasks found";
+    if [[ $checkEmpty == "" ]]; then
+      echo "No tasks found"
     else
       count="1"
       IFS=$'\n'       # make newlines the only separator
-      for task in $(cat ~/.todo/list.txt)
-      do
-        if [ $count -lt 10 ];then count="0$count";fi
+      for task in $(cat ~/.todo/list.txt); do
+        if [ $count -lt 10 ]; then count="0$count"; fi
         echo "$count). $task"  >> ~/.todo/getTemp.txt
         count=$(echo $count + 1 | bc)
       done
@@ -131,21 +131,23 @@ getTasks()
 
 usage()
 {
-  echo "Todo"
-  echo "Description: A simplistic commandline todo list."
-  echo "Usage: todo [flags] or todo [flags] [arguments]"
-  echo "  -c Clear all the current tasks"
-  echo "  -r Remove the following task number"
-  echo "  -g Get the current tasks"
-  echo "  -a Add the following task"
-  echo "  -u Update Bash-Snippet Tools"
-  echo "  -h Show the help"
-  echo "  -v Get the tool version"
-  echo "Examples:"
-  echo "   todo -a My very first task"
-  echo "   todo -r 1"
-  echo "   todo -g"
-  echo "   todo -c"
+  cat <<EOF
+Todo
+Description: A simplistic commandline todo list.
+Usage: todo [flags] or todo [flags] [arguments]
+  -c  Clear all the current tasks
+  -r  Remove the following task number
+  -g  Get the current tasks
+  -a  Add the following task
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+   todo -a My very first task
+   todo -r 1
+   todo -g
+   todo -c
+EOF
 }
 
 clearAllTasks()
@@ -156,53 +158,59 @@ clearAllTasks()
 }
 
 while getopts "cr:a:guvh" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-    ;;
-    c)
-      if [[ $flag == "" ]];then flag="clear"
-    else  echo "Error: all flags are mutually exclusive" && exit 1;fi
-    ;;
-    h)
-      usage
-      exit 0
-    ;;
-    v)
-      echo "Version $currentVersion"
-      exit 0
-    ;;
-    g)
-      if [[ $flag == "" ]];then flag="get"
-    else  echo "Error: all flags are mutually exclusive" && exit 1;fi
-    ;;
-    r)
-      if [[ $flag == "" ]];then flag="remove"
-    else  echo "Error: all flags are mutually exclusive" && exit 1;fi
-    ;;
-    a)
-      if [[ $flag == "" ]];then flag="add"
-    else  echo "Error: all flags are mutually exclusive" && exit 1;fi
-    ;;
-    u)
-      getConfiguredClient || exit 1
-      checkInternet || exit 1
-      update
-      exit 0
-    ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-    ;;
+  case "$opt" in
+    \?) echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    c)  if [[ $flag == "" ]]; then
+          flag="clear"
+        else  
+          echo "Error: all flags are mutually exclusive"
+          exit 1
+        fi
+        ;;
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    g)  if [[ $flag == "" ]]; then
+          flag="get"
+        else
+          echo "Error: all flags are mutually exclusive"
+          exit 1
+        fi
+        ;;
+    r)  if [[ $flag == "" ]]; then
+          flag="remove"
+        else
+          echo "Error: all flags are mutually exclusive"
+          exit 1
+        fi
+        ;;
+    a)  if [[ $flag == "" ]]; then
+          flag="add"
+        else
+          echo "Error: all flags are mutually exclusive"
+          exit 1
+        fi
+        ;;
+    u)  getConfiguredClient || exit 1
+        checkInternet || exit 1
+        update
+        exit 0
+        ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
   esac
 done
 
-
 if [[ $# == "0" ]]; then
   usage
-elif [[ $# == "1" ]];then
-  if [[ $1 == "clear" ]];then
+elif [[ $# == "1" ]]; then
+  if [[ $1 == "clear" ]]; then
     clearAllTasks || exit 1
   elif [[ $1 == "update" ]]; then
     getConfiguredClient || exit 1
@@ -212,12 +220,11 @@ elif [[ $# == "1" ]];then
   elif [[ $1 == "help" ]]; then
     usage
     exit 0
-  elif [[ $flag == "clear" || $1 == "clear" ]];then clearAllTasks || exit 1
-  elif [[ $flag == "get" || $1 == "list" || $1 == "get" ]];then getTasks || exit 1
-else { echo "Error: the argument $1 is not valid"; exit 1;}
-  fi
+  elif [[ $flag == "clear" || $1 == "clear" ]]; then clearAllTasks || exit 1
+  elif [[ $flag == "get" || $1 == "list" || $1 == "get" ]]; then getTasks || exit 1
+  else { echo "Error: the argument $1 is not valid"; exit 1; }; fi
 else
-  if [[ $flag == "add" || $1 == "add" ]];then addTask "${*:2}" && getTasks|| exit 1
-  elif [[ $flag == "remove" || $1 == "remove" ]];then removeTask $2 || exit 1
-  else { usage; exit 1;};fi
+  if [[ $flag == "add" || $1 == "add" ]]; then addTask "${*:2}" && getTasks || exit 1
+  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask $2 || exit 1
+  else { usage; exit 1; }; fi
 fi

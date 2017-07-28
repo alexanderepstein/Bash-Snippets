@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Author: Alexander Epstein https://github.com/alexanderepstein
+# Author: Jonas-Taha El Sesiy https://github.com/elsesiy
 
 base=""
 exchangeTo=""
@@ -9,7 +9,7 @@ configuredClient=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-    if  command -v curl &>/dev/null; then
+    if command -v curl &>/dev/null; then
       configuredClient="curl"
     elif command -v wget &>/dev/null; then
       configuredClient="wget"
@@ -19,31 +19,43 @@ getConfiguredClient()
       echo "Error: This tool reqires either curl, wget, or fetch to be installed."
       return 1
     fi
+
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl)  curl -A curl -s "$@" ;;
-    wget)  wget -qO- "$@" ;;
+    curl) curl -A curl -s -N "$@" ;;
+    wget) wget -qO- "$@" ;;
     fetch) fetch -o "..." ;;
   esac
 }
 
+## Top 10 cryptocurrencies as base
 checkValidCurrency()
 {
-  if [[ $1 != "AUD" && $1 != "BGN" && $1 != "BRL" \
-      && $1 != "CAD" && $1 != "CHF" && $1 != "CNY" && $1 != "CZK" && $1 != "DKK" \
-      && $1 != "EUR" && $1 != "GBP" && $1 != "HKD" && $1 != "HRK" && $1 != "HUF" \
-      && $1 != "IDR" && $1 != "ILS" && $1 != "INR" && $1 != "JPY" && $1 != "KRW" \
-      && $1 != "MXN" && $1 != "MYR" && $1 != "NOK" && $1 != "NZD" && $1 != "PHP" \
-      && $1 != "PLN" && $1 != "RON" && $1 != "RUB" && $1 != "SEK" && $1 != "SGD" \
-      && $1 != "THB" && $1 != "TRY" && $1 != "USD" && $1 != "ZAR" ]]; then
+  if [[ $1 != "BTC" && $1 != "ETH" \
+      && $1 != "XRP" && $1 != "LTC" && $1 != "XEM" \
+      && $1 != "ETC" && $1 != "DASH" && $1 != "MIOTA" \
+      && $1 != "XMR" && $1 != "STRAT" ]]; then
     echo "1"
   else
     echo "0"
   fi
+}
+
+checkTargetCurrency()
+{
+  if [[ $1 != "AUD" && $1 != "BRL" \
+      && $1 != "CAD" && $1 != "CHF" && $1 != "CNY" \
+      && $1 != "EUR" && $1 != "GBP" && $1 != "HKD" \
+      && $1 != "IDR" && $1 != "INR" && $1 != "JPY" && $1 != "KRW" \
+      && $1 != "MXN" && $1 != "RUB" && $1 != "USD" ]]; then
+    echo "1"
+  else
+    echo "0"
+  fi  
 }
 
 ## Grabs the base currency from the user and validates it with all the possible currency
@@ -73,6 +85,23 @@ checkBase()
   fi
 }
 
+# Matches the symbol to the appropriate ids regarding the API calling.
+transformBase()
+{
+  case "$base" in 
+    "ETH") reqId="ethereum" ;;
+    "BTC") reqId="bitcoin" ;;
+    "XRP") reqId="ripple" ;;
+    "LTC") reqId="litecoin" ;;
+    "XEM") reqId="nem" ;;
+    "ETC") reqId="ethereum-classic" ;;
+    "DASH") reqId="dash" ;;
+    "MIOTA") reqId="iota" ;;
+    "XMR") reqId="monero" ;;
+    "STRAT") reqId="stratis" ;;
+  esac
+}
+
 ## Grabs the exchange to currency from the user and validates it with all the possible currency
 ## types available on the API and guides user through input (doesnt take in arguments)
 getExchangeTo()
@@ -80,7 +109,7 @@ getExchangeTo()
   echo -n "What currency to exchange to: "
   read -r exchangeTo
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
+  if [[ $(checkTargetCurrency $exchangeTo) == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     getExchangeTo
@@ -93,7 +122,7 @@ checkExchangeTo()
 {
   exchangeTo=$1
   exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
+  if [[ $(checkTargetCurrency $exchangeTo) == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     exit 1
@@ -106,8 +135,7 @@ getAmount()
 {
   echo -n "What is the amount being exchanged: "
   read -r amount
-  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]
-  then
+  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     echo "The amount has to be a number"
     unset amount
     getAmount
@@ -119,8 +147,7 @@ getAmount()
 checkAmount()
 {
   amount=$1
-  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]
-  then
+  if [[ ! "$amount" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     echo "The amount has to be a number"
     unset amount
     exit 1
@@ -135,12 +162,15 @@ checkInternet()
 ## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
-  exchangeRate=$(httpGet "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
-  exchangeAmount=$(echo "$exchangeRate * $amount" | bc)
+  exchangeTo=$(echo "$exchangeTo" | tr '[:upper:]' '[:lower:]')
+  exchangeRate=$(httpGet "https://api.coinmarketcap.com/v1/ticker/$reqId/?convert=$exchangeTo" | grep -Eo "\"price_$exchangeTo\": \"[0-9 .]*" | sed s/"\"price_$exchangeTo\": \""//g) > /dev/null
+  exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
+  exchangeTo=$(echo "$exchangeTo" | tr '[:lower:]' '[:upper:]')
+  base=$(echo "$base" | tr '[:lower:]' '[:upper:]')
+  
   cat <<EOF
-
 =========================
-| $base to $exchangeTo
+| $base to $exchangeTo  
 | Rate: $exchangeRate
 | $base: $amount
 | $exchangeTo: $exchangeAmount
@@ -188,31 +218,37 @@ update()
   fi
 }
 
-
 usage()
 {
   cat <<EOF
-Currency
-Description: A realtime currency converter.
-   With no flags it will guide you through the currency exchange
-Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]
-  -u  Update Bash-Snippet Tools
-  -h  Show the help
-  -v  Get the tool version
-Supported Currencies:
- _______________________
-| AUD | BGN | BRL | CAD |
-| CHF | CNY | CZK | DKK |
-| EUR | GBP | HKD | HRK |
-| HUF | IDR | ILS | INR |
-| JPY | KRW | MXN | MYR |
-| NOK | NZD | PHP | PLN |
-| RON | RUB | SEK | SGD |
-| THB | TRY | USD | ZAR |
- _______________________
+CryptoCurrency
+
+Description: A realtime cryptocurrency converter.
+With no flags it will guide you through the cryptocurrency exchange
+
+Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [base] [exchangeTo] [amount]
+   -u Update Bash-Snippet Tools
+   -h Show the help
+   -v Get the tool version
+
+Supported Base Currencies:
+ ___________________________
+| BTC | ETH | XRP  | LTC   |
+| XEM | ETC | DASH | MIOTA |
+| XMR | STRAT              |
+ ___________________________
+
+Supported Target Currencies:
+ ________________________
+| AUD | BRL | CAD | CHF |
+| CNY | EUR | GBP | HKD |
+| IDR | INR | JPY | KRW |
+| MXN | RUB | USD       |
+ _______________________ 
+
 Examples:
-  currency EUR USD 12.35
-  currency
+  cryptocurrency BTC USD 12.35
+  cryptocurrency
 EOF
 }
 
@@ -243,6 +279,7 @@ if [[ $# == 0 ]]; then
   getBase # get base currency
   getExchangeTo # get exchange to currency
   getAmount # get the amount to be converted
+  transformBase
   convertCurrency # grab the exhange rate and perform the conversion
   exit 0
 elif [[ $# == "1" ]]; then
@@ -263,6 +300,7 @@ elif [[ $# == "3" ]]; then
   checkBase $1
   checkExchangeTo $2
   checkAmount $3
+  transformBase
   convertCurrency
   exit 0
 fi
