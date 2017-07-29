@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-declare -a tools=(currency cryptocurrency stocks weather newton crypt movies taste short geo cheat ytview cloudup qrify siteciphers todo)
+declare -a tools=(cheat cloudup crypt cryptocurrency currency geo movies newton qrify short siteciphers stocks taste todo weather ytview)
 all="1"
 
 askUninstall()
