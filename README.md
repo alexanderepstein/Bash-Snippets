@@ -289,6 +289,8 @@ brew install bash-snippets
 ```bash
 sparrow plg install [tool]
 ```
+### For Arch Linux Users
+There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
 
 ### Otherwise
 
