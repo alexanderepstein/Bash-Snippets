@@ -76,7 +76,13 @@ response=$( echo "$@" | grep -Eo "\-\-prefix")
 if [[ $response == "--prefix" ]]; then
   prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/')
   mkdir -p $prefix/bin $prefix/share/man/man1
-  singleInstall $2 || exit 1
+  if [[ $2 == "all" ]];then
+    for tool in "${tools[@]}"; do
+      singleInstall $tool || exit 1
+    done
+  else
+    singleInstall $2 || exit 1
+  fi
   copyManpage || exit 1
 elif [[ $# == 0 ]]; then
   for tool in "${tools[@]}"; do
