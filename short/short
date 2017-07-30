@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.16.1"
+currentVersion="1.16.2"
 configuredClient=""
 configuredPython=""
 

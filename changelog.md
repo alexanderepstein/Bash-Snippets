@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.16.2
+
+</div>
+
+### Changes
+* Adding back all argument to homebrew install
+
+<div align="center">
+
 ## Version 1.16.1
 
 </div>
