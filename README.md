@@ -290,7 +290,8 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 ### For macOS via homebrew
 ```bash
-brew install bash-snippets
+brew install bash-snippets # installs all tools
+brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
 ### For Sparrowhub users
