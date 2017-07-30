@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.16.1
+
+</div>
+
+### Changes
+* Changed install script for homebrew
+* Added the -r option to newton
+
+<div align="center">
+
 ## Version 1.16.0
 
 </div>
