@@ -37,7 +37,7 @@ httpGet()
 
 checkValidCurrency()
 {
-  if [[ " ${currencyCodes[*]} " == *" $(echo -e "${1}" | tr -d '[:space:]') "* ]]; then
+  if [[ " ${currencyCodes[*]} " == *" $(echo -e "${@}" | tr -d '[:space:]') "* ]]; then
     echo "0"
   else
     echo "1"
