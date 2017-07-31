@@ -5,6 +5,10 @@ base=""
 exchangeTo=""
 currentVersion="1.16.2"
 configuredClient=""
+currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
+  EUR GBP HKD HRK HUF IDR ILS INR
+  JPY KRW MXN MYR NOK NZD PHP PLN
+  RON RUB SEK SGD THB TRY USD ZAR)
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -33,16 +37,10 @@ httpGet()
 
 checkValidCurrency()
 {
-  if [[ $1 != "AUD" && $1 != "BGN" && $1 != "BRL" \
-      && $1 != "CAD" && $1 != "CHF" && $1 != "CNY" && $1 != "CZK" && $1 != "DKK" \
-      && $1 != "EUR" && $1 != "GBP" && $1 != "HKD" && $1 != "HRK" && $1 != "HUF" \
-      && $1 != "IDR" && $1 != "ILS" && $1 != "INR" && $1 != "JPY" && $1 != "KRW" \
-      && $1 != "MXN" && $1 != "MYR" && $1 != "NOK" && $1 != "NZD" && $1 != "PHP" \
-      && $1 != "PLN" && $1 != "RON" && $1 != "RUB" && $1 != "SEK" && $1 != "SGD" \
-      && $1 != "THB" && $1 != "TRY" && $1 != "USD" && $1 != "ZAR" ]]; then
-    echo "1"
-  else
+  if [[ " ${currencyCodes[*]} " == *" $(echo -e "${1}" | tr -d '[:space:]') "* ]]; then
     echo "0"
+  else
+    echo "1"
   fi
 }
 
