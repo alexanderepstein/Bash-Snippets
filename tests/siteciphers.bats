@@ -22,11 +22,11 @@
   [ "${lines[0]}" = "Siteciphers" ]
 }
 
-@test "Running siteciphers on travis-ci" {
-  run siteciphers travis-ci.org
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "ECDHE-RSA-AES256-GCM-SHA384 - NO (tlsv1 alert insufficient security)" ]
-}
+#@test "Running siteciphers on travis-ci" {
+#  run siteciphers travis-ci.org
+#  [ "$status" -eq 0 ]
+#  [ "${lines[0]}" = "ECDHE-RSA-AES256-GCM-SHA384 - NO (tlsv1 alert insufficient security)" ]
+#}
 
 
 @test "Get the tools version with -v" {
