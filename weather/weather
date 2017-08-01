@@ -151,6 +151,21 @@ elif [[ $1 == "m" ]]; then
 elif [[ "${@: -1}" == "m" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?m | sed s/" "//g)
   getLocationWeather $args
+elif [[ $1 == "M" ]]; then
+  getIPWeather "?M"
+elif [[ "${@: -1}" == "M" ]];then
+  args=$( echo "${@:1:(($# - 1))}" ?M | sed s/" "//g)
+  getLocationWeather $args
+elif [[ $1 == "mM" || $1 == "Mm" ]]; then
+  getIPWeather "?m?M"
+elif [[ "${@: -1}" == "mM" || "${@:-1}" == "Mm" ]];then
+  args=$( echo "${@:1:(($# - 1))}" ?m?M | sed s/" "//g)
+  getLocationWeather $args
+elif [[ $1 == "iM" || $1 == "Mi" ]]; then
+  getIPWeather "?u?M"
+elif [[ "${@: -1}" == "iM" || "${@:-1}" == "Mi" ]];then
+  args=$( echo "${@:1:(($# - 1))}" ?u?M | sed s/" "//g)
+  getLocationWeather $args
 elif [[ $1 == "i" ]]; then
   getIPWeather "?u"
 elif [[ "${@: -1}" == "i" ]];then
