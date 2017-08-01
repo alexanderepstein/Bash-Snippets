@@ -17,8 +17,6 @@ getConfiguredClient()
     configuredClient="curl"
   elif command -v wget &>/dev/null; then
     configuredClient="wget"
-  elif command -v http &>/dev/null; then
-    configuredClient="httpie"
   elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
@@ -33,7 +31,6 @@ httpGet()
   case "$configuredClient" in
     curl)  curl -A curl -s "$@" ;;
     wget)  wget -qO- "$@" ;;
-    httpie) http -b GET "$@" ;;
     fetch) fetch -o "..." ;;
   esac
 }
