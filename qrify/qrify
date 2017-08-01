@@ -5,16 +5,32 @@ currentVersion="1.16.2"
 multiline="0" # flag that indicates multiline option
 
 
+## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if command -v curl &> /dev/null; then
+  if  command -v curl &>/dev/null; then
     configuredClient="curl"
-  elif command -v wget &> /dev/null; then
+  elif command -v wget &>/dev/null; then
     configuredClient="wget"
+  elif command -v http &>/dev/null; then
+    configuredClient="httpie"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
   else
-    echo "Error: This tool requires either curl or wget to be installed." >&2
+    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
     return 1
   fi
+}
+
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    httpie) http -b GET "$@" ;;
+    fetch) fetch -o "..." ;;
+  esac
 }
 
 update()
@@ -55,14 +71,6 @@ update()
       echo "${repositoryName} is already the latest version"
     fi
   fi
-}
-
-httpGet()
-{
-  case "${configuredClient}" in
-    curl) curl -A curl -s "$@";;
-    wget) wget -qO- "$@";;
-  esac
 }
 
 makeqr()

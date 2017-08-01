@@ -9,25 +9,27 @@ configuredClient=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-    if command -v curl &>/dev/null; then
-      configuredClient="curl"
-    elif command -v wget &>/dev/null; then
-      configuredClient="wget"
-    elif command -v fetch &>/dev/null; then
-      configuredClient="fetch"
-    else
-      echo "Error: This tool reqires either curl, wget, or fetch to be installed."
-      return 1
-    fi
-
+  if  command -v curl &>/dev/null; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null; then
+    configuredClient="wget"
+  elif command -v http &>/dev/null; then
+    configuredClient="httpie"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
+    return 1
+  fi
 }
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
 {
   case "$configuredClient" in
-    curl) curl -A curl -s -N "$@" ;;
-    wget) wget -qO- "$@" ;;
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    httpie) http -b GET "$@" ;;
     fetch) fetch -o "..." ;;
   esac
 }
@@ -55,7 +57,7 @@ checkTargetCurrency()
     echo "1"
   else
     echo "0"
-  fi  
+  fi
 }
 
 ## Grabs the base currency from the user and validates it with all the possible currency
@@ -88,7 +90,7 @@ checkBase()
 # Matches the symbol to the appropriate ids regarding the API calling.
 transformBase()
 {
-  case "$base" in 
+  case "$base" in
     "ETH") reqId="ethereum" ;;
     "BTC") reqId="bitcoin" ;;
     "XRP") reqId="ripple" ;;
@@ -167,10 +169,10 @@ convertCurrency()
   exchangeAmount=$(echo "$exchangeRate * $amount" | bc  )
   exchangeTo=$(echo "$exchangeTo" | tr '[:lower:]' '[:upper:]')
   base=$(echo "$base" | tr '[:lower:]' '[:upper:]')
-  
+
   cat <<EOF
 =========================
-| $base to $exchangeTo  
+| $base to $exchangeTo
 | Rate: $exchangeRate
 | $base: $amount
 | $exchangeTo: $exchangeAmount
@@ -244,7 +246,7 @@ Supported Target Currencies:
 | CNY | EUR | GBP | HKD |
 | IDR | INR | JPY | KRW |
 | MXN | RUB | USD       |
- _______________________ 
+ _______________________
 
 Examples:
   cryptocurrency BTC USD 12.35
