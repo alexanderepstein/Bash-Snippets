@@ -2,6 +2,17 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.17.0
+
+</div>
+
+### Changes
+* Adding ability to use m/s for windspeed in weather
+* Supporting httpie for all tools that work with it
+* Install for homebrew can now handle multiple tools on one line
+
+<div align="center">
+
 ## Version 1.16.2
 
 </div>

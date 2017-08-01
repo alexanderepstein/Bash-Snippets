@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 DELAY=1
 configuredClient=""
-currentVersion="1.16.2"
+currentVersion="1.17.0"
 
 checkOpenSSL()
 {
