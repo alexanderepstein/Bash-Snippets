@@ -74,7 +74,7 @@ copyManpage()
 response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]]; then
-  prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | grep -Eo "^[a-z/A-Z=--.0-9]*")
+  prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | cut -d " " -f 1)
   echo $prefix
   mkdir -p $prefix/bin $prefix/share/man/man1
   if [[ $2 == "all" ]];then
