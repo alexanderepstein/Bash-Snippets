@@ -148,10 +148,14 @@ elif [[ $1 == "update" ]]; then
   update
 elif [[ $1 == "m" ]]; then
   getIPWeather "?m"
-elif [[ $1 == "M" || $2 == "M" ]]; then
-  getIPWeather "?M"
+elif [[ "${@: -1}" == "m" ]];then
+  args=$( echo "${@:1:(($# - 1))}" ?m | sed s/" "//g)
+  getLocationWeather $args
 elif [[ $1 == "i" ]]; then
   getIPWeather "?u"
+elif [[ "${@: -1}" == "i" ]];then
+  args=$( echo "${@:1:(($# - 1))}" ?u | sed s/" "//g)
+  getLocationWeather $args
 else
   getLocationWeather "$@"
 fi
