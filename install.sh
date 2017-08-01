@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.17.0"
+currentVersion="1.17.1"
 declare -a tools=(cheat cloudup crypt cryptocurrency currency geo movies newton qrify short siteciphers stocks taste todo weather ytview)
 declare -a extraLinuxTools=(maps)
 declare -a extraDarwinTools
@@ -74,7 +74,8 @@ copyManpage()
 response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]]; then
-  prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | grep -Eo "^[a-z/A-Z=]*")
+  prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | grep -Eo "^[a-z/A-Z= -- .0-9]*")
+  echo $prefix
   mkdir -p $prefix/bin $prefix/share/man/man1
   if [[ $2 == "all" ]];then
     for tool in "${tools[@]}"; do

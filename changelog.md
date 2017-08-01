@@ -2,6 +2,15 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.17.1
+
+</div>
+
+### Bugfixes
+* Fixing grabbing the prefix in homebrew install
+
+<div align="center">
+
 ## Version 1.17.0
 
 </div>
