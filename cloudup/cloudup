@@ -167,7 +167,7 @@ getGithubRepoNames()
     for repo in $repoResponse; do ## go through each repo
       if [[ $source == "1" ]]; then ## if the user set the source flag
         if [[ ${forkResponse[$count]} == "false" ]]; then repoNames+=("$repo"); fi ## if they are the owner of the repository add it to the list of repoNames
-        count=$(echo $count + 1 | bc) ## increment the counter
+        count=$(( $count + 1 )) ## increment the counter
       else ## the user didnt set the source flag
         repoNames+=("$repo") ## add all repos in repoResponse to repoNames
       fi
@@ -264,7 +264,7 @@ if [[ $all == "0" ]]; then
     backupRepo || { echo "Error: couldnt backup $repoName to bitbucket"; exit 1; }
     exit 0
   else ## flags are set but arguments are also provided
-    firstArg=$(echo $private + $tStamp + 1 | bc)
+    firstArg=$(( $private + $tStamp + 1 ))
     getGitHubUserInfo || exit 1
     getBitbucketInfo || exit 1
     for i in "${@:$firstArg}"; do

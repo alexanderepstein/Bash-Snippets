@@ -97,7 +97,7 @@ removeTask()
   for task in $(cat ~/.todo/list.txt); do
     if [[ $count != $taskNumber ]]; then
     echo "$task" >> ~/.todo/temp.txt;fi
-    count=$(echo $count + 1 | bc)
+    count=$(( $count + 1 ))
   done
   rm -f ~/.todo/list.txt
   cp  ~/.todo/temp.txt ~/.todo/list.txt
@@ -122,7 +122,7 @@ getTasks()
       for task in $(cat ~/.todo/list.txt); do
         if [ $count -lt 10 ]; then count="0$count"; fi
         echo "$count). $task"  >> ~/.todo/getTemp.txt
-        count=$(echo $count + 1 | bc)
+        count=$(( $count + 1 ))
       done
       cat ~/.todo/getTemp.txt | column -t -s ";"
       rm -f ~/.todo/getTemp.txt

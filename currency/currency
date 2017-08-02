@@ -137,7 +137,13 @@ checkInternet()
 convertCurrency()
 {
   exchangeRate=$(httpGet "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
-  exchangeAmount=$(echo "$exchangeRate * $amount" | bc)
+  if ! command -v bc; then
+    exchangeRate=$(echo $exchangeRate | grep -Eo "[0-9]*" )
+    exchangeAmount=$(( $exchangeRate * $amount ))
+  else
+    exchangeAmount=$( echo "$exchangeRate * $amount" | bc )
+  fi
+  
   cat <<EOF
 
 =========================
