@@ -1,0 +1,45 @@
+#!/bin/bash
+# Author : Navan Chauhan <N3V0N>
+#set -x
+title=$1
+ap=$2
+if [ "$1" == "-h" ];
+then
+echo TMDb Help
+echo	Usage :
+echo 	-e	"tmdb -h \t		 /Shows Help"
+echo	-e	"tmdb Name_of_the_movie \t \t /Gives Information	"
+exit
+#elif [ "$1" == " "];     #Error message when no data given is under developement
+#then
+#echo test
+#exit
+fi
+APIKEY="b2f8880475c888056b6207067fbaa197"
+clear
+FT=$( echo $title | sed 's/ /%20/g' );
+echo Fetching Data of $title
+curl -s -o raw_data.json "https://api.themoviedb.org/3/search/movie?query="$FT"&language=en-US&api_key="$APIKEY""
+jq ".[]" raw_data.json > semi.json 
+jq '.[] | .id' semi.json > final.txt 
+id=$( head -n 1 final.txt )
+echo "Movie ID= $id "
+url=https://api.themoviedb.org/3/movie/"$id"?api_key="$APIKEY"
+curl -s $url > movie.json
+name=$( jq -r '.original_title' movie.json )
+plot=$( jq -r '.overview' movie.json )
+language=$( jq -r '.original_language' movie.json )
+runtime=$( jq -r '.runtime' movie.json )
+clear
+
+echo "=========================================="
+echo  Title     : $name
+echo
+echo  Language  : $language
+echo
+echo  Plot      : $plot
+echo
+echo  Runtime   : $runtime
+echo "=========================================="
+
+
