@@ -3,7 +3,7 @@
 # Bash-Snippets Changelog
 
 ## Version 1.17.2
-
+change
 </div>
 
 ### Changes
