@@ -107,7 +107,7 @@ elif [[ $1 == "update" ]]; then
     copyManpage || exit 1
   else
     echo "It appears you have installed bash-snippets through a package manager, you must update it with the respective package manager."
-    exit 0
+    exit 1
   fi
 elif [[ $1 == "all" ]]; then
   for tool in "${tools[@]}"; do
