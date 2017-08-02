@@ -13,10 +13,11 @@
 ### All of these scripts have been heavily tested on macOS and Linux
 ### Most of these scripts have been tested on Windows 10 and the official developer bash instance. Does not work with Cygwin or Mysys2.
 
-For a quick list and summary of the tools from the terminal run one of the following 3 lines compatible with your system
+For a quick list and summary of the tools from the terminal run one of the following 4 lines compatible with your system
 
 ```bash
 curl -A curl -s cheat.sh/~Bash-Snippets
+http -b GET cheat.sh/~Bash-Snippets
 wget -qO- cheat.sh/~Bash-Snippets
 fetch cheat.sh/~Bash-Snippets
 ```
