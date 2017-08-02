@@ -11,6 +11,7 @@
 * tools that don't need bc don't use it
 * tools that need bc can approximate without it
 * Fixing trailing quotation mark for newton on osx
+* Adding all option to uninstall
 
 
 <div align="center">
