@@ -161,7 +161,6 @@ EOF
 }
 
 getConfiguredClient || exit 1
-getConfiguredPlayer || exit 1
 checkInternet || exit 1
 
 while getopts "vuc:s:h*:" option; do
@@ -199,10 +198,13 @@ elif [[ $1 == "update" ]]; then
   update
   exit 0
 elif [[ $flag == "search" ]]; then
+  getConfiguredPlayer || exit 1
   searchview || exit 1
 elif [[ $flag == "channel" ]]; then
+  getConfiguredPlayer || exit 1
   channelview || exit 1
 else
   search=$(printf '%s ' "$@")
+  getConfiguredPlayer || exit 1
   searchview || exit 1
 fi
