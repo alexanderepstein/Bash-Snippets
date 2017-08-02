@@ -2,6 +2,19 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.17.3
+
+</div>
+
+### Changes
+* checkInternet now checks github.com over google.com
+* tools that don't need bc don't use it
+* tools that need bc can approximate without it
+* Fixing trailing quotation mark for newton on osx
+
+
+<div align="center">
+
 ## Version 1.17.2
 
 </div>
