@@ -1,11 +1,21 @@
 language: bash
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+    - os: osx
+      osx_image: xcode7.2
+
 before_install:
   - sudo ./install.sh all
-  - sudo add-apt-repository ppa:duggan/bats --yes
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq bats
-  - sudo apt-get install -qq vlc
-  - sudo apt-get install -qq openssl
+
+install:
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo add-apt-repository ppa:duggan/bats --yes; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get update; else brew update; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq bats; else brew install bats; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq openssl; else brew install openssl; fi
   - cpanm Sparrow --sudo --notest -q
   - sparrow index update
   - sparrow plg install bash-snippets-interactive-test
