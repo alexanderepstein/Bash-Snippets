@@ -1,45 +1,110 @@
-#!/bin/bash
-# Author : Navan Chauhan <N3V0N>
-#set -x
-title=$1
-ap=$2
-if [ "$1" == "-h" ];
-then
-echo TMDb Help
-echo	Usage :
-echo 	-e	"tmdb -h \t		 /Shows Help"
-echo	-e	"tmdb Name_of_the_movie \t \t /Gives Information	"
-exit
-#elif [ "$1" == " "];     #Error message when no data given is under developement
-#then
-#echo test
-#exit
-fi
+#!/usr/bin/env bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
+# Author: Navan Chauhan https://github.com/N3V0N
+
+currentVersion="1.17.3"
+configuredClient=""
+configuredPython=""
 APIKEY="b2f8880475c888056b6207067fbaa197"
-clear
-FT=$( echo $title | sed 's/ /%20/g' );
-echo Fetching Data of $title
-curl -s -o raw_data.json "https://api.themoviedb.org/3/search/movie?query="$FT"&language=en-US&api_key="$APIKEY""
-jq ".[]" raw_data.json > semi.json 
-jq '.[] | .id' semi.json > final.txt 
-id=$( head -n 1 final.txt )
-echo "Movie ID= $id "
-url=https://api.themoviedb.org/3/movie/"$id"?api_key="$APIKEY"
-curl -s $url > movie.json
-name=$( jq -r '.original_title' movie.json )
-plot=$( jq -r '.overview' movie.json )
-language=$( jq -r '.original_language' movie.json )
-runtime=$( jq -r '.runtime' movie.json )
-clear
 
-echo "=========================================="
-echo  Title     : $name
-echo
-echo  Language  : $language
-echo
-echo  Plot      : $plot
-echo
-echo  Runtime   : $runtime
-echo "=========================================="
+## This function determines which http get tool the system has installed and returns an error if there isnt one
+getConfiguredClient()
+{
+  if  command -v curl &>/dev/null; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null; then
+    configuredClient="wget"
+  elif command -v http &>/dev/null; then
+    configuredClient="httpie"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
+    return 1
+  fi
+}
 
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    httpie) http -b GET "$@" ;;
+    fetch) fetch -o "..." ;;
+  esac
+}
 
+getConfiguredPython()
+{
+  if  command -v python2 &>/dev/null ; then
+    configuredPython="python2"
+  elif command -v python &>/dev/null ; then
+    configuredPython="python"
+  else
+    echo "Error: This tool requires python 2 to be installed."
+    return 1
+  fi
+}
+
+if [[ $(uname) != "Darwin" ]]; then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@";;
+      python) python "$@";;
+    esac
+  }
+fi
+
+checkInternet()
+{
+  httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
+}
+
+printMovieInfo()
+{
+  echo
+  echo "=========================================="
+  echo "| Title: $name"
+  echo "| Language: $language"
+  echo "| Genre: $genres"
+  echo "| Runtime: $runtime mins"
+  echo "| User Rating: $voteAverage/10.0 with $voteCount votes"
+  echo "| Plot: $plot"
+  echo "=========================================="
+  echo
+}
+
+getMovieInfo()
+{
+  title=$1
+  encodedTitle=$( echo $title | sed 's/ /%20/g' );
+  movieSearchInfo=$( httpGet "https://api.themoviedb.org/3/search/movie?query=$encodedTitle&language=en-US&api_key=$APIKEY")
+  movieID=$(echo $movieSearchInfo | python -c "import sys, json; print json.load(sys.stdin)['results'][0]['id']" 2> /dev/null)
+  if [[ $movieID == "" ]];then { echo "Error: could not find a movie matching the title $title"; return 1; }; fi
+  movieInfo=$(httpGet "https://api.themoviedb.org/3/movie/$movieID?api_key=$APIKEY")
+  name=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['original_title']" 2> /dev/null )
+  plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['overview']" 2> /dev/null )
+  language=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['original_language']" 2> /dev/null )
+  runtime=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['runtime']" 2> /dev/null )
+  voteCount=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['vote_count']" 2> /dev/null )
+  genreOne=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][0]['name']" 2> /dev/null )
+  genreTwo=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][1]['name']" 2> /dev/null )
+  genreThree=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][2]['name']" 2> /dev/null )
+  genres=$(echo "$genreOne $genreTwo $genreThree" | tr " " ",")
+  voteAverage=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['vote_average']" 2> /dev/null )
+}
+
+getConfiguredClient || exit 1
+if [[ "$(uname)" == "Linux" ]];then getConfiguredPython || exit 1; fi
+checkInternet || exit 1
+
+if [ "$1" == "-h" ]; then
+  usage
+  exit 0
+fi
+
+args=$(echo "$@")
+getMovieInfo $args
+printMovieInfo
