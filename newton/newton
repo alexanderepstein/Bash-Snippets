@@ -86,7 +86,7 @@ validateExpression()
   local parsedExpression # only used here
   originalEquation=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g") # accont for the fact that we have to use brackets and not parenthesis
   parsedExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*") # only grepping valid characters
-  if [[ "$parsedExpression" != "$originalEquation" ]];then { echo "Error: Expression contains invalid characters"; return 1; }; fi # compare result to original
+  if [ "$parsedExpression" != "$originalEquation" ];then { echo "Error: Expression contains invalid characters"; return 1; }; fi # compare result to original
   return 0
 }
 
@@ -108,7 +108,7 @@ validateOperation()
 
 getSimpleResponse()
 {
-  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g) # get reponse, grab result
+  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g | tr '"' " ") # get reponse, grab result
   if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi # if result is empty sometthing went wrong...
 }
 
