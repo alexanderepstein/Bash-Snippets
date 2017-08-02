@@ -16,10 +16,10 @@ install:
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get update; else brew update; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq bats; else brew install bats; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq openssl; else brew install openssl; fi
-  - cpanm Sparrow --sudo --notest -q
-  - sparrow index update
-  - sparrow plg install bash-snippets-interactive-test
+  - if [ $TRAVIS_OS_NAME = linux ]; then cpanm Sparrow --sudo --notest -q; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sparrow index update; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sparrow plg install bash-snippets-interactive-test; fi
 
 script:
-  - sparrow plg run bash-snippets-interactive-test --param dir=$PWD
+  - if [ $TRAVIS_OS_NAME = linux ]; then sparrow plg run bash-snippets-interactive-test --param dir=$PWD; fi
   - bats tests
