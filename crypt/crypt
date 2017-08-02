@@ -15,6 +15,11 @@ checkOpenSSL()
   fi
 }
 
+checkInternet()
+{
+  httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query google with a get request
+}
+
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -170,7 +175,8 @@ if [[ $# == 0 ]]; then
   exit 0
 elif [[ $1 == "update" ]]; then
   getConfiguredClient || exit 1
-  update
+  checkInternet || exit 1
+  update || exit 1
   exit 0
 elif [[ $1 == "help" ]]; then
   usage
