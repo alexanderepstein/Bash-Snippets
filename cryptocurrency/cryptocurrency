@@ -173,7 +173,6 @@ convertCurrency()
     exchangeAmount=$( echo "$exchangeRate * $amount" | bc )
   fi
   exchangeTo=$(echo "$exchangeTo" | tr '[:lower:]' '[:upper:]')
-  base=$(echo "$base" | tr '[:lower:]' '[:upper:]')
 
   cat <<EOF
 =========================
