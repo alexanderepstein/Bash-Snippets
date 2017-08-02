@@ -138,8 +138,11 @@ convertCurrency()
 {
   exchangeRate=$(httpGet "http://api.fixer.io/latest?base=$base&symbols=$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
   if ! command -v bc &>/dev/null; then
-    exchangeRate=$(echo $exchangeRate | grep -Eo "[0-9]*" )
+    oldRate=$exchangeRate
+    exchangeRate=$(echo $exchangeRate | grep -Eo "^[0-9]*" )
+    amount=$(echo $amount | grep -Eo "^[0-9]*" )
     exchangeAmount=$(( $exchangeRate * $amount ))
+    exchangeRate=$oldRate
   else
     exchangeAmount=$( echo "$exchangeRate * $amount" | bc )
   fi

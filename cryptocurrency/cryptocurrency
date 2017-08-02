@@ -167,8 +167,11 @@ convertCurrency()
   exchangeTo=$(echo "$exchangeTo" | tr '[:upper:]' '[:lower:]')
   exchangeRate=$(httpGet "https://api.coinmarketcap.com/v1/ticker/$reqId/?convert=$exchangeTo" | grep -Eo "\"price_$exchangeTo\": \"[0-9 .]*" | sed s/"\"price_$exchangeTo\": \""//g) > /dev/null
   if ! command -v bc &>/dev/null; then
-    exchangeRate=$(echo $exchangeRate | grep -Eo "[0-9]*" )
+    oldRate=$exchangeRate
+    exchangeRate=$(echo $exchangeRate | grep -Eo "^[0-9]*" )
+    amount=$(echo $amount | grep -Eo "^[0-9]*" )
     exchangeAmount=$(( $exchangeRate * $amount ))
+    exchangeRate=$oldRate
   else
     exchangeAmount=$( echo "$exchangeRate * $amount" | bc )
   fi
