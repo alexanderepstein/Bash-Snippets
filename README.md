@@ -362,6 +362,11 @@ brew uninstall bash-snippets
 ./uninstall.sh
 ```
 
+#### To uninstall all installed bash-snippets
+```bash
+./uninstall.sh all
+```
+
 ## Donate
 If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
 
