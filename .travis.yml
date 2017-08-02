@@ -15,9 +15,10 @@ before_install:
 
 install:
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo add-apt-repository ppa:duggan/bats --yes; fi
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get update; else brew update > /dev/null ; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get update; else brew update; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq bats; else brew install bats; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq openssl; else brew install openssl; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then brew install curl && brew upgrade git; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then cpanm Sparrow --sudo --notest -q; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sparrow index update; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sparrow plg install bash-snippets-interactive-test; fi
