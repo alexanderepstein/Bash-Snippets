@@ -66,7 +66,7 @@ copyManpage()
   if [[ "$(uname)" == "Darwin" ]]; then
     manPath="$prefix/share/man/man1"
   else
-    manPath="/usr/local/man/man1"
+    manPath="$prefix/man/man1"
   fi
   cp bash-snippets.1 $manPath 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
@@ -75,7 +75,8 @@ response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]]; then
   prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | cut -d " " -f 1)
-  mkdir -p $prefix/bin $prefix/share/man/man1
+  if [[ "$(uname)" == "Darwin" ]]; then mkdir -p $prefix/bin $prefix/share/man/man1
+  else mkdir -p $prefix/bin $prefix/man/man1; fi
   if [[ $2 == "all" ]];then
     for tool in "${tools[@]}"; do
       singleInstall $tool || exit 1
