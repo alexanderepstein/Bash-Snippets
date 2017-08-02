@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.17.2
+
+</div>
+
+### Changes
+* Fixing where manpage is installed for linuxbrew
+* Updating weather usage and manpage
+
+<div align="center">
+
 ## Version 1.17.1
 
 </div>

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.17.1" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
+currentVersion="1.17.2" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 LANG="${LANG:-en}"
 locale=$(echo $LANG | cut -c1-2)
 configuredClient=""
@@ -106,17 +106,18 @@ Weather
 Description: Provides a 3 day forecast on your current location or a specified location.
   With no flags Weather will default to your current location.
 Usage: weather or weather [flag] or weather [country] or weather [city] [state]
-  weather [i] get weather in imperial units
-  weather [m] get weather in metric units
+  weather [i][M] get weather in imperial units, optional M means windspeed in m/s
+  weather [m][M] get weather in metric units, optional M means windspeed in m/s
   weather [Moon] grabs the phase of the moon
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
 Examples:
   weather
+  weather Paris m
   weather Tokyo
   weather Moon
-  weather m
+  weather mM
 EOF
 }
 

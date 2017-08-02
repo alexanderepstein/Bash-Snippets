@@ -389,9 +389,9 @@ Description: Provides a 3 day forecast on your current location or a specified l
 
 Usage: weather or weather [flag] or weather [country] or weather [city] [state]
 
-  * weather [i] get weather in imperial units
+  * weather [optionalLocation] [i][M] get weather in imperial units, optional M means windspeed in m/s
 
-  * weather [m] get weather in metric units
+  * weather [optionalLocation] [m][M] lowercase m gets weather in metric units, optional M means windspeed in m/s
 
   * weather [Moon] grabs the phase of the moon
 
@@ -405,11 +405,13 @@ Examples:
 
   * weather
 
+  * weather Paris m
+
   * weather Tokyo
 
   * weather Moon
 
-  * weather m
+  * weather mM
 
 ### Ytview
 Description: Search and play youtube videos right from the terminal.

@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BASH\-SNIPPETS" "1" "July 2017" "" ""
+.TH "BASH\-SNIPPETS" "1" "August 2017" "" ""
 .
 .SH "NAME"
 \fBbash\-snippets\fR \- A collection of small bash scripts for heavy terminal users
@@ -547,10 +547,10 @@ Description: Provides a 3 day forecast on your current location or a specified l
 Usage: weather or weather [flag] or weather [country] or weather [city] [state]
 .
 .IP "\(bu" 4
-weather [i] get weather in imperial units
+weather [optionalLocation] [i][M] get weather in imperial units, optional M means windspeed in m/s
 .
 .IP "\(bu" 4
-weather [m] get weather in metric units
+weather [optionalLocation] [m][M] lowercase m gets weather in metric units, optional M means windspeed in m/s
 .
 .IP "\(bu" 4
 weather [Moon] grabs the phase of the moon
@@ -573,13 +573,16 @@ Examples:
 weather
 .
 .IP "\(bu" 4
+weather Paris m
+.
+.IP "\(bu" 4
 weather Tokyo
 .
 .IP "\(bu" 4
 weather Moon
 .
 .IP "\(bu" 4
-weather m
+weather mM
 .
 .IP "" 0
 .

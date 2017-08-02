@@ -307,7 +307,7 @@ There is an AUR package for bash-snippets located [here](https://aur.archlinux.o
 
 * Then cd into the cloned directory: ```cd Bash-Snippets```
 
-* Git checkout to the latest stable release ```git checkout v1.17.1```
+* Git checkout to the latest stable release ```git checkout v1.17.2```
 
 * Run the guided install script with
 ```bash
