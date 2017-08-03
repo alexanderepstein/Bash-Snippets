@@ -121,8 +121,7 @@ checkInternet()
 singleDownload()
 {
   if [[ ! -d $1 ]];then { echo "Directory doesn't exist, creating it now..."; mkdir -p $1;};fi
-  if [[ $1 == "" ]];then tempOutputPath=$(pwd)
-  else tempOutputPath=$1;fi
+  tempOutputPath=$1
   if [ -f "$tempOutputPath/$3" ];then
     echo -n "File aleady exists at $tempOutputPath/$3, do you want to delete it? [Y/n] "
     read -r answer
