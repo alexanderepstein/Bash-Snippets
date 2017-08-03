@@ -7,6 +7,7 @@ currentVersion="1.17.3"
 single="false"
 down="false"
 singlef="false"
+
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredDownloadClient()
 {
@@ -65,7 +66,6 @@ getconfiguredUploadClient()
 ## Allows to call the users configured client without if statements everywhere
 httpDownload()
 {
-
   case "$configuredDownloadClient" in
     curl)  curl -A curl --progress -o "$tempOutputPath/$3" "https://transfer.sh/$2/$3" || { echo "Failure!"; return 1;};;
     wget)  wget --progress=dot -O "$tempOutputPath/$3" "https://transfer.sh/$2/$3" || { echo "Failure!"; return 1;} ;;
@@ -120,7 +120,7 @@ checkInternet()
 
 singleDownload()
 {
-  if [[ ! -d $1 && $1 != "" ]];then { echo "Error: invalid output directory"; exit 1;};fi
+  if [[ ! -d $1 ]];then { echo "Directory doesn't exist, creating it now..."; mkdir -p $1;};fi
   if [[ $1 == "" ]];then tempOutputPath=$(pwd)
   else tempOutputPath=$1;fi
   if [ -f "$tempOutputPath/$3" ];then
@@ -144,9 +144,17 @@ httpSingleUpload()
     curl) response=$(curl -A curl --progress --upload-file "$1" "https://transfer.sh/$2") || { echo "Failure!"; return 1;};;
     wget) response=$(wget --progress=dot --method PUT --body-file="$1" "https://transfer.sh/$2") || { echo "Failure!"; return 1;} ;;
   esac
-  echo -e "Success!\nFile uploaded to: $response"
+  echo  "Success!"
 }
 
+printUploadResponse()
+{
+fileID=$(echo $response | cut -d "/" -f 4)
+  cat <<EOF
+Transfer Download Command: transfer -d desiredOutputDirectory $fileID $tempFileName
+Transfer File URL: $response
+EOF
+}
 
 singleUpload()
 {
@@ -235,6 +243,7 @@ elif $single || $singlef ;then
   checkInternet || exit 1
   getconfiguredUploadClient || exit 1
   singleUpload "$inputFilePath" || exit 1
+  printUploadResponse
   exit 0
 elif $down;then
   getConfiguredClient || exit 1
