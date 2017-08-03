@@ -34,7 +34,7 @@ currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
       curl)  curl -A curl -s "$@" ;;
       wget)  wget -qO- "$@" ;;
       httpie) http -b GET "$@" ;;
-      fetch) fetch -o "..." ;;
+      fetch) fetch -q "$@" ;;
     esac
   }
 
