@@ -295,11 +295,7 @@ brew install bash-snippets # installs all tools
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
-### For Sparrowhub users
-```bash
-sparrow plg install [tool]
-```
-### For Arch Linux Users
+### Arch Linux (AUR)
 There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
 Download the tarball
 Install the program with  
@@ -308,13 +304,27 @@ makepkg -Acs
 sudo pacman -U bash-snippets.tar.gz
 ```
 
-### Otherwise
+### Sparrowhub
+```bash
+sparrow plg install [tool]
+```
 
-* First clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
+### Git Install
 
-* Then cd into the cloned directory: ```cd Bash-Snippets```
+* First clone the repository:  
+```bash
+git clone https://github.com/alexanderepstein/Bash-Snippets
+```
 
-* Git checkout to the latest stable release ```git checkout v1.17.3```
+* Then cd into the cloned directory:
+```bash
+cd Bash-Snippets
+```
+
+* Git checkout to the latest stable release
+```bash
+git checkout v1.17.3
+```
 
 * Run the guided install script with
 ```bash
@@ -339,7 +349,7 @@ this will let you choose which scripts to install
 brew upgrade bash-snippets
 ```
 
-### Otherwise
+### Git Update
 
 With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
 Ex.
@@ -359,10 +369,16 @@ This will clone the repository and install the new versions of scripts that were
 brew uninstall bash-snippets
 ```
 
-### Otherwise
-* If you don't have the Bash-Snippets folder anymore clone the repository:  ```git clone https://github.com/alexanderepstein/Bash-Snippets```
+### Git Uninstall
+* If you don't have the Bash-Snippets folder anymore clone the repository:  
+```bash
+git clone https://github.com/alexanderepstein/Bash-Snippets
+```
 
-* cd into the Bash-Snippets directory: ```cd Bash-Snippets```
+* cd into the Bash-Snippets directory:
+```bash
+cd Bash-Snippets
+```
 
 #### To go through a guided uninstall
 ```bash
