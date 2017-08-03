@@ -289,7 +289,7 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 ## Installing
 
-### For macOS via homebrew
+### For macOS via homebrew / Linux via linuxbrew
 ```bash
 brew install bash-snippets # installs all tools
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
@@ -301,6 +301,12 @@ sparrow plg install [tool]
 ```
 ### For Arch Linux Users
 There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
+Download the tarball
+Install the program with  
+```bash
+makepkg -Acs
+sudo pacman -U bash-snippets.tar.gz
+```
 
 ### Otherwise
 
@@ -328,7 +334,7 @@ this will let you choose which scripts to install
 
 ## Updating
 
-### For macOS if installed via homebrew
+### For macOS if installed via homebrew / Linux if installed via linuxbrew
 ```bash
 brew upgrade bash-snippets
 ```
@@ -348,7 +354,7 @@ This will clone the repository and install the new versions of scripts that were
 
 ## Uninstalling
 
-### For macOS if installed via homebrew
+### For macOS if installed via homebrew / Linux  if installed via linuxbrew
 ```bash
 brew uninstall bash-snippets
 ```
