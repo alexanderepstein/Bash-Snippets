@@ -540,6 +540,53 @@ todo \-c
 .
 .IP "" 0
 .
+.SS "Transfer"
+Description: Quickly transfer files from the command line\.
+.
+.P
+Usage: transfer [flags] or transfer [flag] [args]
+.
+.IP "\(bu" 4
+\-s Upload a single file, takes in file path as argument
+.
+.IP "\(bu" 4
+\-d Download a single file
+.
+.IP "" 4
+.
+.nf
+
+* First arg: Output file directory
+* Second arg: File url id
+* Third arg: File name
+.
+.fi
+.
+.IP "" 0
+
+.
+.IP "\(bu" 4
+\-u Update Bash\-Snippet Tools
+.
+.IP "\(bu" 4
+\-h Show the help
+.
+.IP "\(bu" 4
+\-v Get the tool version
+.
+.IP "" 0
+.
+.P
+Examples:
+.
+.IP "\(bu" 4
+transfer \-s ~/fileToTransfer\.txt
+.
+.IP "\(bu" 4
+transfer \-d ~/outputDirectory fileID fileName
+.
+.IP "" 0
+.
 .SS "Weather"
 Description: Provides a 3 day forecast on your current location or a specified location\. With no flags Weather will default to your current location\.
 .

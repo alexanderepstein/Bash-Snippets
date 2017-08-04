@@ -383,6 +383,30 @@ Examples:
 
   * todo -c
 
+### Transfer
+Description: Quickly transfer files from the command line.
+
+Usage: transfer [flags] or transfer [flag] [args]
+
+  * -s  Upload a single file, takes in file path as argument
+
+  * -d  Download a single file
+        * First arg: Output file directory
+        * Second arg: File url id
+        * Third arg: File name
+
+  * -u  Update Bash-Snippet Tools
+
+  * -h  Show the help
+
+  * -v  Get the tool version
+
+Examples:
+
+  * transfer -s ~/fileToTransfer.txt
+
+  *  transfer -d ~/outputDirectory fileID fileName
+
 ### Weather
 Description: Provides a 3 day forecast on your current location or a specified location.
   With no flags Weather will default to your current location.

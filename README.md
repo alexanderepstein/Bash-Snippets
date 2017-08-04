@@ -215,7 +215,7 @@ Valid items are: shows, books, music, artists, movies, authors, games
 * After getting the API key run the following line ```export TASTE_API_KEY="yourAPIKeyGoesHere" >> ~/.bash_profile```
 
 
-## todo
+## Todo
 
 A simplistic command line todo list
 
@@ -226,6 +226,16 @@ A simplistic command line todo list
 
 </div>
 
+## Transfer
+
+Quickly transfer files from the command line.
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/transfer/transfer.png?raw=true">
+
+</div>
 
 ## Weather
 
