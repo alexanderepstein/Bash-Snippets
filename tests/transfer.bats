@@ -19,27 +19,38 @@ fi
 }
 
 @test "Testing file upload" {
-  touch testFile.txt
-  echo -n "This is some example content." > $(pwd)/testFile.txt
-  run transfer -s testFile.txt
-  transferResponse=$(transfer -s testFile.txt)
-  rm -f $(pwd)/testFile.txt
+  touch $HOME/testFile.txt
+  echo -n "This is some example content." > $HOME/testFile.txt
+  run transfer -s $HOME/testFile.txt
+  transferResponse=$(transfer -s $HOME/testFile.txt)
+  rm -f $HOME/testFile.txt
   transferCommand=$( echo $transferResponse | cut -d $'\n' -f 3 | sed s/"Transfer Download Command:"//g | sed s:"desiredOutputDirectory":"$HOME":g | sed s:"^ "::g)
   transferStatus=$( echo $transferResponse | grep -Eo "Success!")
   [ "$status" -eq 0 ]
   [ "$transferStatus" = "Success!" ] ## this works for darwin but the test wont
-
 }
 
 
-#@test "Testing file download" {
-#  rm -f $HOME/testFile.txt
-#  run $(echo $transferCommand)
-
-#  contents=$(cat $HOME/testFile.txt)
-#  rm -f $HOME/testFile.txt
-#  if [[ $contents != "This is some example content." ]];then exit 1; fi
-#}
+@test "Testing file upload & download" {
+touch $HOME/testFile.txt
+echo -n "This is some example content." > $HOME/testFile.txt
+transferResponse=$(transfer -s $HOME/testFile.txt)
+#transferCommand=$( echo $transferResponse | cut -d $'\n' -f 3 | sed s/"Transfer Download Command:"//g | sed s:"desiredOutputDirectory":"$HOME":g | sed s:"^ "::g)
+id=$(echo $transferResponse | cut -d "/" -f 4)
+transferStatus=$( echo $transferResponse | grep -Eo "Success!")
+[ "$transferStatus" = "Success!" ]
+rm -f $HOME/testFile.txt
+if [ -f  $HOME/testFile.txt ];then exit 1;fi
+run transfer -d $HOME $id testFile.txt
+if [ ! -f  $HOME/testFile.txt ];then exit 1;fi
+contents=$(cat $HOME/testFile.txt)
+if [ $contents != "This is some example content." ];then exit 1; fi
+rm -f $HOME/testFile.txt
+transferResponse=$(transfer -d $HOME $id testFile.txt)
+transferStatus=$( echo $transferResponse | grep -Eo "Success!")
+[ "$transferStatus" = "Success!" ]
+rm -f $HOME/testFile.txt
+}
 
 @test "Get the tools version with -v" {
   run transfer -v
