@@ -166,7 +166,7 @@ Valid Symbols:
 EOF
 }
 
-checkInternet || exit 1
+
 getConfiguredClient || exit 1
 
 while getopts "ur:vh" opt; do
@@ -192,13 +192,14 @@ done
 
 if [[ $# == "0" ]]; then usage && exit 0
 elif [[ $# == "1" ]]; then
-  if [[ $1 == "update" ]]; then update && exit 0 || exit 1
+  if [[ $1 == "update" ]]; then checkInternet && update && exit 0 || exit 1
   elif [[ $1 == "help" ]]; then usage && exit 0 || exit 1
   else echo "Error: newton needs two arguments, operation and expression" && exit 1;fi
 elif [ $# -gt 3 ];then echo "Error: newton only accepts two arguments, operation and expression" && exit 1;fi
 
 # flagCount helps us determine what argument to pass to the functions
 # flow: validateOperation, validateExpression, encodeEquation, getResponse, print Answer/Result
+checkInternet || exit 1
 if [[ $flagCount == "0" ]];then validateOperation $1 || exit 1
 elif [[ $flagCount == "1" ]];then validateOperation $2 || exit 1; fi
 if [[ $flagCount == "0" ]];then validateExpression $2 || exit 1

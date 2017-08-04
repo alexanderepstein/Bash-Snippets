@@ -208,7 +208,7 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 ## getDirections Denver Boulder || exit 1
 ## printDirections Denver Boulder || exit 1
 ## getDirectionsMap Denver Boulder || exit 1
@@ -228,7 +228,8 @@ while getopts "drmuvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -244,6 +245,7 @@ if [[ $# == 0 ]]; then
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
+    checkInternet || exit 1
     update
     exit 0
   elif [[ $1 == "help" ]]; then
@@ -251,7 +253,7 @@ elif [[ $# == "1" ]]; then
     exit 0
   fi
 fi
-
+checkInternet || exit 1
 if [[ $directionsFlag == "0" && $staticMapFlag == "1" ]]; then
   checkImagemagick || exit 1
   getMapLocation || exit 1

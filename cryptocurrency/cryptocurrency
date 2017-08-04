@@ -262,7 +262,7 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+
 
 while getopts "uvh" opt; do
   case "$opt" in
@@ -275,7 +275,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -285,6 +286,7 @@ while getopts "uvh" opt; do
 done
 
 if [[ $# == 0 ]]; then
+  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
   getBase # get base currency
   getExchangeTo # get exchange to currency
   getAmount # get the amount to be converted
@@ -293,6 +295,7 @@ if [[ $# == 0 ]]; then
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
+    checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
     update
   elif [[ $1 == "help" ]]; then
     usage
@@ -306,10 +309,13 @@ elif [[ $# == "2" ]]; then
   usage
   exit 1
 elif [[ $# == "3" ]]; then
+  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
   checkBase $1
   checkExchangeTo $2
   checkAmount $3
   transformBase
   convertCurrency
   exit 0
+else
+  echo "Error: too many arguments"
 fi

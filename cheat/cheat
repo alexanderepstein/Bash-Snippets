@@ -156,7 +156,7 @@ checkSpecialPage()
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "ribuvhis" opt; do
   case "$opt" in
@@ -169,7 +169,9 @@ while getopts "ribuvhis" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)
+        checkInternet || exit 1
+        update
         exit 0
         ;;
     i)  insensitive="i"
@@ -209,12 +211,14 @@ if [[ $# == 0 ]]; then
   usage
   exit 0
 elif [[ $1 == "update" ]]; then
+  checkInternet || exit 1
   update
   exit 0
 elif [[ $1 == "help" || $1 == ":help" ]]; then ## shows the help and prevents the user from seeing cheat.sh/:help
   usage
   exit 0
 else
+  checkInternet || exit 1
   if [[ $arg1 != $arg2 ]]; then ## if they equal each other that means there was no arg 2 supplied
     getCheatSheet $arg1 $arg2
     exit 0

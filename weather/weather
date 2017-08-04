@@ -122,7 +122,7 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+
 
 while getopts "uvh" opt; do
   case "$opt" in
@@ -135,7 +135,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+        update || exit 1
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -145,36 +146,44 @@ while getopts "uvh" opt; do
 done
 
 if [[ $# == "0" ]]; then
-  getIPWeather
+  checkInternet || exit 1
+  getIPWeather || exit 1
+  exit 0
 elif [[ $1 == "help" ]]; then
   usage
+  exit 0
 elif [[ $1 == "update" ]]; then
-  update
-elif [[ $1 == "m" ]]; then
-  getIPWeather "?m"
+  checkInternet || exit 1
+  update || exit 1
+  exit 0
+fi
+
+checkInternet || exit 1 
+if [[ $1 == "m" ]]; then
+  getIPWeather "?m" || exit 1
 elif [[ "${@: -1}" == "m" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?m | sed s/" "//g)
-  getLocationWeather $args
+  getLocationWeather $args || exit 1
 elif [[ $1 == "M" ]]; then
-  getIPWeather "?M"
+  getIPWeather "?M" || exit 1
 elif [[ "${@: -1}" == "M" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?M | sed s/" "//g)
-  getLocationWeather $args
+  getLocationWeather $args || exit 1
 elif [[ $1 == "mM" || $1 == "Mm" ]]; then
-  getIPWeather "?m?M"
+  getIPWeather "?m?M" || exit 1
 elif [[ "${@: -1}" == "mM" || "${@:-1}" == "Mm" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?m?M | sed s/" "//g)
-  getLocationWeather $args
+  getLocationWeather $args || exit 1
 elif [[ $1 == "iM" || $1 == "Mi" ]]; then
-  getIPWeather "?u?M"
+  getIPWeather "?u?M" || exit 1
 elif [[ "${@: -1}" == "iM" || "${@:-1}" == "Mi" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?u?M | sed s/" "//g)
-  getLocationWeather $args
+  getLocationWeather $args || exit 1
 elif [[ $1 == "i" ]]; then
-  getIPWeather "?u"
+  getIPWeather "?u" || exit 1
 elif [[ "${@: -1}" == "i" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?u | sed s/" "//g)
-  getLocationWeather $args
+  getLocationWeather $args || exit 1
 else
-  getLocationWeather "$@"
+  getLocationWeather "$@" || exit 1
 fi

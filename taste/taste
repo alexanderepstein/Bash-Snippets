@@ -212,7 +212,7 @@ EOF
 fi
 if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "uvhis" opt; do
   case "$opt" in
@@ -225,7 +225,8 @@ while getopts "uvhis" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     i)  if [[ $search == "0" ]]; then
@@ -252,10 +253,12 @@ done
 if [[ $# == 0 ]]; then
   usage
 elif [[ $1 == "update" ]]; then
+  checkInternet || exit 1
   update
 elif [[ $1 == "help" ]]; then
   usage
 else
+  checkInternet || exit 1
   if [[ $search == "0" ]]; then
     if [[ $info == "0" ]]; then
       getSimilar "$@" || exit 1 ## exit if we return 1 (chances are movie was not found)

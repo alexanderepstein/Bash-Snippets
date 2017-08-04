@@ -152,7 +152,7 @@ EOF
 
 if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "uvh" opt; do
   case "$opt" in
@@ -165,7 +165,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -180,10 +181,12 @@ if [[ $# == 0 ]]; then
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
+    checkInternet || exit 1
     update
   elif [[ $1 == "help" ]]; then
     usage
   else
+    checkInternet || exit 1
     expandURL $1 || exit 1
     printResults
   fi

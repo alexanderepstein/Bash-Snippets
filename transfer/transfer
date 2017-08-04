@@ -250,4 +250,7 @@ elif $down;then
   getConfiguredDownloadClient || exit 1
   singleDownload "$inputFilePath" "$inputID" "$inputFileName" || exit 1
   exit 0
+else
+  usage
+  exit 1
 fi

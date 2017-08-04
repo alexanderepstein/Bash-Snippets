@@ -226,7 +226,7 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "tspauvh" opt; do
   case "$opt" in
@@ -243,7 +243,8 @@ while getopts "tspauvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -256,6 +257,7 @@ if [[ $source == "1" && $all == "0" ]]; then { echo "Error: the -s flag only wor
 if [[ $configuredClient != "curl" ]]; then { echo "Error: to use cloudup without the -t option curl must be installed"; exit 1; }; fi ## we have to have the ability to delete an unique repo which is possible with curl -X DELETE
 if [[ $# == "1" ]]; then # check for keywords
   if [[ $1 == "update" ]]; then
+    checkInternet || exit 1
     update
     exit 0
   elif [[ $1 == "help" ]]; then
@@ -264,6 +266,7 @@ if [[ $# == "1" ]]; then # check for keywords
   fi
 fi
 
+checkInternet || exit 1
 if [[ $all == "0" ]]; then
   if [[ ($private == "0" && $tStamp == "0" && $1 != "")]]; then ## checking for an arguments after possible flags if so then run through the arguments (repositories) and back them up
     getGitHubUserInfo || exit 1

@@ -170,7 +170,7 @@ EOF
 
 if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
-checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+
 
 while getopts "uvh" opt; do
   case "$opt" in
@@ -183,7 +183,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -193,6 +194,7 @@ while getopts "uvh" opt; do
 done
 
 if [[ $1 == "update" ]]; then
+  checkInternet || exit 1
   update
   exit 0
 elif [[ $1 == "help" ]]; then
@@ -202,6 +204,7 @@ elif [[ $# == "0" ]]; then
   usage
   exit 0
 else
+  checkInternet || exit 1
   getTicker "$@" # the company name might have spaces so passing in all args allows for this
   getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
   printStockInformation  # print this information out to the user in a human readable format

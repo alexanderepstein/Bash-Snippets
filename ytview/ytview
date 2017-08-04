@@ -161,7 +161,7 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "vuc:s:h*:" option; do
   case "${option}" in
@@ -182,7 +182,7 @@ while getopts "vuc:s:h*:" option; do
        fi
        ;;
     h) usage && exit 0 ;;
-    u) update && exit 0 ;;
+    u) checkInternet && update && exit 0 || exit 1;;
     v) echo "Version $currentVersion" && exit 0 ;;
     *) usage && exit 0 ;;
   esac
@@ -195,15 +195,19 @@ elif [[ $1 == "help" ]]; then
   usage
   exit 0
 elif [[ $1 == "update" ]]; then
+  checkInternet || exit 1
   update
   exit 0
 elif [[ $flag == "search" ]]; then
+  checkInternet || exit 1
   getConfiguredPlayer || exit 1
   searchview || exit 1
 elif [[ $flag == "channel" ]]; then
+  checkInternet || exit 1
   getConfiguredPlayer || exit 1
   channelview || exit 1
 else
+  checkInternet || exit 1
   search=$(printf '%s ' "$@")
   getConfiguredPlayer || exit 1
   searchview || exit 1

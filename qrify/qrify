@@ -112,13 +112,13 @@ EOF
 }
 
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 while getopts "m:hvu*:" option
 do
   case "${option}" in
     v) echo "Version ${currentVersion}" && exit 0 ;;
-    u) update && exit 0 || exit 1 ;;
+    u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
     *) usage && exit 0 ;;
@@ -132,14 +132,17 @@ elif [[ ${1} == "help" ]]; then
   usage
   exit 0
 elif [[ ${1} == "update" ]]; then
+  checkInternet || exit 1
   update || exit 1
   exit 0
 else
   if [[ ${multiline} == "0" ]]; then
+    checkInternet || exit 1
     input=$(printf '%s ' "$@")
     makeqr || exit 1
     exit 0
   else
+    checkInternet || exit 1
     makeMultiLineQr "${@:2}" || exit 1 ## if multiline that means a flag existed so start from the second argument
     exit 0
   fi

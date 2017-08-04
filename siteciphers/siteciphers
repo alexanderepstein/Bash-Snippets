@@ -128,12 +128,13 @@ checkCiphers()
 
 checkOpenSSL || exit 1
 getConfiguredClient || exit 1
-checkInternet || exit 1
+
 
 if [[ $# == "0" ]]; then
   usage
   exit 1
 elif [[ $1 == "update" ]]; then
+  checkInternet || exit 1
   update
   exit 0
 elif [[ $1 == "help" ]]; then
@@ -150,7 +151,8 @@ while getopts "huvd:" opt; do ## alows for using options in bash
         DELAY=$OPTARG
         dFlag="1"
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     h)  usage
@@ -166,6 +168,7 @@ while getopts "huvd:" opt; do ## alows for using options in bash
   esac
 done
 
+checkInternet || exit 1
 if [[ $dFlag == "1" ]]; then
   checkCiphers $3 || exit 1 # if dflag is present input will look like siteciphers -d 0.5 github.com making the website the third arg
 else

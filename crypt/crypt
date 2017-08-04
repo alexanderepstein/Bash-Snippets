@@ -154,6 +154,7 @@ while getopts "huve:d:" opt; do ## alows for using options in bash
         fi
         ;;
     u)  getConfiguredClient || exit 1
+        checkInternet || exit 1
         update
         exit 0
         ;;

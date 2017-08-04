@@ -174,11 +174,12 @@ EOF
 
 if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
-checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+
 
 while getopts 'ud:hv' flag; do
   case "${flag}" in
-    u) update
+    u) checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
+      update
        exit 0 ;;
     d) detail=true ;;
     h) usage
@@ -194,10 +195,12 @@ done
 if [[ $# == 0 ]]; then
   usage
 elif [[ $1 == "update" ]]; then
+  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
   update
 elif [[ $1 == "help" ]]; then
   usage
 else
+  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
   getMovieInfo "$@" || exit 1 ## exit if we return 1 (chances are movie was not found)
   printMovieInfo ## print out the data
 fi
