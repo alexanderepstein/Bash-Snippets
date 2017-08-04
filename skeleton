@@ -91,6 +91,8 @@ Examples:
 EOF
 }
 
+getConfiguredClient || exit 1
+
 while getopts "uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
@@ -102,7 +104,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  update
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -117,7 +120,6 @@ if [[ $# == "0" ]]; then
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
-    getConfiguredClient || exit 1
     checkInternet || exit 1
     update || exit 1
     exit 0
@@ -128,3 +130,4 @@ elif [[ $# == "1" ]]; then
 fi
 
 ## The rest of the conditions and code would go here
+## Make sure to use checkInternet at least once before any time httpGet will be called.
