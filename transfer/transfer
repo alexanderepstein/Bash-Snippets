@@ -3,7 +3,7 @@
 configuredDownloadClient=""
 configuredUploadClient=""
 configuredClient=""
-currentVersion="1.17.3"
+currentVersion="1.18.0"
 single="false"
 down="false"
 singlef="false"

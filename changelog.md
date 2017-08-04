@@ -2,6 +2,19 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.18.0
+
+</div>
+
+### Changes
+* Added transfer component
+* Fixing fetch call across all tools
+* Changing progress echos for update
+* Run checkInternet only when needed (speeds up processes that don't need it)
+* Hiding the api help page in weather
+
+<div align="center">
+
 ## Version 1.17.3
 
 </div>

@@ -333,7 +333,7 @@ cd Bash-Snippets
 
 * Git checkout to the latest stable release
 ```bash
-git checkout v1.17.3
+git checkout v1.18.0
 ```
 
 * Run the guided install script with
