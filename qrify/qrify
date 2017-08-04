@@ -132,15 +132,20 @@ done
 if [[ $# == "0" ]]; then
   usage
   exit 0
-elif [[ ${1} == "help" ]]; then
-  usage
-  exit 0
-elif [[ ${1} == "update" ]]; then
-  checkInternet || exit 1
-  update || exit 1
-  exit 0
+elif [[ $# == "1" ]];then
+  if [[ $1 == "help" || $1 == ":help" ]]; then
+    usage
+    exit 0
+  elif [[ $1 == "update" ]]; then
+    checkInternet || exit 1
+    update || exit 1
+    exit 0
+  else
+    usage
+    exit 1
+  fi
 else
-  if [[ ${multiline} == "0" ]]; then
+  if [[ $multiline == "0" ]]; then
     checkInternet || exit 1
     input=$(printf '%s ' "$@")
     makeqr || exit 1
