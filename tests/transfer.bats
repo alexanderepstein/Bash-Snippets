@@ -21,8 +21,8 @@ fi
 @test "Testing file upload" {
   touch $HOME/testFile.txt
   echo -n "This is some example content." > $HOME/testFile.txt
-  run transfer -s $HOME/testFile.txt
-  transferResponse=$(transfer -s $HOME/testFile.txt)
+  run transfer $HOME/testFile.txt
+  transferResponse=$(transfer $HOME/testFile.txt)
   rm -f $HOME/testFile.txt
   transferCommand=$( echo $transferResponse | cut -d $'\n' -f 3 | sed s/"Transfer Download Command:"//g | sed s:"desiredOutputDirectory":"$HOME":g | sed s:"^ "::g)
   transferStatus=$( echo $transferResponse | grep -Eo "Success!")
@@ -34,7 +34,7 @@ fi
 @test "Testing file upload & download" {
 touch $HOME/testFile.txt
 echo -n "This is some example content." > $HOME/testFile.txt
-transferResponse=$(transfer -s $HOME/testFile.txt)
+transferResponse=$(transfer $HOME/testFile.txt)
 #transferCommand=$( echo $transferResponse | cut -d $'\n' -f 3 | sed s/"Transfer Download Command:"//g | sed s:"desiredOutputDirectory":"$HOME":g | sed s:"^ "::g)
 id=$(echo $transferResponse | cut -d "/" -f 4)
 transferStatus=$( echo $transferResponse | grep -Eo "Success!")
