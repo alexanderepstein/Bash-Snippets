@@ -164,9 +164,8 @@ singleUpload()
   filePath=$(echo $1 | sed s:"~":$HOME:g)
   if [ ! -f $filePath ];then { echo "Error: invalid file path"; return 1;}; fi
   tempFileName=$(echo $1 | sed "s/.*\///")
-  tempFilePath=$(echo $1 | sed s:"~":$HOME:g)
   echo "Uploading $tempFileName"
-  httpSingleUpload "$tempFilePath" "$tempFileName"
+  httpSingleUpload "$filePath" "$tempFileName"
 }
 
 usage()
@@ -174,7 +173,7 @@ usage()
   cat <<EOF
 Transfer
 Description: Quickly transfer files from the command line.
-Usage: transfer [flags] or transfer [flag] [args]
+Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
   -s  Upload a single file, takes in file path as argument
   -d  Download a single file
       First arg: Output file directory
@@ -184,6 +183,7 @@ Usage: transfer [flags] or transfer [flag] [args]
   -h  Show the help
   -v  Get the tool version
 Examples:
+  transfer ~/fileToTransfer.txt
   transfer -s ~/fileToTransfer.txt
   transfer -d ~/outputDirectory fileID fileName
 EOF
@@ -233,15 +233,29 @@ if $single && $singlef;then { echo "Error: only use -f or -d not both";exit 1;};
 if [[ $# == "0" ]]; then
   usage
   exit 0
-elif [[ $1 == "help" ]]; then
-  usage
-  exit 0
-elif [[ $1 == "update" ]]; then
-  getConfiguredClient || exit 1
-  checkInternet || exit 1
-  update || exit 1
-  exit 0
-elif $single || $singlef ;then
+elif [[ $# == "1" ]];then
+  if [[ $1 == "help" ]]; then
+    usage
+    exit 0
+  elif [[ $1 == "update" ]]; then
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+    update || exit 1
+    exit 0
+  elif [ -f $1 ];then
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+    getconfiguredUploadClient || exit 1
+    singleUpload "$1" || exit 1
+    printUploadResponse
+    exit 0
+  else
+    echo "Error: invalid filepath"
+    exit 1
+  fi
+fi
+
+if $single || $singlef ;then
   getConfiguredClient || exit 1
   checkInternet || exit 1
   getconfiguredUploadClient || exit 1
