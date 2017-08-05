@@ -4,9 +4,7 @@ configuredDownloadClient=""
 configuredUploadClient=""
 configuredClient=""
 currentVersion="1.18.0"
-single="false"
 down="false"
-singlef="false"
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredDownloadClient()
@@ -174,7 +172,6 @@ usage()
 Transfer
 Description: Quickly transfer files from the command line.
 Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
-  -s  Upload a single file, takes in file path as argument
   -d  Download a single file
       First arg: Output file directory
       Second arg: File url id
@@ -184,12 +181,12 @@ Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
   -v  Get the tool version
 Examples:
   transfer ~/fileToTransfer.txt
-  transfer -s ~/fileToTransfer.txt
+  transfer ~/firstFileToTransfer.txt ~/secondFileToTransfer.txt ~/thirdFileToTransfer.txt
   transfer -d ~/outputDirectory fileID fileName
 EOF
 }
 
-while getopts "s:d:f:uvh" opt; do
+while getopts "d:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -209,26 +206,16 @@ while getopts "s:d:f:uvh" opt; do
     d)
       down="true"
       if [ $# -lt 4 ];then { echo "Error: not enough arguments for downloading a file, see the usage"; return 1;};fi
+      if [ $# -gt 4 ];then { echo "Error: to many enough arguments for downloading a file, see the usage"; return 1;};fi
       inputFilePath=$(echo "$*" | sed s/-d//g | cut -d " " -f 2)
       inputID=$(echo "$*" | sed s/-d//g | cut -d " " -f 3)
       inputFileName=$(echo "$*" | sed s/-d//g | cut -d " " -f 4)
-    ;;
-    s)
-      single="true"
-      inputFilePath=$OPTARG
-    ;;
-    f)
-      singlef="true"
-      inputFilePath=$OPTARG
     ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
       exit 1
     ;;
   esac
 done
-
-if $down && ($single || $singlef);then { echo "Error: upload and download are mutually exclusive";exit 1;};fi
-if $single && $singlef;then { echo "Error: only use -f or -d not both";exit 1;};fi
 
 if [[ $# == "0" ]]; then
   usage
@@ -253,22 +240,22 @@ elif [[ $# == "1" ]];then
     echo "Error: invalid filepath"
     exit 1
   fi
-fi
-
-if $single || $singlef ;then
-  getConfiguredClient || exit 1
-  checkInternet || exit 1
-  getconfiguredUploadClient || exit 1
-  singleUpload "$inputFilePath" || exit 1
-  printUploadResponse
-  exit 0
-elif $down;then
-  getConfiguredClient || exit 1
-  checkInternet || exit 1
-  getConfiguredDownloadClient || exit 1
-  singleDownload "$inputFilePath" "$inputID" "$inputFileName" || exit 1
-  exit 0
 else
-  usage
-  exit 1
+  if $down;then
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+    getConfiguredDownloadClient || exit 1
+    singleDownload "$inputFilePath" "$inputID" "$inputFileName" || exit 1
+    exit 0
+  else
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+    getconfiguredUploadClient || exit 1
+    for path in "$@";do
+      singleUpload "$path" || exit 1
+      printUploadResponse
+      echo
+    done
+    exit 0
+   fi
 fi
