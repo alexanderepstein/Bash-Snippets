@@ -544,10 +544,7 @@ todo \-c
 Description: Quickly transfer files from the command line\.
 .
 .P
-Usage: transfer [flags] or transfer [flag] [args]
-.
-.IP "\(bu" 4
-\-s Upload a single file, takes in file path as argument
+Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
 .
 .IP "\(bu" 4
 \-d Download a single file
@@ -580,7 +577,10 @@ Usage: transfer [flags] or transfer [flag] [args]
 Examples:
 .
 .IP "\(bu" 4
-transfer \-s ~/fileToTransfer\.txt
+transfer ~/fileToTransfer\.txt
+.
+.IP "\(bu" 4
+transfer ~/firstFileToTransfer\.txt ~/secondFileToTransfer\.txt # upload multiple files at once
 .
 .IP "\(bu" 4
 transfer \-d ~/outputDirectory fileID fileName

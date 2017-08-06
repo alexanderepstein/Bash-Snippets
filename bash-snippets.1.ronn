@@ -386,9 +386,7 @@ Examples:
 ### Transfer
 Description: Quickly transfer files from the command line.
 
-Usage: transfer [flags] or transfer [flag] [args]
-
-  * -s  Upload a single file, takes in file path as argument
+Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
 
   * -d  Download a single file
         * First arg: Output file directory
@@ -403,7 +401,9 @@ Usage: transfer [flags] or transfer [flag] [args]
 
 Examples:
 
-  * transfer -s ~/fileToTransfer.txt
+  * transfer ~/fileToTransfer.txt
+
+  * transfer ~/firstFileToTransfer.txt ~/secondFileToTransfer.txt # upload multiple files at once
 
   *  transfer -d ~/outputDirectory fileID fileName
 
