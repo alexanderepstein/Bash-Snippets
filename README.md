@@ -13,15 +13,6 @@
 ### All of these scripts have been heavily tested on macOS and Linux
 ### Most of these scripts have been tested on Windows 10 and the official developer bash instance. Does not work with Cygwin or Mysys2.
 
-For a quick list and summary of the tools from the terminal run one of the following 4 lines compatible with your system
-
-```bash
-curl -A curl -s cheat.sh/~Bash-Snippets
-http -b GET cheat.sh/~Bash-Snippets
-wget -qO- cheat.sh/~Bash-Snippets
-fetch cheat.sh/~Bash-Snippets
-```
-
 </div>
 
 ## Tools
@@ -321,8 +312,11 @@ You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]```
 Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 </details>
 
-
 ## API's Used
+
+<details>
+<summary>All API's</summary>
+
 * To get location based on ip address: [ipinfo](https://ipinfo.io)
 * To get and print weather based on a location: [wttr](http://wttr.in)
 * To grab the stock information in JSON format: [alphavantage](https://www.alphavantage.co)
@@ -339,31 +333,46 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 * To perform symbolic math and other computations: [newton](https://newton.now.sh)
 * To transfer files: [transfer](https://transfer.sh)
 
-#### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
+</details>
+
+
+
+
 
 ## Installing
 
-### For macOS via homebrew / Linux via linuxbrew
+<details>
+<summary>For macOS via homebrew / Linux via linuxbrew</summary>
+
 ```bash
 brew install bash-snippets # installs all tools
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
-### Arch Linux (AUR)
-There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
-Download the tarball
-Install the program with  
-```bash
-makepkg -Acs
-sudo pacman -U bash-snippets.tar.gz
-```
+</details>
 
-### Sparrowhub
+
+<details>
+<summary>Arch Linux (AUR)</summary>
+
+There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
+
+</details>
+
+
+<details>
+<summary>Sparrowhub</summary>
+
 ```bash
 sparrow plg install [tool]
 ```
 
-### Git Install
+</details>
+
+
+
+<details>
+<summary>Git Install</summary>
 
 * First clone the repository:  
 ```bash
@@ -396,14 +405,26 @@ this will let you choose which scripts to install
 ./install.sh stocks
 ```
 
+</details>
+
+
+
+
 ## Updating
 
-### For macOS if installed via homebrew / Linux if installed via linuxbrew
+<details>
+<summary>For macOS if installed via homebrew / Linux if installed via linuxbrew</summary>
+
 ```bash
 brew upgrade bash-snippets
 ```
 
-### Git Update
+</details>
+
+
+
+<details>
+<summary>Git Update</summary>
 
 With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
 Ex.
@@ -416,14 +437,28 @@ stocks -u
 ```
 This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.
 
+
+</details>
+
+
+
 ## Uninstalling
 
-### For macOS if installed via homebrew / Linux  if installed via linuxbrew
+<details>
+<summary>For macOS if installed via homebrew / Linux  if installed via linuxbrew</summary>
+
 ```bash
 brew uninstall bash-snippets
 ```
 
-### Git Uninstall
+</details>
+
+
+
+<details>
+<summary>Git Uninstall</summary>
+
+
 * If you don't have the Bash-Snippets folder anymore clone the repository:  
 ```bash
 git clone https://github.com/alexanderepstein/Bash-Snippets
@@ -445,12 +480,16 @@ cd Bash-Snippets
 ./uninstall.sh all
 ```
 
+</details>
+
+
 ## Donate
 If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
 
 [![Donate](https://img.shields.io/badge/Donate-Venmo-blue.svg)](https://venmo.com/AlexanderEpstein)
 [![Donate](https://img.shields.io/badge/Donate-SquareCash-green.svg)](https://cash.me/$AlexEpstein)
 
+#### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 
 ## License
 
