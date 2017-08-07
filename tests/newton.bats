@@ -18,14 +18,14 @@ fi
   [ "${lines[0]}" = "Newton" ]
 }
 
-@test "Testing newton simplify for [[2x^2]+7]*[4x^2]" {
-  run newton simplify [[2x^2]+7]*[4x^2]
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "================================" ]
-  if [ $(uname) == "Linux" ];then
-    [ "${lines[3]}" = "|Result: 8 x^4 + 28 x^2" ] ## this works for darwin but the test wont
-  fi
-}
+#@test "Testing newton simplify for [[2x^2]+7]*[4x^2]" {
+#  run newton simplify [[2x^2]+7]*[4x^2]
+#  [ "$status" -eq 0 ]
+#  [ "${lines[0]}" = "================================" ]
+#  if [ $(uname) == "Linux" ];then
+#    [ "${lines[3]}" = "|Result: 8 x^4 + 28 x^2" ] ## this works for darwin but the test wont
+#  fi
+#}
 
 @test "Testing newton bad characters in expression " {
   run newton simplify 3x=
