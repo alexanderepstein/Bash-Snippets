@@ -17,12 +17,12 @@
 
 @test "Testing short recommendations" {
   if [[ "$(uname)" == "Darwin" ]]; then
-  run taste Kid Cudi
+  run taste 50 Cent
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "===================================" ]
-  [ "${lines[1]}" = "Lupe Fiasco: music" ]
-  [ "${lines[2]}" = "Shadows And Fog: movie" ]
-  [ "${lines[3]}" = "Lulu James: music" ]
+  [ "${lines[1]}" = "G-Unit: music" ]
+  [ "${lines[2]}" = "Lloyd Banks: music" ]
+  [ "${lines[3]}" = "The Game: music" ]
   [ "${lines[4]}" = "===================================" ]
  fi
 }
