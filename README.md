@@ -24,7 +24,10 @@ fetch cheat.sh/~Bash-Snippets
 
 </div>
 
-## Cheat
+## Tools
+
+<details>
+<summary>Cheat</summary>
 
 The fastest way to find {command options|code pieces} you need
 
@@ -35,8 +38,10 @@ Supports multiple languages and many bash commands
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cheat/cheat.png?raw=true">
 
 </div>
+</details>
 
-## Cloudup
+<details>
+<summary>Cloudup</summary>
 
 A tool that facilitates backing up github repositories to bitbucket
 
@@ -52,8 +57,11 @@ Or run it with no flags and backup individual repositories.
 <img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cloudup/cloudup.png?raw=true">
 
 </div>
+</details>
 
-## Crypt
+
+<details>
+<summary>Crypt</summary>
 
 A wrapper for openssl that allows for quickly encrypting and decrypting files
 
@@ -77,8 +85,11 @@ crypt -d [encrypted file] [output file] # decrypts files
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/crypt/crypt.png?raw=true">
 
 </div>
+</details>
 
-## Cryptocurrency
+
+<details>
+<summary>Cryptocurrency</summary>
 
 Converts Cryptocurrency based on realtime exchange rates
 
@@ -93,8 +104,11 @@ ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
 so a valid use case would be ```currency BTC USD 12.35```
 
 Written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
+</details>
 
-## Currency
+
+<details>
+<summary>Currency</summary>
 
 Converts currency based on realtime exchange rates
 
@@ -107,9 +121,11 @@ Converts currency based on realtime exchange rates
 If you want to bypass to guided input you can pass in 3 arguments and it will run from there
 ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
 so a valid use case would be ```currency USD EUR 12.35```
+</details>
 
 
-## Geo
+<details>
+<summary>Geo</summary>
 
 Provides data for  wan, lan, router, dns, mac, and ip geolocation
 
@@ -121,8 +137,11 @@ Provides data for  wan, lan, router, dns, mac, and ip geolocation
 </div>
 
 Written by: [Jake Meyer](https://github.com/jakewmeyer)
+</details>
 
-## Movies
+
+<details>
+<summary>Movies</summary>
 
 Quick search that grabs relevant information about a movie
 
@@ -131,8 +150,11 @@ Quick search that grabs relevant information about a movie
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/movies/movies.png?raw=true">
 
 </div>
+</details>
 
-## Newton
+
+<details>
+<summary>Newton</summary>
 
 Performs numerical calculations all the way up to symbolic math parsing.
 
@@ -141,8 +163,11 @@ Performs numerical calculations all the way up to symbolic math parsing.
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/newton/newton.png?raw=true">
 
 </div>
+</details>
 
-## Qrify
+
+<details>
+<summary>Qrify</summary>
 
 Takes any string of text and turns it into a qr code
 
@@ -156,9 +181,11 @@ This is useful for sending links or saving a string of commands to your phone
 </div>
 
 Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
+</details>
 
 
-## Short
+<details>
+<summary>Short</summary>
 
 Gets the link that is being masked by a url shortner
 
@@ -167,9 +194,10 @@ Gets the link that is being masked by a url shortner
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/short/short.png?raw=true">
 
 </div>
+</details>
 
-
-## Siteciphers
+<details>
+<summary>Siteciphers</summary>
 
 Check which ciphers are enabled / disabled for a given https site.
 
@@ -182,9 +210,11 @@ Some browsers (For example old versions of IE) don't support some of the newer c
 <img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/siteciphers/siteciphers.png?raw=true">
 
 </div>
+</details>
 
 
-## Stocks
+<details>
+<summary>Stocks</summary>
 
 Provides information about a certain stock symbol
 
@@ -194,9 +224,11 @@ Provides information about a certain stock symbol
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/stocks/stocks.png?raw=true">
 
 </div>
+</details>
 
 
-## Taste
+<details>
+<summary>Taste</summary>
 
 Recommendation engine that provides three similar items like the supplied item
 
@@ -213,9 +245,11 @@ Valid items are: shows, books, music, artists, movies, authors, games
 ### Needs an API Key (don't worry it's free)
 * Get the API key [here](https://tastedive.com/account/api_access)
 * After getting the API key run the following line ```export TASTE_API_KEY="yourAPIKeyGoesHere" >> ~/.bash_profile```
+</details>
 
 
-## Todo
+<details>
+<summary>Todo</summary>
 
 A simplistic command line todo list
 
@@ -225,8 +259,11 @@ A simplistic command line todo list
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/todo/todo.png?raw=true">
 
 </div>
+</details>
 
-## Transfer
+
+<details>
+<summary>Transfer</summary>
 
 Quickly transfer files from the command line.
 
@@ -236,8 +273,11 @@ Quickly transfer files from the command line.
 <img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/transfer/transfer.png?raw=true">
 
 </div>
+</details>
 
-## Weather
+
+<details>
+<summary>Weather</summary>
 
 Provides a 3 day forecast
 
@@ -259,9 +299,11 @@ Also can show the current moon phase
 <img height="75%" width="75%" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/weather/moon.png?raw=true">
 
 </div>
+</details>
 
 
-## Youtube-Viewer
+<details>
+<summary>Youtube-Viewer</summary>
 
 Provides a way to watch youtube videos from the terminal.
 
@@ -277,6 +319,7 @@ You can use ```ytview -s [videoToSearch]``` or just ```ytview [videoToSearch]```
 </div>
 
 Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
+</details>
 
 
 ## API's Used
@@ -294,6 +337,7 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 * To get your WAN ip address: [ipify](https://www.ipify.org/)
 * To grab the latest exchange rate between cryptocurrencies to standard currencies: [coinmarketcap](https://coinmarketcap.com/api/)
 * To perform symbolic math and other computations: [newton](https://newton.now.sh)
+* To transfer files: [transfer](https://transfer.sh)
 
 #### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 
@@ -389,6 +433,7 @@ git clone https://github.com/alexanderepstein/Bash-Snippets
 ```bash
 cd Bash-Snippets
 ```
+
 
 #### To go through a guided uninstall
 ```bash
