@@ -232,6 +232,6 @@ elif [[ $# == "1" ]]; then
   else { echo "Error: the argument $1 is not valid"; exit 1; }; fi
 else
   if [[ $flag == "add" || $1 == "add" ]]; then addTask "${*:2}" && getTasks || exit 1
-  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask $2 || exit 1
+  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask $2 && getTasks || exit 1
   else { usage; exit 1; }; fi
 fi
