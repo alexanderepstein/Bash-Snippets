@@ -40,7 +40,7 @@ checkValidCurrency()
   if [[ $1 != "BTC" && $1 != "ETH" \
       && $1 != "XRP" && $1 != "LTC" && $1 != "XEM" \
       && $1 != "ETC" && $1 != "DASH" && $1 != "MIOTA" \
-      && $1 != "XMR" && $1 != "STRAT" ]]; then
+      && $1 != "XMR" && $1 != "STRAT" && $1 != "BCH" ]]; then
     echo "1"
   else
     echo "0"
@@ -101,6 +101,7 @@ transformBase()
     "MIOTA") reqId="iota" ;;
     "XMR") reqId="monero" ;;
     "STRAT") reqId="stratis" ;;
+    "BCH") reqId="bitcoin-cash" ;;
   esac
 }
 
@@ -248,7 +249,7 @@ Supported Base Currencies:
  ___________________________
 | BTC | ETH | XRP  | LTC   |
 | XEM | ETC | DASH | MIOTA |
-| XMR | STRAT              |
+| XMR | STRAT | BCH        |
  ___________________________
 
 Supported Target Currencies:

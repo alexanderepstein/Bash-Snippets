@@ -90,9 +90,15 @@ Converts Cryptocurrency based on realtime exchange rates
 
 </div>
 
-If you want to bypass to guided input you can pass in 3 arguments and it will run from there
-ex.```currency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```
-so a valid use case would be ```currency BTC USD 12.35```
+Run `cryptocurrency` and you'll be guided through providing three arguments.  
+1. Base currency, i.e. `BTC`
+2. Target currency, i.e. `USD`
+3. Amount, i.e. `12.35` 
+
+If you want to bypass the guided input you can pass in 3 arguments and it will run from there, i.e.    
+```cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```  
+A valid use case would be:  
+```cryptocurrency BTC USD 12.35```
 
 Written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
 </details>
