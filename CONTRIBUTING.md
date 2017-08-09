@@ -24,7 +24,7 @@ At this point, you're ready to make your changes!
 ###### New Component
 * Decide on a short but sweet name for your tool
 * Create a folder in the Bash-Snippets root directory named after the tool
-* Copy over the Bash-Snippets tool [skeleton](https://github.com/alexanderepstein/Bash-Snippet/blob/master/skeleton) to the newly created folder
+* Copy over the Bash-Snippets tool [skeleton](https://github.com/alexanderepstein/Bash-Snippets/blob/master/skeleton) to the newly created folder
 * Rename the skeleton in the new directory to the name of the tool
 * Using newly copied over file as a basis (with the name of your tool) code your new component!
 
