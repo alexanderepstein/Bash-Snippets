@@ -2,6 +2,19 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.18.1
+
+</div>
+
+### Changes
+* Changed how transfer uploads files
+* Upload multiple files with transfer
+* Get tasks after removal of tasks in todo
+* Bulk removal of tasks in todo
+* Removing bad echo from cloudup
+
+<div align="center">
+
 ## Version 1.18.0
 
 </div>

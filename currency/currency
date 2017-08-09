@@ -3,7 +3,7 @@
 
 base=""
 exchangeTo=""
-currentVersion="1.18.0"
+currentVersion="1.18.1"
 configuredClient=""
 currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
   EUR GBP HKD HRK HUF IDR ILS INR
