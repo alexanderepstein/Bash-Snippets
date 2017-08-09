@@ -158,17 +158,25 @@ Todo
 Description: A simplistic commandline todo list.
 Usage: todo [flags] or todo [flags] [arguments]
   -c  Clear all the current tasks
-  -r  Remove the following task number
+      Can also use clear instead of -c
+  -r  Remove the following task numbers seprated by spaces
+      Can also use remove instead of -r
   -g  Get the current tasks
+      Can also use list instead of -g
   -a  Add the following task
+      Can also use add instead of -a
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
 Examples:
    todo -a My very first task
-   todo -r 1
+   todo remove 2
+   todo -r 1 3
+   todo add Another Task
+   todo list
    todo -g
    todo -c
+   todo clear
 EOF
 }
 
