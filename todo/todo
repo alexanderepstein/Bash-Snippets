@@ -92,26 +92,41 @@ checkInternet()
 
 removeTask()
 {
+  ## Check for valid task numbers (valid characters)
+  if [ -f ~/.todo/temp.txt ];then rm -f ~/.todo/temp.txt;fi
   touch ~/.todo/temp.txt
-  oldTaskNumber=$1
-  taskNumber=$( echo $1 | grep -Eo "[0-9]*" )
-  if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]]; then echo "Error: $oldTaskNumber is not a valid task number!" && return 1; fi
-  count="1"
+  for taskToRemove in "$@";do
+    oldTaskNumber=$taskToRemove
+    taskNumber=$( echo $taskToRemove | grep -Eo "[0-9]*" )
+    if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]]; then echo "Error: $oldTaskNumber is not a valid task number!" && return 1; fi
+  done
+  count="0"
   IFS=$'\n'       # make newlines the only separator
+
+  ## Removing the task (only don't add to temp if we should remove it)
   for task in $(cat ~/.todo/list.txt); do
-    if [[ $count != $taskNumber ]]; then
-    echo "$task" >> ~/.todo/temp.txt;fi
+    removeIt="false"
+    for taskToRemove in "$@";do
+      if [[ $(($count + 1)) == "$taskToRemove" ]]; then
+      removeIt="true"
+      break
+      fi
+    done
+    if ! $removeIt ;then echo "$task" >> ~/.todo/temp.txt;fi
     count=$(( $count + 1 ))
   done
   rm -f ~/.todo/list.txt
   cp  ~/.todo/temp.txt ~/.todo/list.txt
   rm -f ~/.todo/temp.txt
-  if [ $count -lt $taskNumber ]; then
-    echo "Error: task number $taskNumber does not exist!"
-    return 1
-  else
-    echo "Sucessfully removed task number $taskNumber"
-  fi
+
+  ##Checking if the task exists
+  for taskToRemove in "$@" ;do
+    if [ $count -lt $taskToRemove ]; then
+      echo "Error: task number $taskToRemove does not exist!"
+    else
+      echo "Sucessfully removed task number $taskToRemove"
+    fi
+  done
 }
 
 getTasks()
@@ -232,6 +247,6 @@ elif [[ $# == "1" ]]; then
   else { echo "Error: the argument $1 is not valid"; exit 1; }; fi
 else
   if [[ $flag == "add" || $1 == "add" ]]; then addTask "${*:2}" && getTasks || exit 1
-  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask $2 && getTasks || exit 1
+  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask ${*:2} && getTasks || exit 1
   else { usage; exit 1; }; fi
 fi
