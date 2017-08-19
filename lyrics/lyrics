@@ -120,6 +120,8 @@ printLyrics()
       if [[ "$answer" == [Yy] ]]; then
         echo -e "$lyrics" > $filePath;
       fi
+    else
+        echo -e "$lyrics" > $filePath;
     fi
    fi
 }
@@ -128,14 +130,17 @@ usage()
 {
   cat <<EOF
 Lyrics
-Description: Short desciption of the tool.
-Usage: tool [flags] or tool [flags] [arguments]
+Description: Fetch lyrics for a certain song.
+Usage: lyrics [flags] or tool [-a] [arg] [-s] [arg]
+  -a  Artist of the song to fetch lyrics for
+  -s  Song of the artist to fetch lyrics for
+  -f  Export the lyrics to file rather than outputting to stdout
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
 Examples:
-   tool
-   tool
+   lyrics -a logic -s run it
+   lyrics -a logic -s run it -f ~/runItLyrics.txt
 EOF
 }
 
