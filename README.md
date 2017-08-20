@@ -93,12 +93,16 @@ Converts Cryptocurrency based on realtime exchange rates
 Run `cryptocurrency` and you'll be guided through providing three arguments.  
 1. Base currency, i.e. `BTC`
 2. Target currency, i.e. `USD`
-3. Amount, i.e. `12.35` 
+3. Amount, i.e. `12.35`
 
 If you want to bypass the guided input you can pass in 3 arguments and it will run from there, i.e.    
-```cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]```  
+```bash
+cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]
+```  
 A valid use case would be:  
-```cryptocurrency BTC USD 12.35```
+```bash
+cryptocurrency BTC USD 12.35
+```
 
 Written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
 </details>
@@ -136,6 +140,19 @@ Provides data for  wan, lan, router, dns, mac, and ip geolocation
 Written by: [Jake Meyer](https://github.com/jakewmeyer)
 </details>
 
+<details>
+<summary>Lyrics</summary>
+
+Grab lyrics for a given song quickly from the command line.
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/lyrics/lyrics.png?raw=true">
+
+</div>
+
+</details>
 
 <details>
 <summary>Movies</summary>
