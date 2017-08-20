@@ -104,7 +104,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  checkInternet || exit 1
+    u)  getConfiguredClient || exit 1
+        checkInternet || exit 1
         update
         exit 0
         ;;
