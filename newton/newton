@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.18.1"
+currentVersion="1.19.0"
 configuredClient=""
 flagCount="0"
 declare -a simpleOperations=(simplify factor derive integrate zeroes roots tangent area cos sin tan arccos arcsin arctan abs log)

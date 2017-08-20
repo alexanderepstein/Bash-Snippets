@@ -392,7 +392,7 @@ cd Bash-Snippets
 
 * Git checkout to the latest stable release
 ```bash
-git checkout v1.18.1
+git checkout v1.19.0
 ```
 
 * Run the guided install script with

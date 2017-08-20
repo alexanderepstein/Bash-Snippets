@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.19.0
+
+</div>
+
+### Changes
+* Adding BCH to cryptocurrencies tool
+* Adding lyrics component
+
+<div align="center">
+
 ## Version 1.18.1
 
 </div>
