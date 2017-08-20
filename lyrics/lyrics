@@ -4,6 +4,7 @@ currentVersion="1.18.1"
 configuredClient=""
 artist="false"
 song="false"
+filePath=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -112,16 +113,16 @@ getLyrics()
 
 printLyrics()
 {
-  if [ -z $filePath ];then echo -e "$lyrics"
+  if [[ $filePath == "" ]];then echo -e "$lyrics"
   else
-    if [ -f $filePath ];then
+    if [ -f "$filePath" ];then
       echo -n "File already exists, do you want to overwrite it [Y/n]: "
       read -r answer
       if [[ "$answer" == [Yy] ]]; then
-        echo -e "$lyrics" > $filePath;
+        echo -e "$lyrics" > "$filePath";
       fi
     else
-        echo -e "$lyrics" > $filePath;
+        echo -e "$lyrics" > "$filePath";
     fi
    fi
 }
@@ -156,20 +157,24 @@ while getopts "f:a:s:uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  checkInternet || exit 1
+    u)
+        getConfiguredClient || exit 1
+        checkInternet || exit 1
         update
         exit 0
         ;;
     f)
-       filePath=$OPTARG
+       filePath="$OPTARG"
         ;;
     a)
         artist="true"
         if [[ "$(echo "$@" | grep -Eo "\-s")" == "-s" ]];then song="true";fi # wont go through both options if arg spaced and not quoted this solves that issue (dont need this but once had bug on system where it was necessary)
+        if [[ "$(echo "$@" | grep -Eo "\-f")" == "-f" ]];then filePath=$(echo "$@" | grep -Eo "\-f [ a-z A-Z / 0-9 . \ ]*[ -]?" | sed s/-f//g | sed s/-//g | sed s/^" "//g);fi
       ;;
     s)
         song="true"
         if [[ "$(echo "$@" | grep -Eo "\-a")" == "-a" ]];then artist="true";fi # wont go through both options if arg spaced and not quoted this solves that issue (dont need this but once had bug on system where it was necessary)
+        if [[ "$(echo "$@" | grep -Eo "\-f")" == "-f" ]];then filePath=$(echo "$@" | grep -Eo "\-f [ a-z A-Z / 0-9 . \ ]*[ -]?" | sed s/-f//g | sed s/-//g | sed s/^" "//g);fi
       ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
