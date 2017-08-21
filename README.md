@@ -355,6 +355,7 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 * To grab the latest exchange rate between cryptocurrencies to standard currencies: [coinmarketcap](https://coinmarketcap.com/api/)
 * To perform symbolic math and other computations: [newton](https://newton.now.sh)
 * To transfer files: [transfer](https://transfer.sh)
+* To grab lyrics from a song: [lyrics.ovh](http://docs.lyricsovh.apiary.io)
 
 </details>
 
