@@ -134,7 +134,7 @@ expandURL()
   else
     url=$1
   fi
-  response=$(httpGet http://x.datasig.io/short?url=$url)
+  response=$(httpGet http://ki.tc/short?url=$url)
   errorCheck=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2> /dev/null  )
   if [[ $errorCheck == "Error in /short" ]]; then
   echo "Error: 404 could not find the website"
