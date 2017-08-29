@@ -139,8 +139,9 @@ getTasks()
       count="1"
       IFS=$'\n'       # make newlines the only separator
       for task in $(cat ~/.todo/list.txt); do
-        if [ $count -lt 10 ]; then count="0$count"; fi
-        echo "$count). $task"  >> ~/.todo/getTemp.txt
+        tempTask=$count
+        if [ $count -lt 10 ]; then tempTask="0$count"; fi
+        echo "$tempTask). $task"  >> ~/.todo/getTemp.txt
         count=$(( $count + 1 ))
       done
       cat ~/.todo/getTemp.txt | column -t -s ";"
