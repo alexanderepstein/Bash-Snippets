@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.19.0"
+currentVersion="1.19.1"
 configuredClient=""
 artist="false"
 song="false"

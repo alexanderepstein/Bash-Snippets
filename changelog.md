@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.19.1
+
+</div>
+
+## Changes
+* Fixed bug in todo for task lists over 8 tasks
+* Fixing the endpoint in the short tool
+
+<div align="center">
+
 ## Version 1.19.0
 
 </div>
