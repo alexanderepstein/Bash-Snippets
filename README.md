@@ -375,26 +375,6 @@ brew install bash-snippets --without-all-tools --with-newton --with-weather # sp
 
 </details>
 
-
-<details>
-<summary>Arch Linux (AUR)</summary>
-
-There is an AUR package for bash-snippets located [here](https://aur.archlinux.org/packages/bash-snippets/)
-
-</details>
-
-
-<details>
-<summary>Sparrowhub</summary>
-
-```bash
-sparrow plg install [tool]
-```
-
-</details>
-
-
-
 <details>
 <summary>Git Install</summary>
 
@@ -445,8 +425,6 @@ brew upgrade bash-snippets
 
 </details>
 
-
-
 <details>
 <summary>Git Update</summary>
 
@@ -477,8 +455,6 @@ brew uninstall bash-snippets
 
 </details>
 
-
-
 <details>
 <summary>Git Uninstall</summary>
 
@@ -508,10 +484,14 @@ cd Bash-Snippets
 
 
 ## Donate
-If this project helped you in any way and you feel like buying a broke college kid a cup of coffee
+If this project helped you in any way and you feel like supporting me
 
 [![Donate](https://img.shields.io/badge/Donate-Venmo-blue.svg)](https://venmo.com/AlexanderEpstein)
 [![Donate](https://img.shields.io/badge/Donate-SquareCash-green.svg)](https://cash.me/$AlexEpstein)
+
+###### BTC: 1PSVVs6EnhdRGhUFb6Dz6EGWKKyHe3xACe
+###### ETH: 0x585c4e1aa22d9Cc92d1a6b3fAe0c4a5274b5a884
+###### LTC: Lf3SDjkck7iqy5TGn3wqzNvf5LL97JNhGk
 
 #### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 

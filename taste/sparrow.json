@@ -1,9 +1,0 @@
-{
-  "name" : "taste",
-  "description" : "Simple wrapper for taste script from Bash-Snippets",
-  "version" : "0.0.4",
-  "url" : "https://github.com/alexanderepstein/Bash-Snippets#taste",
-  "category": "utilities",
-  "sparrow_version" : "0.2.47",
-  "doc" : "sparrow.md"
-}
