@@ -86,7 +86,7 @@ Converts Cryptocurrency based on realtime exchange rates
 
 <div align="center">
 
-<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cryptocurrency/cryptocurrency.png?raw=true">
+<img max-height="500px" max-width="505px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/cryptocurrency/cryptocurrency.png?raw=true">
 
 </div>
 
