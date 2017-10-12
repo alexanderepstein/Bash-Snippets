@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.19.1" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
+currentVersion="1.19.2" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 LANG="${LANG:-en}"
 locale=$(echo $LANG | cut -c1-2)
 configuredClient=""
@@ -40,7 +40,7 @@ getIPWeather()
   if [[ $country == "US" ]]; then ## if were in the us id rather not use longitude and latitude so the output is nicer
     city=$(httpGet ipinfo.io/city) > /dev/null
     region=$(httpGet ipinfo.io/region) > /dev/null
-    region=$(echo "$region" | tr -dc '[:upper:]')
+    region=$(echo "$region" | cut -c "1-2" | tr "[:lower:]" "[:upper:]")
     httpGet $locale.wttr.in/$city,$region$1
   else ## otherwise we are going to use longitude and latitude
     location=$(httpGet ipinfo.io/loc) > /dev/null

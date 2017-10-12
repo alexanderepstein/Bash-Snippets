@@ -194,29 +194,6 @@ Example: geo -a 8.8.8.8 -o city,zip,isp
 
   * -u  Updates Bash-Snippets
 
-### Lyrics
-Description: Fetch lyrics for a certain song.
-
-Usage: lyrics [flags] or tool [-a] [arg] [-s] [arg]
-
-  * -a  Artist of the song to fetch lyrics for
-
-  * -s  Song of the artist to fetch lyrics for
-
-  * -f  Export the lyrics to file rather than outputting to stdout
-
-  * -u  Update Bash-Snippet Tools
-
-  * -h  Show the help
-
-  * -v  Get the tool version
-
-  Examples:
-
-  * lyrics -a logic -s run it
-
-  * lyrics -a logic -s run it -f ~/runItLyrics.txt
-
 ### Movies
 Description: Provides relevant information about a certain movie.
 

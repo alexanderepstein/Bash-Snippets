@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.19.1"
-declare -a tools=(cheat cloudup crypt cryptocurrency currency geo lyrics movies newton qrify short siteciphers stocks taste todo transfer weather ytview)
+currentVersion="1.19.2"
+declare -a tools=(cheat cloudup crypt cryptocurrency currency geo movies newton qrify short siteciphers stocks taste todo transfer weather ytview)
 declare -a extraLinuxTools=(maps)
 declare -a extraDarwinTools
 usedGithubInstallMethod="0"

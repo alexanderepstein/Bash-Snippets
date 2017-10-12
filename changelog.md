@@ -2,6 +2,14 @@
 
 # Bash-Snippets Changelog
 
+## Changes
+* ytview for macOS can now use mpv
+* lyrics tool was removed, api is not available anymore
+
+</div>
+
+<div align="center">
+
 ## Version 1.19.1
 
 </div>
