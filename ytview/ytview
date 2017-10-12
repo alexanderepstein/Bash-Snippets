@@ -91,7 +91,7 @@ getConfiguredPlayer()
   if [[ $(uname -s) == "Linux" ]]; then
     if command -v vlc &>/dev/null; then
       player="vlc"
-    elif  command -v mpv &>/dev/null; then
+    elif command -v mpv &>/dev/null; then
       player="mpv"
     elif command -v mplayer &>/dev/null; then
       player="mplayer"
@@ -102,10 +102,19 @@ getConfiguredPlayer()
   elif [[ $(uname -s) == "Darwin" ]]; then
     if [[ -f /Applications/VLC.app/Contents/MacOS/VLC ]]; then
       player="/Applications/VLC.app/Contents/MacOS/VLC"
+    elif [[ -f $HOME/Applications/VLC.app/Contents/MacOS/VLC ]]; then
+      player="$HOME/Applications/VLC.app/Contents/MacOS/VLC"
+    elif command -v mpv &>/dev/null; then
+      player="mpv"
+    elif [[ -f /Applications/mpv.app/Contents/MacOS/mpv ]]; then
+      player="/Applications/mpv.app/Contents/MacOS/mpv"
+    elif [[ -f $HOME/Applications/mpv.app/Contents/MacOS/mpv ]]; then
+      player="$HOME/Applications/mpv.app/Contents/MacOS/mpv"
     else
-      echo "Error: vlc is not installed and it is required to play videos" >&2
+      echo "Error: no supported video player installed (vlc or mpv)" >&2
       return 1
     fi
+  fi
   fi
 }
 
