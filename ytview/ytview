@@ -110,7 +110,7 @@ getConfiguredPlayer()
       player="/Applications/mpv.app/Contents/MacOS/mpv"
     elif [[ -f $HOME/Applications/mpv.app/Contents/MacOS/mpv ]]; then
       player="$HOME/Applications/mpv.app/Contents/MacOS/mpv"
-	else
+    else
 	  if [[ $(mdutil -s / | grep "Indexing enabled." 2>/dev/null) != "" ]]; then
 	    vlc_md=$(mdfind kMDItemCFBundleIdentifier = "org.videolan.vlc" 2>/dev/null)
 	    if [[ $vlc_md != "" ]]; then
@@ -128,6 +128,7 @@ getConfiguredPlayer()
 	    echo "Error: no supported video player installed (VLC or mpv)" >&2
 	    return 1
 	  fi
+    fi
   fi
 }
 
