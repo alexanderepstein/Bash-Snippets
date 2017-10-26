@@ -180,10 +180,11 @@ clear
   main
 esac
 }
-main
 # special set of first arguments that have a specific behavior across tools
 if [[ $# == "0" ]]; then
-  usage ## if calling the tool with no flags and args chances are you want to return usage
+  getConfiguredClient || exit 1
+  checkInternet || exit 1
+  main
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
