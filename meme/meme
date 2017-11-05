@@ -2,7 +2,7 @@
 # Author: Navan Chauhan https://github.com/navanchauhan
 currentVersion="1.19.2"
 configuredClient=""
-
+fileName=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -84,11 +84,11 @@ Description: A lightning fast meme generator
 Usage: tool [flags] or tool [flags] [arguments]
   -u  Update Bash-Snippet Tools
   -h  Show the help
-  -r  Runs the main program
+  -f  Choose the output filename
   -v  Get the tool version
 Examples:
    meme -h
-   meme -r
+   meme -f dogeMeme
 EOF
 }
 
@@ -110,81 +110,35 @@ while getopts "uvh" opt; do
         update
         exit 0
         ;;
+    f)
+        fileName=$OPTARG
+    ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
         ;;
   esac
 done
 
-background(){
 
-clear
-getConfiguredClient
-checkInternet
-echo "Enter the name for the meme's background : "
-echo "Eg. buzz, doge, blb "
-read bg
-
-}
-
-firstline(){
-
-clear
-echo "Enter the text for the first line :"
-read first
-
-
-
-}
-
-secondline(){
-
-clear
-echo "Enter the text for the second line :"
-read second
-
-
-
-}
-
-reminder(){
-
-echo "Please choose the correct option"
-
-}
 main(){
-
-echo "Are YOU ready to make some awesome may-mays ?"
-echo "Y) Yes"
-echo "N) No"
-read option
-case $option in
-  Y) Yes
-  clear
-    echo "Good Job"
-clear
-  background
-  firstline
-  secondline
-  httpGet "https://memegen.link/"$bg"/"$first"/"$second".jpg"  >> Meme.png 
-  exit
-    ;;
-  N) No
-  clear
-    echo "Bye"
-    exit
-     ;;
-  *) 
-  clear
-  reminder
-  main
-esac
+    echo -n "Enter the name for the meme's background (Ex. buzz, doge, blb ): "
+    read bg
+    echo -n "Enter the text for the first line: "
+    read first
+    echo -n "Enter the text for the second line: "
+    read second
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
+    return 0
 }
+
 # special set of first arguments that have a specific behavior across tools
 if [[ $# == "0" ]]; then
   getConfiguredClient || exit 1
   checkInternet || exit 1
-  main
+  if [[ $fileName == "" ]]; then
+    fileName="meme"
+  fi
+  main || exit 1
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
@@ -197,4 +151,3 @@ elif [[ $# == "1" ]]; then
     exit 0
   fi
 fi
-
