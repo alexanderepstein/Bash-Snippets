@@ -125,7 +125,6 @@ do
     u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
-    *) usage && exit 0 ;;
   esac
 done
 
@@ -141,8 +140,10 @@ elif [[ $# == "1" ]];then
     update || exit 1
     exit 0
   else
-    usage
-    exit 1
+		checkInternet || exit 1
+    input=$(printf '%s ' "$@")
+    makeqr || exit 1
+    exit 0
   fi
 else
   if [[ $multiline == "0" ]]; then
