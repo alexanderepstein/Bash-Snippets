@@ -146,7 +146,7 @@ fi
 
 shortenURL()
 {
-response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$1\"}" http://ki.tc/)
+response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$1\"}" http://ki.tc/ || exit 1)
 returnedURL=$(echo $response | head -n 5 | tail -n 1 | grep -Eo "/[a-Z 0-9]*" | tail -n 1 2>  /dev/null)
 returnedURL="http://ki.tc"$returnedURL
 }
