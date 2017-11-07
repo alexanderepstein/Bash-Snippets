@@ -83,6 +83,23 @@ makeqr()
   httpGet qrenco.de/${input} ## get a response for the qrcode
 }
 
+# redirects the image obtained from the goqr api into a png file
+function makeQRFile {
+	input=$(echo ${input} | sed s/" "/%20/g ) ##same as in the makeqr function
+	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=${input}" > "$fileName"
+}
+
+# storing can only be done in a png file, so fail for all other cases
+function validateFileExt {
+	case "${fileName##*.}" in
+		"png");;
+		"PNG");;
+		*)
+		return 1;;
+
+	esac
+}
+
 makeMultiLineQr()
 {
   if [[ ${configuredClient} != "curl" ]]; then ## prevent usage without curl it is unreliable
@@ -108,23 +125,35 @@ Usage: qrify [stringtoturnintoqrcode]
     -m  Enable multiline support (feature not working yet)
     -h  Show the help
     -v  Get the tool version
+		-f  Store the QR code as a PNG file
 Examples:
     qrify this is a test string
     qrify -m two\\\\nlines
     qrify github.com (no http:// or https://)
+		qrify -f fileoutput.png google.com
 EOF
 }
 
 getConfiguredClient || exit 1
 
 
-while getopts "m:hvu*:" option
+while getopts "m:hvuf:*:" option
 do
   case "${option}" in
     v) echo "Version ${currentVersion}" && exit 0 ;;
     u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
+		f) 
+			fileName="${OPTARG}" 
+			#file name is the first argument of the option -f
+
+			validateFileExt || exit 1
+			shift "$(($OPTIND -1))"
+			input="$*"
+			#the input is the rest of the string
+			makeQRFile || exit 1
+			exit 0;;
   esac
 done
 
