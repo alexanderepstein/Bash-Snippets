@@ -3,6 +3,7 @@
 
 currentVersion="1.19.2"
 multiline="0" # flag that indicates multiline option
+fileoutput="0" # flag indicating the -f option
 
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -89,13 +90,13 @@ function makeQRFile {
 	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=${input}" > "$fileName"
 }
 
-# storing can only be done in a png file, so fail for all other cases
-function validateFileExt {
+# checks if file extention is png, else assigns file extension as .png
+function assignFileExt {
 	case "${fileName##*.}" in
 		"png");;
 		"PNG");;
 		*)
-		return 1;;
+				fileName="${fileName}.png";;
 
 	esac
 }
@@ -137,23 +138,18 @@ EOF
 getConfiguredClient || exit 1
 
 
-while getopts "m:hvuf:*:" option
+while getopts "f:m:hvu*:" option
 do
   case "${option}" in
     v) echo "Version ${currentVersion}" && exit 0 ;;
     u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
-		f) 
-			fileName="${OPTARG}" 
+		f)
+			fileName="${OPTARG}"
 			#file name is the first argument of the option -f
-
-			validateFileExt || exit 1
-			shift "$(($OPTIND -1))"
-			input="$*"
-			#the input is the rest of the string
-			makeQRFile || exit 1
-			exit 0;;
+			assignFileExt || exit 1
+			fileoutput="1";;
   esac
 done
 
@@ -175,8 +171,15 @@ elif [[ $# == "1" ]];then
     exit 0
   fi
 else
-  if [[ $multiline == "0" ]]; then
-    checkInternet || exit 1
+  if [[ $fileoutput == "1" ]]
+	then
+			checkInternet || exit 1
+			input=$(printf '%s ' "${@:3}") # first arg is -f, second is the file name, third onwards is the rest of the argument
+			# will have to be changed when implementing multiline QR code
+			makeQRFile || exit 1
+			exit 0
+	elif [[ $multiline == "0" ]]; then
+		checkInternet || exit 1
     input=$(printf '%s ' "$@")
     makeqr || exit 1
     exit 0
