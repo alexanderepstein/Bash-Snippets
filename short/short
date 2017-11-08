@@ -185,6 +185,7 @@ while getopts "e:s:uvh" opt; do
         inputURL=$OPTARG
         ;;
     s)
+        echo "The shorten feature not been implemented yet." && exit 0
         shorten="true"
         inputURL=$OPTARG
         ;;
