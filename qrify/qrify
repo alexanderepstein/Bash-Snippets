@@ -86,7 +86,7 @@ makeqr()
 
 # redirects the image obtained from the goqr api into a png file
 function makeQRFile {
-	input=$(echo ${input} | sed s/" "/%20/g ) ##same as in the makeqr function
+	input=$(echo "${input}" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
 	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=${input}" > "$fileName"
 }
 
@@ -126,12 +126,12 @@ Usage: qrify [stringtoturnintoqrcode]
     -m  Enable multiline support (feature not working yet)
     -h  Show the help
     -v  Get the tool version
-		-f  Store the QR code as a PNG file
+    -f  Store the QR code as a PNG file
 Examples:
     qrify this is a test string
     qrify -m two\\\\nlines
     qrify github.com (no http:// or https://)
-		qrify -f fileoutput.png google.com
+    qrify -f fileoutput.png google.com
 EOF
 }
 
