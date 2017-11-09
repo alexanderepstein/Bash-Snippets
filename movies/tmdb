@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-# Author: Navan Chauhan https://github.com/N3V0N
+# Author: Navan Chauhan https://github.com/navanchauhan
 
 currentVersion="1.19.2"
 configuredClient=""
