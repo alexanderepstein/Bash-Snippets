@@ -3,6 +3,7 @@
 
 currentVersion="1.19.2"
 multiline="0" # flag that indicates multiline option
+fileoutput="0" # flag indicating the -f option
 
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -79,9 +80,16 @@ update()
 
 makeqr()
 {
-  input=$(echo ${input} | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
-  httpGet qrenco.de/${input} ## get a response for the qrcode
+  input=$(echo $input | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
+  httpGet qrenco.de/$input ## get a response for the qrcode
 }
+
+# redirects the image obtained from the goqr api into a png file
+function makeQRFile {
+	input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
+	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > $fileName.png
+}
+
 
 makeMultiLineQr()
 {
@@ -89,7 +97,8 @@ makeMultiLineQr()
     echo "Multiline currently only supports curl!"
     return 1
   else
-    printf "%s" "$*"  | curl -F-=\<- qrenco.de
+    input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
+    printf "%s" "$input"  | curl -F-=\<- qrenco.de
   fi
 }
 
@@ -108,23 +117,29 @@ Usage: qrify [stringtoturnintoqrcode]
     -m  Enable multiline support (feature not working yet)
     -h  Show the help
     -v  Get the tool version
+    -f  Store the QR code as a PNG file
 Examples:
     qrify this is a test string
     qrify -m two\\\\nlines
     qrify github.com (no http:// or https://)
+    qrify -f fileoutputName google.com
 EOF
 }
 
 getConfiguredClient || exit 1
 
 
-while getopts "m:hvu*:" option
+while getopts "f:m:hvu*:" option
 do
   case "${option}" in
-    v) echo "Version ${currentVersion}" && exit 0 ;;
+    v) echo "Version $currentVersion" && exit 0 ;;
     u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
+		f)
+			fileName=$OPTARG
+			#file name is the first argument of the option -f
+			fileoutput="1";;
   esac
 done
 
@@ -146,14 +161,22 @@ elif [[ $# == "1" ]];then
     exit 0
   fi
 else
-  if [[ $multiline == "0" ]]; then
-    checkInternet || exit 1
+  if [[ $fileoutput == "1" ]]
+	then
+			checkInternet || exit 1
+			input=$(printf '%s ' "${@:3}") # first arg is -f, second is the file name, third onwards is the rest of the argument
+			# will have to be changed when implementing multiline QR code
+			makeQRFile || exit 1
+			exit 0
+	elif [[ $multiline == "0" ]]; then
+		checkInternet || exit 1
     input=$(printf '%s ' "$@")
     makeqr || exit 1
     exit 0
   else
     checkInternet || exit 1
-    makeMultiLineQr "${@:2}" || exit 1 ## if multiline that means a flag existed so start from the second argument
+    input=$(printf '%s ' "${@:2}")
+    makeMultiLineQr || exit 1 ## if multiline that means a flag existed so start from the second argument
     exit 0
   fi
 fi
