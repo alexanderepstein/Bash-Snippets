@@ -76,6 +76,17 @@ checkInternet()
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
 }
 
+main(){
+    echo -n "Enter the name for the meme's background (Ex. buzz, doge, blb ): "
+    read bg
+    echo -n "Enter the text for the first line: "
+    read first
+    echo -n "Enter the text for the second line: "
+    read second
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
+    return 0
+}
+
 usage()
 {
   cat <<EOF
@@ -94,7 +105,7 @@ EOF
 
 
 
-while getopts "uvh" opt; do
+while getopts "uvhf:" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
@@ -112,6 +123,10 @@ while getopts "uvh" opt; do
         ;;
     f)
         fileName=$OPTARG
+        getConfiguredClient || exit 1
+        checkInternet || exit 1
+        main || exit 1
+        exit 0
     ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
@@ -120,16 +135,7 @@ while getopts "uvh" opt; do
 done
 
 
-main(){
-    echo -n "Enter the name for the meme's background (Ex. buzz, doge, blb ): "
-    read bg
-    echo -n "Enter the text for the first line: "
-    read first
-    echo -n "Enter the text for the second line: "
-    read second
-    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
-    return 0
-}
+
 
 # special set of first arguments that have a specific behavior across tools
 if [[ $# == "0" ]]; then
