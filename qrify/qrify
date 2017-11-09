@@ -80,26 +80,16 @@ update()
 
 makeqr()
 {
-  input=$(echo ${input} | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
-  httpGet qrenco.de/${input} ## get a response for the qrcode
+  input=$(echo $input | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
+  httpGet qrenco.de/$input ## get a response for the qrcode
 }
 
 # redirects the image obtained from the goqr api into a png file
 function makeQRFile {
-	input=$(echo "${input}" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
-	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=${input}" > "$fileName"
+	input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
+	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > $fileName.png
 }
 
-# checks if file extention is png, else assigns file extension as .png
-function assignFileExt {
-	case "${fileName##*.}" in
-		"png");;
-		"PNG");;
-		*)
-				fileName="${fileName}.png";;
-
-	esac
-}
 
 makeMultiLineQr()
 {
@@ -107,7 +97,8 @@ makeMultiLineQr()
     echo "Multiline currently only supports curl!"
     return 1
   else
-    printf "%s" "$*"  | curl -F-=\<- qrenco.de
+    input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
+    printf "%s" "$input"  | curl -F-=\<- qrenco.de
   fi
 }
 
@@ -131,7 +122,7 @@ Examples:
     qrify this is a test string
     qrify -m two\\\\nlines
     qrify github.com (no http:// or https://)
-    qrify -f fileoutput.png google.com
+    qrify -f fileoutputName google.com
 EOF
 }
 
@@ -141,14 +132,13 @@ getConfiguredClient || exit 1
 while getopts "f:m:hvu*:" option
 do
   case "${option}" in
-    v) echo "Version ${currentVersion}" && exit 0 ;;
+    v) echo "Version $currentVersion" && exit 0 ;;
     u) checkInternet && update && exit 0 || exit 1 ;;
     h) usage && exit 0 ;;
     m) multiline="1" && echo "Error this is not a supported feature yet" && exit 1 ;;
 		f)
-			fileName="${OPTARG}"
+			fileName=$OPTARG
 			#file name is the first argument of the option -f
-			assignFileExt || exit 1
 			fileoutput="1";;
   esac
 done
@@ -185,7 +175,8 @@ else
     exit 0
   else
     checkInternet || exit 1
-    makeMultiLineQr "${@:2}" || exit 1 ## if multiline that means a flag existed so start from the second argument
+    input=$(printf '%s ' "${@:2}")
+    makeMultiLineQr || exit 1 ## if multiline that means a flag existed so start from the second argument
     exit 0
   fi
 fi
