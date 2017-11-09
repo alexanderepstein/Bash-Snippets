@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
+# Author: Navan Chauhan https://github.com/navanchauhan
 
 currentVersion="1.19.2"
 configuredClient=""
@@ -64,20 +65,20 @@ checkInternet()
 ## JSON response to extrapolate the information for storage
 getStockInformation()
 {
-  stockInfo=$(httpGet  "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$1&apikey=KPCCCRJVMOGN9L6T") > /dev/null #grab the JSON response
+  stockInfo=$(httpGet  "https://api.iextrading.com/1.0/stock/$1/quote") > /dev/null #grab the JSON response
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']" > /dev/null 2>&1 || { echo "Not a valid stock symbol"; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
+  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['companyName']" > /dev/null 2>&1 || { echo "Not a valid stock symbol"; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
   # The rest of the code is just extrapolating the data with python from the JSON response
-  exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['02. Exchange Name']")
-  latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['03. Latest Price']")
-  open=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['04. Open (Current Trading Day)']")
-  high=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['05. High (Current Trading Day)']")
-  low=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['06. Low (Current Trading Day)']")
-  close=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['07. Close (Previous Trading Day)']")
-  priceChange=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['08. Price Change']")
-  priceChangePercentage=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['09. Price Change Percentage']")
-  volume=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['10. Volume (Current Trading Day)']")
-  lastUpdated=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['Realtime Global Securities Quote']['11. Last Updated']")
+  exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['companyName']")
+  latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestPrice']")
+  open=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['open']")
+  high=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['week52High']")
+  low=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['week52Low']")
+  close=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['close']")
+  priceChange=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['change']")
+  priceChangePercentage=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['changePercent']")
+  volume=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestVolume']")
+  lastUpdated=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestUpdate']")
   unset stockInfo # done with the JSON response not needed anymore
 }
 
@@ -91,8 +92,8 @@ printStockInformation()
   echo "| Exchange Name: $exchangeName"
   echo "| Latest Price: $latestPrice"
   if [[ $open != "--" ]]; then echo "| Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
-  if [[ $high != "--" ]]; then echo "| High (Current Trading Day): $high"; fi ## sometime this is blank only print if value is present
-  if [[ $low != "--" ]]; then echo "| Low (Current Trading Day): $low"; fi ## sometime this is blank only print if value is present
+  if [[ $high != "--" ]]; then echo "| High (Week52): $high"; fi ## sometime this is blank only print if value is present
+  if [[ $low != "--" ]]; then echo "| Low (Week52): $low"; fi ## sometime this /is blank only print if value is present
   echo "| Close (Previous Trading Day): $close"
   echo "| Price Change: $priceChange"
   if [[ $priceChangePercentage != "%" ]];then echo "| Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
