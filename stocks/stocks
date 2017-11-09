@@ -69,7 +69,7 @@ getStockInformation()
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['companyName']" > /dev/null 2>&1 || { echo "Not a valid stock symbol"; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
   # The rest of the code is just extrapolating the data with python from the JSON response
-  exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['companyName']")
+  exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['primaryExchange']")
   latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestPrice']")
   open=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['open']")
   high=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['week52High']")
