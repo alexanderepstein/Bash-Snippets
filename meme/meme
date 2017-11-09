@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Navan Chauhan https://github.com/navanchauhan
-currentVersion="1.19.2"
+currentVersion="1.20.0"
 configuredClient=""
 fileName=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one

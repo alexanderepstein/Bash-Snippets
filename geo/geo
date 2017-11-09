@@ -4,7 +4,7 @@
 # Author: Jake Meyer
 # Github: https://github.com/jakewmeyer
 
-currentVersion="1.19.2"
+currentVersion="1.20.0"
 configuredClient=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one

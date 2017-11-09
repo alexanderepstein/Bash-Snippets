@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.19.2"
+currentVersion="1.20.0"
 declare -a tools=(cheat cloudup crypt cryptocurrency currency geo lyrics meme movies newton qrify short siteciphers stocks taste todo transfer weather ytview)
 declare -a extraLinuxTools=(maps)
 declare -a extraDarwinTools
