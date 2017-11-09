@@ -317,6 +317,37 @@ lyrics \-a logic \-s run it \-f ~/runItLyrics\.txt
 .
 .IP "" 0
 .
+.SS "Meme"
+Description: Create memes from the command line and store them as pictures\.
+.
+.P
+Meme Description: A lightning fast meme generator
+.
+.P
+Usage: tool [flags] or tool [flags] [arguments]
+.
+.IP "\(bu" 4
+\-u Update Bash\-Snippet Tools
+.
+.IP "\(bu" 4
+\-h Show the help
+.
+.IP "\(bu" 4
+\-f Choose the output filename
+.
+.IP "\(bu" 4
+\-v Get the tool version
+.
+.IP "" 0
+.
+.P
+Examples:
+.
+.IP "\(bu" 4
+meme \-f dogeMeme
+.
+.IP "" 0
+.
 .SS "Movies"
 Description: Provides relevant information about a certain movie\.
 .
@@ -382,7 +413,9 @@ Description: Converts strings or urls into a qr code\.
 
 * \-m Enable multiline support
 
-*  \-h Show the help
+* \-f Save the QRCode to a file
+
+* \-h Show the help
 
 * \-v Get the tool version
 .
@@ -399,7 +432,9 @@ Examples:
 
 * qrify this is a test string
 
-* qrify \-m two\e\e\e\enlines
+* qrify \-m two \en lines
+
+* qrify \-f fileNameHere Insert what you want to encode here
 
 * qrify github\.com # notice no http:// or https:// this will fail
 .
@@ -412,6 +447,12 @@ Description: Unmasks shortended urls\.
 .
 .P
 Usage: short [shortURL] or short [flag]
+.
+.IP "\(bu" 4
+\-e Expand the following URL
+.
+.IP "\(bu" 4
+\-s Shorten the following URL
 .
 .IP "\(bu" 4
 \-u Update Bash\-Snippet Tools
@@ -428,10 +469,16 @@ Usage: short [shortURL] or short [flag]
 Example:
 .
 .IP "\(bu" 4
-Input: short tinyurl\.com/jhkj
+Input: short \-e tinyurl\.com/jhkj
 .
 .IP "\(bu" 4
 Output: http://possiblemaliciouswebsiteornot\.com
+.
+.IP "\(bu" 4
+Input: short \-s google\.com
+.
+.IP "\(bu" 4
+Output: http://ki\.tc/23sd1d
 .
 .IP "" 0
 .

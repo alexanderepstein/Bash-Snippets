@@ -2,6 +2,22 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.20.0
+
+## Changes
+* Brought back lyrics tool
+* Added shorten url functionality to short
+* Fixed the stocks api
+* Save QRCodes to an image file
+* Fixed bug in qrify for single-word strings
+* Adding mdfind functionality to ytview
+
+</div>
+
+<div align="center">
+
+## Version 1.19.2
+
 ## Changes
 * ytview for macOS can now use mpv
 * lyrics tool was removed, api is not available anymore

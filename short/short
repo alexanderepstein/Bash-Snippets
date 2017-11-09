@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.19.1"
-currentVersion="1.19.2"
+currentVersion="1.20.0"
 configuredClient=""
 configuredPython=""
 
@@ -141,16 +140,34 @@ expandURL()
   echo "Error: 404 could not find the website"
   return 1
 fi
-  expandedURL=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['destination']" 2>  /dev/null  )
+  returnedURL=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['destination']" 2>  /dev/null  )
 
+}
+
+shortenURL()
+{
+newURL=$(echo $1 | grep -Eo "^[h]ttp[s]?://")
+if [[ $newURL == "" ]]; then newURL="http://"$1; fi
+response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$newURL\"}" http://ki.tc/ || exit 1)
+returnedURL=$(echo $response | grep -Eo "http://ki.tc/[0-9a-zA-Z]*" | tail -n 1)
 }
 
 printResults()
 {
   cat <<EOF
 =====================================================================
-Short URL:    $url
-Expanded URL: $expandedURL
+Short URL:    $inputURL
+Expanded URL: $returnedURL
+=====================================================================
+EOF
+}
+
+printShortenedResults()
+{
+  cat <<EOF
+=====================================================================
+Original URL:  $newURL
+Shortened URL: $returnedURL
 =====================================================================
 EOF
 }
@@ -159,10 +176,18 @@ if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 
 
-while getopts "uvh" opt; do
+while getopts "e:s:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
+        ;;
+    e)
+        expand="true"
+        inputURL=$OPTARG
+        ;;
+    s)
+        shorten="true"
+        inputURL=$OPTARG
         ;;
     h)  usage
         exit 0
@@ -180,6 +205,10 @@ while getopts "uvh" opt; do
   esac
 done
 
+if  [[ $expand == "true" && $shorten == "true" ]];then
+  echo "Error: the -e and the -s options are mutually exclusive" >&2
+  exit 1
+fi
 
 if [[ $# == 0 ]]; then
   usage
@@ -190,11 +219,22 @@ elif [[ $# == "1" ]]; then
     update
   elif [[ $1 == "help" ]]; then
     usage
+
   else
-    checkInternet || exit 1
-    expandURL $1 || exit 1
-    printResults
+    usage
+    exit 1
   fi
+elif [[ $expand == "true" ]];then
+  checkInternet || exit 1
+  expandURL "$inputURL" || exit 1
+  printResults
+elif [[ $shorten == "true" ]];then
+  if [[ $configuredClient != "curl" ]];then
+    echo "Error: to shorten URLS you must have curl installed"
+  fi
+  checkInternet || exit 1
+  shortenURL "$inputURL"
+  printShortenedResults
 else
   echo "Error: short only accepts one argument"
   exit 1
