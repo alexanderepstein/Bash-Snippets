@@ -1,0 +1,206 @@
+#!/usr/bin/env bash
+# Author: Alexander Epstein https://github.com/alexanderepstein
+# Author: Aaditya Naik https://github.com/rincemust
+
+currentVersion="1.20.0"
+configuredClient=""
+
+# question and answer arrays-
+declare -a questions
+declare -a answers
+
+#defining colours
+red="\e[31;1m"
+green="\e[32;1m"
+cyan="\e[36;1m"
+yellow="\e[33;1m"
+nc="\e[0m"
+
+## This function determines which http get tool the system has installed and returns an error if there isnt one
+getConfiguredClient()
+{
+  if  command -v curl &>/dev/null; then
+    configuredClient="curl"
+  elif command -v wget &>/dev/null; then
+    configuredClient="wget"
+  elif command -v http &>/dev/null; then
+    configuredClient="httpie"
+  elif command -v fetch &>/dev/null; then
+    configuredClient="fetch"
+  else
+    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
+    return 1
+  fi
+}
+
+## Allows to call the users configured client without if statements everywhere
+httpGet()
+{
+  case "$configuredClient" in
+    curl)  curl -A curl -s "$@" ;;
+    wget)  wget -qO- "$@" ;;
+    httpie) http -b GET "$@" ;;
+    fetch) fetch -q "$@" ;;
+  esac
+}
+
+update()
+{
+  # Author: Alexander Epstein https://github.com/alexanderepstein
+  # Update utility version 1.2.0
+  # To test the tool enter in the defualt values that are in the examples for each variable
+  repositoryName="Bash-Snippets" #Name of repostiory to be updated ex. Sandman-Lite
+  githubUserName="alexanderepstein" #username that hosts the repostiory ex. alexanderepstein
+  nameOfInstallFile="install.sh" # change this if the installer file has a different name be sure to include file extension if there is one
+  latestVersion=$(httpGet https://api.github.com/repos/$githubUserName/$repositoryName/tags | grep -Eo '"name":.*?[^\\]",'| head -1 | grep -Eo "[0-9.]+" ) #always grabs the tag without the v option
+
+  if [[ $currentVersion == "" || $repositoryName == "" || $githubUserName == "" || $nameOfInstallFile == "" ]]; then
+    echo "Error: update utility has not been configured correctly." >&2
+    exit 1
+  elif [[ $latestVersion == "" ]]; then
+    echo "Error: no active internet connection" >&2
+    exit 1
+  else
+    if [[ "$latestVersion" != "$currentVersion" ]]; then
+      echo "Version $latestVersion available"
+      echo -n "Do you wish to update $repositoryName [Y/n]: "
+      read -r answer
+      if [[ "$answer" == [Yy] ]]; then
+        cd ~ || { echo 'Update Failed'; exit 1; }
+        if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
+        git clone "https://github.com/$githubUserName/$repositoryName" || { echo "Couldn't download latest version"; exit 1; }
+        cd $repositoryName || { echo 'Update Failed'; exit 1; }
+        git checkout "v$latestVersion" 2> /dev/null || git checkout "$latestVersion" 2> /dev/null || echo "Couldn't git checkout to stable release, updating to latest commit."
+        chmod a+x install.sh #this might be necessary in your case but wasnt in mine.
+        ./$nameOfInstallFile "update" || exit 1
+        cd ..
+        rm -r -f $repositoryName || { echo "Permissions Error: update succesfull but cannot delete temp files located at ~/$repositoryName delete this directory with sudo"; exit 1; }
+      else
+        exit 1
+      fi
+    else
+      echo "$repositoryName is already the latest version"
+    fi
+  fi
+}
+
+checkInternet()
+{
+  httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
+}
+
+usage()
+{
+  cat <<EOF
+GKQuiz
+Description: A quiz that tests your general knowledge
+Usage: gkquiz [number of questions you want]
+  -u  Update Bash-Snippet Tools
+  -h  Show the help
+  -v  Get the tool version
+Examples:
+   gkquiz 10
+    (this will generate a quiz of 10 questions)
+EOF
+}
+
+function generateSessionToken {
+  # retrieves the api token, parses the response using jq and removes the double quotes surrounding the token
+  sessionToken="$(echo $(httpGet "https://opentdb.com/api_token.php?command=request") | jq '.token' | sed 's:^.\(.*\).$:\1:')"
+}
+
+function getQuestionSet {
+  # takes in argument determining the number of questions to be asked and gets response
+  jsonResponse="$(httpGet "https://opentdb.com/api.php?amount=$1&token=$sessionToken&category=9&difficulty=medium&type=boolean")"
+}
+
+function generateQuestionArray {
+  # function to generate an array of questions from the json response
+  local ind="0"
+
+  while read -r question
+  do
+  # questions encoded in html encoding... use recode to decode and sed to remove the double quotes
+    questions[$ind]="$(echo $question | recode html..ascii | sed 's:^.\(.*\).$:\1:')"
+    ind="$((ind + 1))"
+  done < <(echo "$jsonResponse" | jq '.results[].question')
+}
+
+function generateAnswerArray {
+  # function to generate an array of answers from the json response
+  local ind="0"
+
+  while read -r answer
+  do
+  # answers... sed to remove the double quotes and tr to make it completely lowercase
+    answers[$ind]="$(echo $answer | sed 's:^.\(.*\).$:\1:' | tr '[:upper:]' '[:lower:]')"
+    ind="$((ind + 1))"
+  done < <(echo $jsonResponse | jq '.results[].correct_answer')
+}
+
+while getopts "uvh*:" opt; do
+  case "$opt" in
+    h)  usage
+        exit 0
+        ;;
+    v)  echo "Version $currentVersion"
+        exit 0
+        ;;
+    u)  getConfiguredClient || exit 1
+        checkInternet || exit 1
+        update
+        exit 0
+        ;;
+  esac
+done
+
+# special set of first arguments that have a specific behavior across tools
+if [[ $# == "0" ]]; then
+  usage ## if calling the tool with no flags and args chances are you want to return usage
+  exit 0
+elif [[ $# == "1" ]]; then
+  if [[ $1 == "update" ]]; then
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+    update || exit 1
+    exit 0
+  elif [[ $1 == "help" ]]; then
+    usage
+    exit 0
+  else
+    getConfiguredClient || exit 1
+    checkInternet || exit 1
+
+    echo -e "${red}Generating quiz..."
+    
+    generateSessionToken || exit 1
+    getQuestionSet $1 || exit 1
+    
+    generateQuestionArray
+    generateAnswerArray
+    
+    echo -e "${red}Answer as true or false\n\n"
+
+    for i in $(seq 0 $((${#questions[@]} - 1)))
+    do
+      echo -e "${cyan}${questions[$i]}${yellow}"
+      read response
+
+      if [[ "$(echo $response | tr '[:upper:]' '[:lower:]')" == "${answers[$i]}" ]]
+      then
+        echo -e "${green}Correct!"
+        correct="$((correct + 1))"
+      else
+        echo -e "${red}Wrong"
+      fi
+
+      echo -e "${nc}\n"
+
+    done
+
+    echo -e "You got ${yellow}$correct${nc} questions out of $1 correct!"
+  fi
+else
+  echo "Too many arguments" >2
+  exit 1
+fi
