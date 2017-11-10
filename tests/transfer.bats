@@ -31,26 +31,26 @@ fi
 }
 
 
-@test "Testing file upload & download" {
-touch $HOME/testFile.txt
-echo -n "This is some example content." > $HOME/testFile.txt
-transferResponse=$(transfer $HOME/testFile.txt)
+#@test "Testing file upload & download" {
+#touch $HOME/testFile.txt
+#echo -n "This is some example content." > $HOME/testFile.txt
+#ransferResponse=$(transfer $HOME/testFile.txt)
 #transferCommand=$( echo $transferResponse | cut -d $'\n' -f 3 | sed s/"Transfer Download Command:"//g | sed s:"desiredOutputDirectory":"$HOME":g | sed s:"^ "::g)
-id=$(echo $transferResponse | cut -d "/" -f 4)
-transferStatus=$( echo $transferResponse | grep -Eo "Success!")
-[ "$transferStatus" = "Success!" ]
-rm -f $HOME/testFile.txt
-if [ -f  $HOME/testFile.txt ];then exit 1;fi
-run transfer -d $HOME $id testFile.txt
-if [ ! -f  $HOME/testFile.txt ];then exit 1;fi
-contents=$(cat $HOME/testFile.txt)
-if [ $contents != "This is some example content." ];then exit 1; fi
-rm -f $HOME/testFile.txt
-transferResponse=$(transfer -d $HOME $id testFile.txt)
-transferStatus=$( echo $transferResponse | grep -Eo "Success!")
-[ "$transferStatus" = "Success!" ]
-rm -f $HOME/testFile.txt
-}
+#id=$(echo $transferResponse | cut -d "/" -f 4)
+#transferStatus=$( echo $transferResponse | grep -Eo "Success!")
+#[ "$transferStatus" = "Success!" ]
+#rm -f $HOME/testFile.txt
+#if [ -f  $HOME/testFile.txt ];then exit 1;fi
+#run transfer -d $HOME $id testFile.txt
+#if [ ! -f  $HOME/testFile.txt ];then exit 1;fi
+#contents=$(cat $HOME/testFile.txt)
+#if [ $contents != "This is some example content." ];then exit 1; fi
+#rm -f $HOME/testFile.txt
+#transferResponse=$(transfer -d $HOME $id testFile.txt)
+#transferStatus=$( echo $transferResponse | grep -Eo "Success!")
+#[ "$transferStatus" = "Success!" ]
+#rm -f $HOME/testFile.txt
+#}
 
 @test "Get the tools version with -v" {
   run transfer -v

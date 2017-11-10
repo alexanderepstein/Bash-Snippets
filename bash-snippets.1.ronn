@@ -194,6 +194,49 @@ Example: geo -a 8.8.8.8 -o city,zip,isp
 
   * -u  Updates Bash-Snippets
 
+### Lyrics
+Description: Fetch lyrics for a certain song.
+
+Usage: lyrics [flags] or tool [-a] [arg] [-s] [arg]
+
+  * -a  Artist of the song to fetch lyrics for
+
+  * -s  Song of the artist to fetch lyrics for
+
+  * -f  Export the lyrics to file rather than outputting to stdout
+
+  * -u  Update Bash-Snippet Tools
+
+  * -h  Show the help
+
+  * -v  Get the tool version
+
+Examples:
+
+  * lyrics -a logic -s run it
+
+  * lyrics -a logic -s run it -f ~/runItLyrics.txt
+
+### Meme
+Description: Create memes from the command line and store them as pictures.
+
+Meme
+Description: A lightning fast meme generator
+
+Usage: tool [flags] or tool [flags] [arguments]
+
+  * -u  Update Bash-Snippet Tools
+
+  * -h  Show the help
+
+  * -f  Choose the output filename
+
+  * -v  Get the tool version
+
+Examples:
+
+  * meme -f dogeMeme
+
 ### Movies
 Description: Provides relevant information about a certain movie.
 
@@ -264,7 +307,9 @@ Description: Converts strings or urls into a qr code.
 
     * -m Enable multiline support
 
-    *  -h Show the help
+    * -f Save the QRCode to a file
+
+    * -h Show the help
 
     * -v Get the tool version
 
@@ -272,7 +317,9 @@ Examples:
 
     * qrify this is a test string
 
-    * qrify -m two\\\\nlines
+    * qrify -m two \n lines
+
+    * qrify -f fileNameHere Insert what you want to encode here
 
     * qrify github.com # notice no http:// or https:// this will fail
 
@@ -280,6 +327,10 @@ Examples:
 Description: Unmasks shortended urls.
 
 Usage: short [shortURL] or short [flag]
+
+  * -e Expand the following URL
+
+  * -s Shorten the following URL
 
   * -u Update Bash-Snippet Tools
 
@@ -289,9 +340,13 @@ Usage: short [shortURL] or short [flag]
 
 Example:
 
-   * Input: short tinyurl.com/jhkj
+   * Input: short -e tinyurl.com/jhkj
 
    * Output: http://possiblemaliciouswebsiteornot.com
+
+   * Input: short -s google.com
+
+   * Output: http://ki.tc/23sd1d
 
 ### Siteciphers
 Description: Checks the available ciphers for the SSL of an https site.

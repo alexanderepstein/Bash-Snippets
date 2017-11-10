@@ -141,6 +141,34 @@ Written by: [Jake Meyer](https://github.com/jakewmeyer)
 </details>
 
 <details>
+<summary>Lyrics</summary>
+
+Grab lyrics for a given song quickly from the command line.
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/lyrics/lyrics.png?raw=true">
+
+</div>
+
+</details>
+
+<details>
+<summary>Meme</summary>
+
+A lightning fast meme generator.
+
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/meme/meme.png?raw=true">
+
+</div>
+
+</details>
+
+<details>
 <summary>Movies</summary>
 
 Quick search that grabs relevant information about a movie
@@ -376,7 +404,7 @@ cd Bash-Snippets
 
 * Git checkout to the latest stable release
 ```bash
-git checkout v1.19.2
+git checkout v1.20.0
 ```
 
 * Run the guided install script with

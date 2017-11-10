@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.19.2"
+# Author: Navan Chauhan https://github.com/navanchauhan
+currentVersion="1.20.0"
 configuredClient=""
-artist="false"
-song="false"
-filePath=""
-
+fileName=""
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -22,29 +19,6 @@ getConfiguredClient()
     return 1
   fi
 }
-
-getConfiguredPython()
-{
-  if  command -v python2 &>/dev/null ; then
-    configuredPython="python2"
-  elif command -v python &>/dev/null ; then
-    configuredPython="python"
-  else
-    echo "Error: This tool requires python 2 to be installed."
-    return 1
-  fi
-}
-
-if [[ $(uname) != "Darwin" ]]; then
-  python()
-  {
-    case "$configuredPython" in
-      python2) python2 "$@";;
-      python) python "$@";;
-    esac
-  }
-fi
-
 
 ## Allows to call the users configured client without if statements everywhere
 httpGet()
@@ -102,51 +76,36 @@ checkInternet()
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
 }
 
-getLyrics()
-{
-  encodedArtist=$(echo $1 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
-  encodedSong=$(echo $2 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
-  response=$(httpGet "https://api.lyrics.ovh/v1/$encodedArtist/$encodedSong")
-  lyrics=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['lyrics']" 2> /dev/null)
-  if [[ $lyrics == "" ]];then { echo "Error: no lyrics found!"; return 1; }; fi
-}
-
-printLyrics()
-{
-  if [[ $filePath == "" ]];then echo -e "$lyrics"
-  else
-    if [ -f "$filePath" ];then
-      echo -n "File already exists, do you want to overwrite it [Y/n]: "
-      read -r answer
-      if [[ "$answer" == [Yy] ]]; then
-        echo -e "$lyrics" > "$filePath";
-      fi
-    else
-        echo -e "$lyrics" > "$filePath";
-    fi
-   fi
+main(){
+    echo -n "Enter the name for the meme's background (Ex. buzz, doge, blb ): "
+    read bg
+    echo -n "Enter the text for the first line: "
+    read first
+    echo -n "Enter the text for the second line: "
+    read second
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
+    return 0
 }
 
 usage()
 {
   cat <<EOF
-Lyrics
-Description: Fetch lyrics for a certain song.
-Usage: lyrics [flags] or tool [-a] [arg] [-s] [arg]
-  -a  Artist of the song to fetch lyrics for
-  -s  Song of the artist to fetch lyrics for
-  -f  Export the lyrics to file rather than outputting to stdout
+Meme
+Description: A lightning fast meme generator
+Usage: tool [flags] or tool [flags] [arguments]
   -u  Update Bash-Snippet Tools
   -h  Show the help
+  -f  Choose the output filename
   -v  Get the tool version
 Examples:
-   lyrics -a logic -s run it
-   lyrics -a logic -s run it -f ~/runItLyrics.txt
+   meme -h
+   meme -f dogeMeme
 EOF
 }
 
 
-while getopts "f:a:s:uvh" opt; do
+
+while getopts "uvhf:" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
@@ -157,34 +116,35 @@ while getopts "f:a:s:uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)
-        getConfiguredClient || exit 1
+    u)  getConfiguredClient || exit 1
         checkInternet || exit 1
         update
         exit 0
         ;;
     f)
-       filePath="$OPTARG"
-        ;;
-    a)
-        artist="true"
-        if [[ "$(echo "$@" | grep -Eo "\-s")" == "-s" ]];then song="true";fi # wont go through both options if arg spaced and not quoted this solves that issue (dont need this but once had bug on system where it was necessary)
-        if [[ "$(echo "$@" | grep -Eo "\-f")" == "-f" ]];then filePath=$(echo "$@" | grep -Eo "\-f [ a-z A-Z / 0-9 . \ ]*[ -]?" | sed s/-f//g | sed s/-//g | sed s/^" "//g);fi
-      ;;
-    s)
-        song="true"
-        if [[ "$(echo "$@" | grep -Eo "\-a")" == "-a" ]];then artist="true";fi # wont go through both options if arg spaced and not quoted this solves that issue (dont need this but once had bug on system where it was necessary)
-        if [[ "$(echo "$@" | grep -Eo "\-f")" == "-f" ]];then filePath=$(echo "$@" | grep -Eo "\-f [ a-z A-Z / 0-9 . \ ]*[ -]?" | sed s/-f//g | sed s/-//g | sed s/^" "//g);fi
-      ;;
+        fileName=$OPTARG
+        getConfiguredClient || exit 1
+        checkInternet || exit 1
+        main || exit 1
+        exit 0
+    ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
         exit 1
         ;;
   esac
 done
 
+
+
+
 # special set of first arguments that have a specific behavior across tools
 if [[ $# == "0" ]]; then
-  usage ## if calling the tool with no flags and args chances are you want to return usage
+  getConfiguredClient || exit 1
+  checkInternet || exit 1
+  if [[ $fileName == "" ]]; then
+    fileName="meme"
+  fi
+  main || exit 1
   exit 0
 elif [[ $# == "1" ]]; then
   if [[ $1 == "update" ]]; then
@@ -196,23 +156,4 @@ elif [[ $# == "1" ]]; then
     usage
     exit 0
   fi
-fi
-
-if ($artist && ! $song)  || ($song && ! $artist);then
-  echo "Error: the -a and the -s flag must be used to fetch lyrics."
-  exit 1
-elif $artist && $song;then
-  song=$(echo "$@" | grep -Eo "\-s [ a-z A-Z 0-9 . \ ]*[ -]?" | sed s/-s//g | sed s/-//g | sed s/^" "//g)
-  if [[ $song == "" ]];then { echo "Error: song could not be parsed from input."; exit 1; };fi
-  artist=$(echo "$@" | grep -Eo "\-a [ a-z A-Z 0-9 . \ ]*[ -]?" | sed s/-a//g | sed s/-//g | sed s/^" "//g)
-  if [[ $artist == "" ]];then { echo "Error: artist could not be parsed from input."; exit 1; };fi
-  getConfiguredClient || exit 1
-  if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1;fi
-  checkInternet || exit 1
-  getLyrics "$artist" "$song" || exit 1
-  printLyrics
-else
-  { clear; echo "You shouldnt be here but maaaaaaybeee you slipped passed me, learn to use the tool!"; sleep 5; clear;}
-  usage
-  exit 1
 fi

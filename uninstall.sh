@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-declare -a tools=(cheat cloudup crypt cryptocurrency currency geo movies newton qrify short siteciphers stocks taste todo transfer weather ytview)
+declare -a tools=(cheat cloudup crypt cryptocurrency currency geo lyrics meme movies newton qrify short siteciphers stocks taste todo transfer weather ytview)
 all="1"
 
 askUninstall()
@@ -46,8 +46,4 @@ fi
 
 if [[ $all == "1" ]]; then
   removeManpage || exit 1
-fi
-
-if -f /usr/local/bin/lyrics;then
-  rm -f /usr/local/bin/lyrics # Tool was deprecated so it should be removed if installed
 fi

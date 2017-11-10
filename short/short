@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-currentVersion="1.19.2"
+currentVersion="1.20.0"
 configuredClient=""
 configuredPython=""
 
@@ -146,9 +146,10 @@ fi
 
 shortenURL()
 {
-response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$1\"}" http://ki.tc/)
-returnedURL=$(echo $response | head -n 5 | tail -n 1 | grep -Eo "/[a-Z 0-9]*" | tail -n 1 2>  /dev/null)
-returnedURL="http://ki.tc"$returnedURL
+newURL=$(echo $1 | grep -Eo "^[h]ttp[s]?://")
+if [[ $newURL == "" ]]; then newURL="http://"$1; fi
+response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$newURL\"}" http://ki.tc/ || exit 1)
+returnedURL=$(echo $response | grep -Eo "http://ki.tc/[0-9a-zA-Z]*" | tail -n 1)
 }
 
 printResults()
@@ -165,7 +166,7 @@ printShortenedResults()
 {
   cat <<EOF
 =====================================================================
-Original URL:  $inputURL
+Original URL:  $newURL
 Shortened URL: $returnedURL
 =====================================================================
 EOF
