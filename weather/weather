@@ -5,6 +5,7 @@ currentVersion="1.20.0" #This version variable should not have a v but should co
 LANG="${LANG:-en}"
 locale=$(echo $LANG | cut -c1-2)
 configuredClient=""
+if [[ $(echo $locale | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]];then locale="en";fi
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
