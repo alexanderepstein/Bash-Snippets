@@ -68,10 +68,9 @@ getPwned()
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   echo $info | python -c "import sys, json; print json.load(sys.stdin)[0]['Title']" > /dev/null 2>&1 || { echo "Looks like you have not been breached"; exit 1; } #
   # The rest of the code is just extrapolating the data with python from the JSON response
-  echo $info > 1.json
-  title=$(python -c "import sys,json;print('\n'.join([u['Title']for u in json.load(open(sys.argv[1]))]))" "1.json")
-
- 
+  echo $info > .pwned.json
+  title=$(python -c "import sys,json;print('\n'.join([u['Title']for u in json.load(open(sys.argv[1]))]))" ".pwned.json")
+  rm -f .pwned.json
   unset info # done with the JSON response not needed anymore
 }
 
@@ -79,7 +78,7 @@ printPwned()
 {
   echo
   echo "============================================="
-  echo "You been breached at :"
+  echo "$1 has beeen breached at:"
   echo "$title"
   echo "============================================="
   echo
@@ -183,7 +182,6 @@ elif [[ $# == "0" ]]; then
 else
   checkInternet || exit 1
   getPwned $1 # based on the stock symbol exrapolated by the getTicker function get information on the stock
-  printPwned  # print this information out to the user in a human readable format
-  rm 1.json
+  printPwned $1  # print this information out to the user in a human readable format
 exit 0
 fi
