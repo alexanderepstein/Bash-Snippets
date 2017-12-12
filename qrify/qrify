@@ -87,9 +87,18 @@ makeqr()
 # redirects the image obtained from the goqr api into a png file
 function makeQRFile {
 	input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
-	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > $fileName.png
+
+  addFileExt
+
+	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > $fileName
 }
 
+function addFileExt {
+  if ! echo "$fileName" | grep -E -q ".*\.png$|.*\.PNG$"
+  then
+    fileName="$fileName.png"
+  fi
+}
 
 makeMultiLineQr()
 {
