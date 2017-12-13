@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
-# Author: Alexander Epstein https://github.com/alexanderepstein
+# Author: Navan Chauhan https://github.com/navanchauhan
 
-currentVersion="1.20.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
-LANG="${LANG:-en}"
-locale=$(echo $LANG | cut -c1-2)
+currentVersion="1.20.0"
 configuredClient=""
-if [[ $(echo $locale | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]];then locale="en";fi
+configuredPython=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -19,7 +17,7 @@ getConfiguredClient()
   elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
-    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed\." >&2
+    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
     return 1
   fi
 }
@@ -35,34 +33,57 @@ httpGet()
   esac
 }
 
-getIPWeather()
+getConfiguredPython()
 {
-  country=$(httpGet ipinfo.io/country) > /dev/null ## grab the country
-  if [[ $country == "US" ]]; then ## if were in the us id rather not use longitude and latitude so the output is nicer
-    city=$(httpGet ipinfo.io/city) > /dev/null
-    region=$(httpGet ipinfo.io/region) > /dev/null
-    if [[ $(echo $region | wc -w) == 2 ]];then
-      region=$(echo $region | grep -Eo "[A-Z]*" | tr -d "[:space:]")
-    else
-      region=$(echo "$region" | cut -c "1-2" | tr "[:lower:]" "[:upper:]")
-    fi
-    httpGet $locale.wttr.in/$city,$region$1
-  else ## otherwise we are going to use longitude and latitude
-    location=$(httpGet ipinfo.io/loc) > /dev/null
-    httpGet $locale.wttr.in/$location$1
+  if  command -v python2 &>/dev/null; then
+    configuredPython="python2"
+  elif command -v python &>/dev/null; then
+    configuredPython="python"
+  else
+    echo "Error: This tool requires python 2 to be installed."
+    return 1
   fi
 }
 
-getLocationWeather()
-{
-  args=$(echo "$@" | tr " " + )
-  httpGet $locale.wttr.in/${args}
-}
+if [[ $(uname) != "Darwin" ]]; then
+  python()
+  {
+    case "$configuredPython" in
+      python2) python2 "$@" ;;
+      python)  python "$@" ;;
+    esac
+  }
+fi
 
 checkInternet()
 {
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
 }
+
+## This function grabs data from Have I been Pwned ? and using python parses it
+## JSON response to extrapolate the information for storage
+getPwned()
+{
+	info=$(httpGet  "https://haveibeenpwned.com/api/v2/breachedaccount/$1") > /dev/null #grab the JSON response
+  export PYTHONIOENCODING=utf8 #necessary for python in some cases
+  echo $info | python -c "import sys, json; print json.load(sys.stdin)[0]['Title']" > /dev/null 2>&1 || { echo "Looks like you have not been breached"; exit 1; } #
+  # The rest of the code is just extrapolating the data with python from the JSON response
+  echo $info > .pwned.json
+  title=$(python -c "import sys,json;print('\n'.join([u['Title']for u in json.load(open(sys.argv[1]))]))" ".pwned.json")
+  rm -f .pwned.json
+  unset info # done with the JSON response not needed anymore
+}
+
+printPwned()
+{
+  echo
+  echo "============================================="
+  echo "$1 has beeen breached at:"
+  echo "$title"
+  echo "============================================="
+  echo
+}
+
 
 update()
 {
@@ -111,25 +132,19 @@ update()
 usage()
 {
   cat <<EOF
-Weather
-Description: Provides a 3 day forecast on your current location or a specified location.
-  With no flags Weather will default to your current location.
-Usage: weather or weather [flag] or weather [country] or weather [city] [state]
-  weather [i][M] get weather in imperial units, optional M means windspeed in m/s
-  weather [m][M] get weather in metric units, optional M means windspeed in m/s
-  weather [Moon] grabs the phase of the moon
+pwned
+Description: Tells you when your account was last breached
+Usage: pwned [flag] or pwned [tag]
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
 Examples:
-  weather
-  weather Paris m
-  weather Tokyo
-  weather Moon
-  weather mM
+  pwned navanchauhan@gmail.com
+  pwned navanchauhan@yahoo.com
 EOF
 }
 
+if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 
 
@@ -144,8 +159,8 @@ while getopts "uvh" opt; do
     v)  echo "Version $currentVersion"
         exit 0
         ;;
-    u)  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-        update || exit 1
+    u)  checkInternet || exit 1
+        update
         exit 0
         ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
@@ -154,45 +169,19 @@ while getopts "uvh" opt; do
   esac
 done
 
-if [[ $# == "0" ]]; then
+if [[ $1 == "update" ]]; then
   checkInternet || exit 1
-  getIPWeather || exit 1
+  update
   exit 0
-elif [[ $1 == "help" || $1 == ":help" ]]; then
+elif [[ $1 == "help" ]]; then
   usage
   exit 0
-elif [[ $1 == "update" ]]; then
-  checkInternet || exit 1
-  update || exit 1
+elif [[ $# == "0" ]]; then
+  usage
   exit 0
-fi
-
-checkInternet || exit 1
-if [[ $1 == "m" ]]; then
-  getIPWeather "?m" || exit 1
-elif [[ "${@: -1}" == "m" ]];then
-  args=$( echo "${@:1:(($# - 1))}" ?m | sed s/" "//g)
-  getLocationWeather $args || exit 1
-elif [[ $1 == "M" ]]; then
-  getIPWeather "?M" || exit 1
-elif [[ "${@: -1}" == "M" ]];then
-  args=$( echo "${@:1:(($# - 1))}" ?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
-elif [[ $1 == "mM" || $1 == "Mm" ]]; then
-  getIPWeather "?m?M" || exit 1
-elif [[ "${@: -1}" == "mM" || "${@:-1}" == "Mm" ]];then
-  args=$( echo "${@:1:(($# - 1))}" ?m?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
-elif [[ $1 == "iM" || $1 == "Mi" ]]; then
-  getIPWeather "?u?M" || exit 1
-elif [[ "${@: -1}" == "iM" || "${@:-1}" == "Mi" ]];then
-  args=$( echo "${@:1:(($# - 1))}" ?u?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
-elif [[ $1 == "i" ]]; then
-  getIPWeather "?u" || exit 1
-elif [[ "${@: -1}" == "i" ]];then
-  args=$( echo "${@:1:(($# - 1))}" ?u | sed s/" "//g)
-  getLocationWeather $args || exit 1
 else
-  getLocationWeather "$@" || exit 1
+  checkInternet || exit 1
+  getPwned $1 # based on the stock symbol exrapolated by the getTicker function get information on the stock
+  printPwned $1  # print this information out to the user in a human readable format
+exit 0
 fi
