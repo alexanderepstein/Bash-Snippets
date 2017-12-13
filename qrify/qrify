@@ -156,11 +156,13 @@ Usage: qrify [stringtoturnintoqrcode]
     -h  Show the help
     -v  Get the tool version
     -f  Store the QR code as a PNG file
+    -d  Decode the QR code from a PNG/GIF/JP(E)G file
 Examples:
     qrify this is a test string
     qrify -m two\\\\nlines
     qrify github.com (no http:// or https://)
     qrify -f fileoutputName google.com
+    qrify -d fileName.png
 EOF
 }
 
