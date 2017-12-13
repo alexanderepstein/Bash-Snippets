@@ -4,13 +4,13 @@
 currentVersion="1.20.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 LANG="${LANG:-en}"
 locale=$(echo $LANG | cut -c1-2)
-configuredClient=""
-if [[ $(echo $locale | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]];then locale="en";fi
+unset configuredClient
+if [[ $(echo $locale | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]]; then locale="en"; fi
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
-  if  command -v curl &>/dev/null; then
+  if command -v curl &>/dev/null; then
     configuredClient="curl"
   elif command -v wget &>/dev/null; then
     configuredClient="wget"
@@ -131,7 +131,6 @@ EOF
 }
 
 getConfiguredClient || exit 1
-
 
 while getopts "uvh" opt; do
   case "$opt" in
