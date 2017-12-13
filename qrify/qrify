@@ -111,6 +111,35 @@ makeMultiLineQr()
   fi
 }
 
+# Function to get the json response from POST request
+function decodeQR {
+  local qrFile="$1"
+  
+  if ! echo "$fileName" | grep -E -q ".*\.png$|.*\.PNG$|.*\.gif$|.*\.jpg$|.*\.jpeg$|.*\.GIF$|.*\.JPG$|.*\.JPEG$"
+  then
+    exit 1
+  fi
+
+  # only uses curl
+  # Cannot use wget because it does not support multipart/form-data (as per the man page)]
+
+  case "$configuredClient" in
+  curl) JSONresponse=$(curl -s -F "file=@$qrFile" http://api.qrserver.com/v1/read-qr-code/) || exit 1;;
+  wget) echo "Error:-Not supported with wget" >&2 && exit 1;;
+  httpie) JSONresponse=$(http -b --form POST http://api.qrserver.com/v1/read-qr-code/ file@"$qrFile") || exit 1;;
+  fetch) echo "Error:-Not supported with wget" >&2 && exit 1;;
+  esac
+
+  error=$(echo "$JSONresponse" | python -c 'import sys, json; print json.load(sys.stdin)[0]["symbol"][0]["error"]')
+  
+  if [ "$error" = "None" ]
+  then
+    data=$(echo "$JSONresponse" | python -c 'import sys, json; print json.load(sys.stdin)[0]["symbol"][0]["data"]')
+  else
+    echo "Error:-$error" >&2 && exit 1
+  fi
+}
+
 checkInternet()
 {
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
@@ -138,7 +167,7 @@ EOF
 getConfiguredClient || exit 1
 
 
-while getopts "f:m:hvu*:" option
+while getopts "d:f:m:hvu*:" option
 do
   case "${option}" in
     v) echo "Version $currentVersion" && exit 0 ;;
@@ -149,6 +178,9 @@ do
 			fileName=$OPTARG
 			#file name is the first argument of the option -f
 			fileoutput="1";;
+    d)
+      fileName=$OPTARG
+      decode="1";;
   esac
 done
 
@@ -172,12 +204,17 @@ elif [[ $# == "1" ]];then
 else
   if [[ $fileoutput == "1" ]]
 	then
-			checkInternet || exit 1
-			input=$(printf '%s ' "${@:3}") # first arg is -f, second is the file name, third onwards is the rest of the argument
-			# will have to be changed when implementing multiline QR code
-			makeQRFile || exit 1
-			exit 0
-	elif [[ $multiline == "0" ]]; then
+		checkInternet || exit 1
+		input=$(printf '%s ' "${@:3}") # first arg is -f, second is the file name, third onwards is the rest of the argument
+		# will have to be changed when implementing multiline QR code
+		makeQRFile || exit 1
+		exit 0
+  elif [[ $decode == "1" ]]
+  then
+    checkInternet || exit 1
+    ( decodeQR "$fileName" && echo "$data" ) || exit 1
+    exit 0
+  elif [[ $multiline == "0" ]]; then
 		checkInternet || exit 1
     input=$(printf '%s ' "$@")
     makeqr || exit 1
