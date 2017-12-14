@@ -85,15 +85,15 @@ makeqr()
 }
 
 # redirects the image obtained from the goqr api into a png file
-function makeQRFile {
+makeQRFile() {
 	input=$(echo "$input" | sed -e s/" "/%20/g -e s/'\\n'/%0A/g ) ##same as in the makeqr function
 
   addFileExt
 
-	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > $fileName
+	httpGet "api.qrserver.com/v1/create-qr-code/?size=150x150&data=$input" > "$fileName"
 }
 
-function addFileExt {
+addFileExt() {
   if ! echo "$fileName" | grep -E -q ".*\.png$|.*\.PNG$"
   then
     fileName="$fileName.png"
@@ -112,7 +112,7 @@ makeMultiLineQr()
 }
 
 # Function to get the json response from POST request
-function decodeQR {
+decodeQR() {
   local qrFile="$1"
   
   if ! echo "$fileName" | grep -E -q ".*\.png$|.*\.PNG$|.*\.gif$|.*\.jpg$|.*\.jpeg$|.*\.GIF$|.*\.JPG$|.*\.JPEG$"
@@ -124,10 +124,10 @@ function decodeQR {
   # Cannot use wget because it does not support multipart/form-data (as per the man page)]
 
   case "$configuredClient" in
-  curl) JSONresponse=$(curl -s -F "file=@$qrFile" http://api.qrserver.com/v1/read-qr-code/) || exit 1;;
-  wget) echo "Error:-Not supported with wget" >&2 && exit 1;;
-  httpie) JSONresponse=$(http -b --form POST http://api.qrserver.com/v1/read-qr-code/ file@"$qrFile") || exit 1;;
-  fetch) echo "Error:-Not supported with wget" >&2 && exit 1;;
+    curl) JSONresponse=$(curl -s -F "file=@$qrFile" http://api.qrserver.com/v1/read-qr-code/) || exit 1;;
+    wget) echo "Error:-Not supported with wget" >&2 && exit 1;;
+    httpie) JSONresponse=$(http -b --form POST http://api.qrserver.com/v1/read-qr-code/ file@"$qrFile") || exit 1;;
+    fetch) echo "Error:-Not supported with wget" >&2 && exit 1;;
   esac
 
   error=$(echo "$JSONresponse" | python -c 'import sys, json; print json.load(sys.stdin)[0]["symbol"][0]["error"]')
