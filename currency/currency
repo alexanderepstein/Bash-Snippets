@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 
-base=""
-exchangeTo=""
+unset base
+unset exchangeTo
 currentVersion="1.20.0"
-configuredClient=""
+unset configuredClient
 currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
   EUR GBP HKD HRK HUF IDR ILS INR
   JPY KRW MXN MYR NOK NZD PHP PLN
@@ -13,7 +13,7 @@ currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
   ## This function determines which http get tool the system has installed and returns an error if there isnt one
   getConfiguredClient()
   {
-    if  command -v curl &>/dev/null; then
+    if command -v curl &>/dev/null; then
       configuredClient="curl"
     elif command -v wget &>/dev/null; then
       configuredClient="wget"
@@ -54,7 +54,7 @@ getBase()
   echo -n "What is the base currency: "
   read -r base
   base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1"  ]]; then
+  if [[ $(checkValidCurrency $base) == "1" ]]; then
     unset base
     echo "Invalid base currency"
     getBase
