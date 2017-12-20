@@ -155,10 +155,16 @@ crypt \-d myEncryptedFile\.jpg thisIsNowDecrypted\.txt (change filetype back so 
 .IP "" 0
 .
 .SS "CryptoCurrency"
-Description: A realtime cryptocurrency converter\. With no flags it will guide you through the cryptocurrency exchange
+Description: A realtime cryptocurrency converter\. With no flags it will pull down the latest stats of the top 10 cryptos
 .
 .P
-Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [base] [exchangeTo] [amount]
+Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [flag] [arg]
+.
+.IP "\(bu" 4
+\-o Utilize the old functionality of the tool
+.
+.IP "\(bu" 4
+\-f Fiat currency for conversions
 .
 .IP "\(bu" 4
 \-u Update Bash\-Snippet Tools
@@ -172,19 +178,7 @@ Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [base] [exchang
 .IP "" 0
 .
 .P
-Supported Base Currencies:
-.
-.P
-| BTC | ETH | XRP | LTC | | XEM | ETC | DASH | MIOTA | | XMR | STRAT |
-.
-.P
-Supported Target Currencies:
-.
-.P
-| AUD | BRL | CAD | CHF | | CNY | EUR | GBP | HKD | | IDR | INR | JPY | KRW | | MXN | RUB | USD |
-.
-.P
-Examples: cryptocurrency BTC USD 12\.35 cryptocurrency
+Examples: cryptocurrency \-o cryptocurrency \-f eur
 .
 .SS "Currency"
 Description: A realtime currency converter\. With no flags it will guide you through the currency exchange

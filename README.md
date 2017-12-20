@@ -82,7 +82,7 @@ crypt -d [encrypted file] [output file] # decrypts files
 <details>
 <summary>Cryptocurrency</summary>
 
-Converts Cryptocurrency based on realtime exchange rates
+Converts Cryptocurrency based on realtime exchange rates of the top 10 cryptos
 
 <div align="center">
 
@@ -90,21 +90,13 @@ Converts Cryptocurrency based on realtime exchange rates
 
 </div>
 
-Run `cryptocurrency` and you'll be guided through providing three arguments.  
-1. Base currency, i.e. `BTC`
-2. Target currency, i.e. `USD`
-3. Amount, i.e. `12.35`
-
-If you want to bypass the guided input you can pass in 3 arguments and it will run from there, i.e.    
-```bash
-cryptocurrency [baseCurrency] [exchangeToCurrency] [amountBeingExchanged]
-```  
 A valid use case would be:  
 ```bash
-cryptocurrency BTC USD 12.35
+cryptocurrency -f eur
 ```
 
-Written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
+Originally written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
+Heavy modifications by: [Alex Epstein](https://github.com/alexanderepstein)
 </details>
 
 
@@ -371,6 +363,7 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 * To transfer files: [transfer](https://transfer.sh)
 * To grab lyrics from a song: [lyrics.ovh](http://docs.lyricsovh.apiary.io)
 * To generate memes: [MemeGen](https://memegen.link)
+* To get a chart of the top 10 cryptocurrencies [rate.sx](http://rate.sx)
 
 </details>
 

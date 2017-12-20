@@ -18,13 +18,6 @@ fi
   [ "${lines[0]}" = "CryptoCurrency" ]
 }
 
-@test "Testing cryptocurrency exchange (12.35 BTC TO USD)" {
-  run cryptocurrency BTC USD 12.35
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "=========================" ]
-  [ "${lines[3]}" = "| BTC: 12.35" ]
-}
-
 @test "Get the tools version with -v" {
   run cryptocurrency -v
   [ "$status" -eq 0 ]

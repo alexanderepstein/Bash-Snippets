@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Author: Jonas-Taha El Sesiy https://github.com/elsesiy
+# Original Author: Jonas-Taha El Sesiy https://github.com/elsesiy
+# Modifications: Alexander Epstein
 
-base=""
-exchangeTo=""
+unset base
+unset exchangeTo
+old="false"
 currentVersion="1.20.0"
-configuredClient=""
+unset configuredClient
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -238,44 +240,33 @@ usage()
 CryptoCurrency
 
 Description: A realtime cryptocurrency converter.
-With no flags it will guide you through the cryptocurrency exchange
+With no flags it will pull down the latest stats of the top 10 cryptos
 
-Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [base] [exchangeTo] [amount]
+Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [flag] [arg]
    -u Update Bash-Snippet Tools
    -h Show the help
    -v Get the tool version
-
-Supported Base Currencies:
- ___________________________
-| BTC | ETH | XRP  | LTC   |
-| XEM | ETC | DASH | MIOTA |
-| XMR | STRAT | BCH        |
- ___________________________
-
-Supported Target Currencies:
- ________________________
-| AUD | BRL | CAD | CHF |
-| CNY | EUR | GBP | HKD |
-| IDR | INR | JPY | KRW |
-| MXN | RUB | USD       |
- _______________________
-
-Examples:
-  cryptocurrency BTC USD 12.35
-  cryptocurrency
+   -o Utilize the old functionality of the tool
+   -f Fiat currency for conversions
 EOF
 }
 
-getConfiguredClient || exit 1
 
 
-while getopts "uvh" opt; do
+
+while getopts "f:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
         ;;
     h)  usage
         exit 0
+        ;;
+    f)
+        fiat=$OPTARG
+        ;;
+    o)
+        old="true"
         ;;
     v)  echo "Version $currentVersion"
         exit 0
@@ -290,37 +281,32 @@ while getopts "uvh" opt; do
   esac
 done
 
-if [[ $# == 0 ]]; then
+if $old;then
+getConfiguredClient || exit 1
+getBase # get base currency
+getExchangeTo # get exchange to currency
+getAmount # get the amount to be converted
+transformBase
+convertCurrency # grab the exhange rate and perform the conversion
+exit 0
+fi
+
+
+
+if [[ $1 == "update" ]]; then
+  getConfiguredClient || exit 1
   checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-  getBase # get base currency
-  getExchangeTo # get exchange to currency
-  getAmount # get the amount to be converted
-  transformBase
-  convertCurrency # grab the exhange rate and perform the conversion
+  update
   exit 0
-elif [[ $# == "1" ]]; then
-  if [[ $1 == "update" ]]; then
-    checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-    update
-  elif [[ $1 == "help" ]]; then
-    usage
-  else
-    echo "Not a valid argument"
-    usage
-    exit 1
-  fi
-elif [[ $# == "2" ]]; then
-  echo "Not a valid argument"
+elif [[ $1 == "help" ]]; then
   usage
-  exit 1
-elif [[ $# == "3" ]]; then
-  checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-  checkBase $1
-  checkExchangeTo $2
-  checkAmount $3
-  transformBase
-  convertCurrency
   exit 0
+fi
+
+getConfiguredClient || exit 1
+checkInternet || exit 1
+if [[ $fiat =~ [a-zA-Z] ]]; then
+  httpGet $fiat.rate.sx
 else
-  echo "Error: too many arguments"
+  httpGet rate.sx
 fi
