@@ -157,6 +157,13 @@ Transfer File URL: $response
 EOF
 }
 
+printOntimeUpload()
+{
+  cat <<EOF
+  Download link: $downlink
+EOF
+}
+
 singleUpload()
 {
   filePath=$(echo $1 | sed s:"~":$HOME:g)
@@ -164,6 +171,12 @@ singleUpload()
   tempFileName=$(echo $1 | sed "s/.*\///")
   echo "Uploading $tempFileName"
   httpSingleUpload "$filePath" "$tempFileName"
+}
+
+onetimeUpload()
+{
+  response=$(curl -A curl -s -F "file=@$1" http://ki.tc/file/u/)
+  downlink=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['file']['download_page']")
 }
 
 usage()
@@ -176,6 +189,7 @@ Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
       First arg: Output file directory
       Second arg: File url id
       Third arg: File name
+  -o  Onetime file upload
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
@@ -183,10 +197,11 @@ Examples:
   transfer ~/fileToTransfer.txt
   transfer ~/firstFileToTransfer.txt ~/secondFileToTransfer.txt ~/thirdFileToTransfer.txt
   transfer -d ~/outputDirectory fileID fileName
+  transfer -o ~/fileToTransfer.txt
 EOF
 }
 
-while getopts "d:uvh" opt; do
+while getopts "o:d:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -203,13 +218,16 @@ while getopts "d:uvh" opt; do
       update || exit 1
       exit 0
     ;;
+    o)
+      onetime="true"
+    ;;
     d)
       down="true"
       if [ $# -lt 4 ];then { echo "Error: not enough arguments for downloading a file, see the usage"; return 1;};fi
       if [ $# -gt 4 ];then { echo "Error: to many enough arguments for downloading a file, see the usage"; return 1;};fi
-      inputFilePath=$(echo "$*" | sed s/-d//g | cut -d " " -f 2)
-      inputID=$(echo "$*" | sed s/-d//g | cut -d " " -f 3)
-      inputFileName=$(echo "$*" | sed s/-d//g | cut -d " " -f 4)
+      inputFilePath=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 2)
+      inputID=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 3)
+      inputFileName=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 4)
     ;;
     :)  echo "Option -$OPTARG requires an argument." >&2
       exit 1
@@ -241,13 +259,13 @@ elif [[ $# == "1" ]];then
     exit 1
   fi
 else
-  if $down;then
+  if $down && ! $onetime ;then
     getConfiguredClient || exit 1
     checkInternet || exit 1
     getConfiguredDownloadClient || exit 1
     singleDownload "$inputFilePath" "$inputID" "$inputFileName" || exit 1
     exit 0
-  else
+  elif ! $down && ! $onetime; then
     getConfiguredClient || exit 1
     checkInternet || exit 1
     getconfiguredUploadClient || exit 1
@@ -257,5 +275,14 @@ else
       echo
     done
     exit 0
-   fi
+  elif ! $down && $onetime; then
+    getConfiguredClient || exit 1
+    if [[ $configuredClient -ne "curl" ]];then
+      echo "Error: curl must be installed to use one time file upload"
+      exit 1
+    fi
+    inputFileName=$(echo "$*" | sed s/-o//g | cut -d " " -f 2 )
+    onetimeUpload "$inputFileName"
+    printOntimeUpload
+  fi
 fi
