@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BASH\-SNIPPETS" "1" "November 2017" "" ""
+.TH "BASH\-SNIPPETS" "1" "December 2017" "ff" ""
 .
 .SH "NAME"
 \fBbash\-snippets\fR \- A collection of small bash scripts for heavy terminal users
@@ -318,10 +318,7 @@ lyrics \-a logic \-s run it \-f ~/runItLyrics\.txt
 .IP "" 0
 .
 .SS "Meme"
-Description: Create memes from the command line and store them as pictures\.
-.
-.P
-Meme Description: A lightning fast meme generator
+Description: A lightning fast meme generator
 .
 .P
 Usage: tool [flags] or tool [flags] [arguments]
@@ -368,6 +365,17 @@ Usage: movies [flag] or movies [movieToSearch]
 .
 .IP "" 0
 .
+.P
+Examples:
+.
+.IP "\(bu" 4
+movies Argo
+.
+.IP "\(bu" 4
+movies Inception
+.
+.IP "" 0
+.
 .SS "Newton"
 Description: Performs numerical calculations all the way up to symbolic math parsing\.
 .
@@ -392,10 +400,43 @@ Valid Symbols: + add \- subtract [ left parenthesis (you must use brackets bash 
 Examples:
 .
 .IP "\(bu" 4
-movies Argo
+newton simplify [[2x]+7]*[4x]
 .
 .IP "\(bu" 4
-movies Inception
+movies derive x+2x
+.
+.IP "" 0
+.
+.SS "Pwned"
+Usage: pwned [email]
+.
+.P
+Description: Checks where an email account has been breached
+.
+.IP "" 4
+.
+.nf
+
+* \-u Update Bash\-Snippet Tools
+
+* \-h Show the help
+
+* \-v Get the tool version
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Examples:
+.
+.IP "" 4
+.
+.nf
+
+* pwned emailtocheck@email\.com
+.
+.fi
 .
 .IP "" 0
 .
@@ -414,6 +455,8 @@ Description: Converts strings or urls into a qr code\.
 * \-m Enable multiline support
 
 * \-f Save the QRCode to a file
+
+* \-d Decode the QR code from a PNG/GIF/JP(E)G file
 
 * \-h Show the help
 
@@ -437,6 +480,8 @@ Examples:
 * qrify \-f fileNameHere Insert what you want to encode here
 
 * qrify github\.com # notice no http:// or https:// this will fail
+
+* qrify \-d fileName\.png
 .
 .fi
 .
@@ -647,6 +692,9 @@ Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
 
 .
 .IP "\(bu" 4
+\-o Onetime file upload
+.
+.IP "\(bu" 4
 \-u Update Bash\-Snippet Tools
 .
 .IP "\(bu" 4
@@ -668,6 +716,9 @@ transfer ~/firstFileToTransfer\.txt ~/secondFileToTransfer\.txt # upload multipl
 .
 .IP "\(bu" 4
 transfer \-d ~/outputDirectory fileID fileName
+.
+.IP "\(bu" 4
+transfer \-o ~/fileToTransfer\.txt
 .
 .IP "" 0
 .

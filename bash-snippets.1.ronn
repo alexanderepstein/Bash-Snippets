@@ -216,11 +216,8 @@ Examples:
   * lyrics -a logic -s run it
 
   * lyrics -a logic -s run it -f ~/runItLyrics.txt
-
+  
 ### Meme
-Description: Create memes from the command line and store them as pictures.
-
-Meme
 Description: A lightning fast meme generator
 
 Usage: tool [flags] or tool [flags] [arguments]
@@ -249,6 +246,12 @@ Usage: movies [flag] or movies [movieToSearch]
   * -v Get the tool version
 
   * -d Show detailed information
+
+Examples:
+
+  * movies Argo
+
+  * movies Inception
 
 ### Newton
 Description: Performs numerical calculations all the way up to symbolic math parsing.
@@ -294,9 +297,24 @@ Usage: newton [operation] [expression] or newton [flag]
 
 Examples:
 
-  * movies Argo
+* newton simplify [[2x^2]+7]*[4x^2]
 
-  * movies Inception
+* movies derive x^2+2x
+
+### Pwned
+Usage: pwned [email]
+
+Description: Checks where an email account has been breached
+
+    * -u Update Bash-Snippet Tools
+
+    * -h Show the help
+
+    * -v Get the tool version
+
+Examples:
+
+    * pwned emailtocheck@email.com
 
 ### Qrify
 Usage: qrify [stringtoturnintoqrcode]
@@ -308,6 +326,8 @@ Description: Converts strings or urls into a qr code.
     * -m Enable multiline support
 
     * -f Save the QRCode to a file
+
+    * -d Decode the QR code from a PNG/GIF/JP(E)G file
 
     * -h Show the help
 
@@ -322,6 +342,8 @@ Examples:
     * qrify -f fileNameHere Insert what you want to encode here
 
     * qrify github.com # notice no http:// or https:// this will fail
+
+    * qrify -d fileName.png
 
 ### Short
 Description: Unmasks shortended urls.
@@ -448,6 +470,8 @@ Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]
         * Second arg: File url id
         * Third arg: File name
 
+  * -o  Onetime file upload
+
   * -u  Update Bash-Snippet Tools
 
   * -h  Show the help
@@ -460,7 +484,9 @@ Examples:
 
   * transfer ~/firstFileToTransfer.txt ~/secondFileToTransfer.txt # upload multiple files at once
 
-  *  transfer -d ~/outputDirectory fileID fileName
+  * transfer -d ~/outputDirectory fileID fileName
+
+  * transfer -o ~/fileToTransfer.txt
 
 ### Weather
 Description: Provides a 3 day forecast on your current location or a specified location.
