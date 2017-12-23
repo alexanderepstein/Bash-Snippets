@@ -243,11 +243,11 @@ Description: A realtime cryptocurrency converter.
 With no flags it will pull down the latest stats of the top 10 cryptos
 
 Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [flag] [arg]
+   -o Utilize the old functionality of the tool
+   -f Fiat currency for conversions
    -u Update Bash-Snippet Tools
    -h Show the help
    -v Get the tool version
-   -o Utilize the old functionality of the tool
-   -f Fiat currency for conversions
 EOF
 }
 

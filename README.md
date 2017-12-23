@@ -497,9 +497,9 @@ If this project helped you in any way and you feel like supporting me
 [![Donate](https://img.shields.io/badge/Donate-Venmo-blue.svg)](https://venmo.com/AlexanderEpstein)
 [![Donate](https://img.shields.io/badge/Donate-SquareCash-green.svg)](https://cash.me/$AlexEpstein)
 
-###### BTC: 1PSVVs6EnhdRGhUFb6Dz6EGWKKyHe3xACe
-###### ETH: 0x585c4e1aa22d9Cc92d1a6b3fAe0c4a5274b5a884
-###### LTC: Lf3SDjkck7iqy5TGn3wqzNvf5LL97JNhGk
+###### BTC: 38Q5VbH63MtouxHu8BuPNLzfY5B5RNVMDn
+###### ETH: 0xf7c60C06D298FF954917eA45206426f79d40Ac9D
+###### LTC: LWZ3T19YUk66dgkczN7dRhiXDMqSYrXUV4
 
 #### Inspired by: [Ruby-Scripts](https://github.com/jakewmeyer/Ruby-Scripts)
 
