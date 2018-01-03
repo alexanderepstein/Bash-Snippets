@@ -254,7 +254,7 @@ EOF
 
 
 
-while getopts "f:uvh" opt; do
+while getopts "of:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
