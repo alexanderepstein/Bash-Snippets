@@ -43,8 +43,6 @@ getIPWeather()
     region=$(httpGet ipinfo.io/region) > /dev/null
     if [[ $(echo $region | wc -w) == 2 ]];then
       region=$(echo $region | grep -Eo "[A-Z]*" | tr -d "[:space:]")
-    else
-      region=$(echo "$region" | cut -c "1-2" | tr "[:lower:]" "[:upper:]")
     fi
     httpGet $locale.wttr.in/$city,$region$1
   else ## otherwise we are going to use longitude and latitude
