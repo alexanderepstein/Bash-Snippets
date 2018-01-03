@@ -90,11 +90,6 @@ Converts Cryptocurrency based on realtime exchange rates of the top 10 cryptos
 
 </div>
 
-A valid use case would be:  
-```bash
-cryptocurrency -f eur
-```
-
 Originally written by: [Jonas-Taha El Sesiy](https://github.com/elsesiy)
 Heavy modifications by: [Alex Epstein](https://github.com/alexanderepstein)
 </details>
@@ -398,7 +393,7 @@ cd Bash-Snippets
 
 * Git checkout to the latest stable release
 ```bash
-git checkout v1.20.0
+git checkout v1.21.0
 ```
 
 * Run the guided install script with

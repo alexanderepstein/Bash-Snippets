@@ -2,6 +2,20 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.21.0
+
+## Changes
+* Fixing the exchange name for the stocks tool
+* Adding the memes component
+* Fixing locale error
+* Added pwned component
+* Adding one time file transfer to transfer component
+* Changing how cryptocurrency tool works now using rate.sx
+
+</div>
+
+<div align="center">
+
 ## Version 1.20.0
 
 ## Changes

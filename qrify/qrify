@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Linyos Torovoltos github.com/linyostorovovoltos
 
-currentVersion="1.20.0"
+currentVersion="1.21.0"
 multiline="0" # flag that indicates multiline option
 fileoutput="0" # flag indicating the -f option
 
