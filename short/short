@@ -110,8 +110,10 @@ usage()
 {
   cat <<EOF
 Short
-Description: Unmasks shortended urls.
-Usage: short [shortURL] or short [flag]
+Description: Shorten urls and unmask shortended urls.
+Usage: short [flag] [URL] or short [flag]
+  -s  Shorten the URL
+  -e  Expand a shortened URL
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
@@ -146,8 +148,8 @@ fi
 
 shortenURL()
 {
-newURL=$(echo $1 | grep -Eo "^[h]ttp[s]?://")
-if [[ $newURL == "" ]]; then newURL="http://"$1; fi
+newURL=$1
+if [[ $(echo $1 | grep -Eo "^[h]ttp[s]?://") == "" ]]; then newURL="http://"$1; fi
 response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$newURL\"}" http://ki.tc/ || exit 1)
 returnedURL=$(echo $response | grep -Eo "http://ki.tc/[0-9a-zA-Z]*" | tail -n 1)
 }
