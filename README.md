@@ -379,6 +379,17 @@ brew install bash-snippets --without-all-tools --with-newton --with-weather # sp
 </details>
 
 <details>
+<summary>Apt Package Manager</summary>
+
+```bash
+sudo add-apt-repository ppa:navanchauhan/bash-snippets
+sudo apt update
+sudo apt install bash-snippets
+```
+
+</details>
+
+<details>
 <summary>Git Install</summary>
 
 * First clone the repository:  
@@ -429,6 +440,16 @@ brew upgrade bash-snippets
 </details>
 
 <details>
+<summary>Apt Package Manager</summary>
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+</details>
+
+<details>
 <summary>Git Update</summary>
 
 With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
@@ -454,6 +475,15 @@ This will clone the repository and install the new versions of scripts that were
 
 ```bash
 brew uninstall bash-snippets
+```
+
+</details>
+
+<details>
+<summary>Apt Package Manager</summary>
+
+```bash
+sudo apt remove bash-snippets
 ```
 
 </details>
