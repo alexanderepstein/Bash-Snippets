@@ -60,9 +60,9 @@ cd /usr/local/bin
     do
       if [ -e $f ]
         then
-          echo "$f is Installed"
+          echo "$f is installed"
         else
-          echo "$f is Not Installed"
+          echo "$f is not installed"
         fi
     done
 
