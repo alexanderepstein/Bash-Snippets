@@ -5,6 +5,7 @@ declare -a validTools=()
 currentVersion="1.21.0"
 configuredClient=""
 
+
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -51,7 +52,6 @@ header()
   latestver="Latest Version: $latestVersion"
   printf "\t\t\t\t     %s\n" "$title"
   printf "\t\t%s\t\t%s\n" "$latestver" "$installver"
-
 }
 
 
@@ -74,11 +74,12 @@ toolMenu()
     done
     echo -e -n "\t\tChoose a tool or just press enter to go back: "
     read choice
-    if [[ $choice == "" ]];then break; fi
+    if [[ $choice == "" ]];then clear; header; break; fi
     echo -e -n "\t\tEnter any arguments you want to use with the tool: "
     read args
     clear
-    ${validTools[$(($choice-1))]} $args
+    if [[ $choice =~ [0-9] ]]; then ${validTools[$(($choice-1))]} $args
+    else $choice $args; fi
     exit 0
   done
 }
@@ -94,13 +95,23 @@ menu()
     echo -e "\t\t\t06.\t\t\t\tQuit"
     echo -e -n "\n\t\t\tChoose an option: "
     read choice
-    if [[ $choice -gt 6 || $choice -lt 1 ]];then echo "Error invalid option!"; exit 1; fi
+    if [[ $choice -gt 6 || $choice -lt 1 ]];then
+      echo "Error invalid option!"
+      sleep 2
+      clear
+      header
+      continue
+    fi
     clear
     header
     if   [[ $choice -eq 1 ]];then toolMenu
     elif [[ $choice -eq 2 ]];then installationcheck
     elif [[ $choice -eq 3 ]];then man bash-snippets
-    elif [[ $choice -eq 4 ]];then ${validTools[1]} -u
+    elif [[ $choice -eq 4 ]];then
+      ${validTools[1]} -u
+      sleep 2
+      clear
+      header
     elif [[ $choice -eq 5 ]];then
       clear
       echo -e "\t\tThanks for thinking of donating, that's pretty cool of you"
@@ -112,7 +123,7 @@ menu()
       echo -e "\t\t\tVenmo: AlexanderEpstein"
       echo -e "\t\t\tSquare Cash: AlexEpstein\n\n\n\n"
       exit 0
-    elif [[ $choice -eq 6 ]]; then exit 0
+    elif [[ $choice -eq 6 ]]; then clear; exit 0
     fi
   done
 }
@@ -143,11 +154,21 @@ installationcheck()
   fi
 }
 
-clear
-checkInternet
-getConfiguredClient
-grablatestversion
-header
-installationcheck false
-echo
-menu
+if [[ $# -eq 0 ]]; then
+  clear
+  checkInternet
+  getConfiguredClient
+  grablatestversion
+  header
+  installationcheck false
+  echo
+  menu
+elif [[ $# -eq 1 ]]; then
+  if [[ $1 == "-u" || $1 == "update" ]]; then
+    installationcheck false
+    ${validTools[1]} -u
+  elif [[ $1 == "-h" || $1 == "help" ]];then  man bash-snippets
+  elif [[ $1 == "-v" ]]; then echo "Version $currentVersion"
+  fi
+
+fi
