@@ -184,7 +184,7 @@ getGithubRepoNames()
   for pageNumber in {1..100}; do ## iterate through 100 possible pages
     response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100&page=$pageNumber") ## grab the original response
     if [[ $pageNumber == "1" && ( $(echo $response | grep -Eo "Not Found") == "Not Found"  || $response == "[' ']") ]];then  { echo -e -n "Failure!"; echo "Github username is invalid"; return 1;};fi
-    repoResponse=$(echo $response | grep -Eo '"name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"name": "'/""/g ) ## extract the repo names from the response
+    repoResponse=$(echo $response | grep -Eo '"full_name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"full_name": "'/""/g | sed s:alexanderepstein/:: ) ## extract the repo names from the response
     forkResponse=($(echo $response | grep -Eo '"fork": [a-Z]*' | cut -d " " -f 2 | sed  s/"'"//g  )) ## extract the fork status of each repo
     count=0  ## used to iterate through the fork statuses
     if [[ $repoResponse == "" ]]; then break; fi ## will only break if the page is empty
