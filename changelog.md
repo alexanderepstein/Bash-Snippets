@@ -4,15 +4,20 @@
 
 ## Version 1.22.0
 
+</div>
+
 ## Changes
 * Adding bash-snippets gui component
 * Fixing bug in url shortener
-* Fixing old functionality cryptocurrency 
-</div>
+* Fixing old functionality cryptocurrency
+
+
 
 <div align="center">
 
 ## Version 1.21.0
+
+</div>
 
 ## Changes
 * Fixing the exchange name for the stocks tool
@@ -22,11 +27,13 @@
 * Adding one time file transfer to transfer component
 * Changing how cryptocurrency tool works now using rate.sx
 
-</div>
+
 
 <div align="center">
 
 ## Version 1.20.0
+
+</div>
 
 ## Changes
 * Brought back lyrics tool
@@ -36,17 +43,18 @@
 * Fixed bug in qrify for single-word strings
 * Adding mdfind functionality to ytview
 
-</div>
 
 <div align="center">
 
 ## Version 1.19.2
 
+</div>
+
 ## Changes
 * ytview for macOS can now use mpv
 * lyrics tool was removed, api is not available anymore
 
-</div>
+
 
 <div align="center">
 
