@@ -404,7 +404,7 @@ cd Bash-Snippets
 
 * Git checkout to the latest stable release
 ```bash
-git checkout v1.21.0
+git checkout v1.22.0
 ```
 
 * Run the guided install script with

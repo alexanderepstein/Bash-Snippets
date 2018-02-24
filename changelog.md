@@ -2,6 +2,16 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.22.0
+
+## Changes
+* Adding bash-snippets gui component
+* Fixing bug in url shortener
+* Fixing old functionality cryptocurrency 
+</div>
+
+<div align="center">
+
 ## Version 1.21.0
 
 ## Changes

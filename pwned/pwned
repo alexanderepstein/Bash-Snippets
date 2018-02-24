@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Navan Chauhan https://github.com/navanchauhan
 
-currentVersion="1.21.0"
+currentVersion="1.22.0"
 configuredClient=""
 configuredPython=""
 
