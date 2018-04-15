@@ -77,15 +77,18 @@ getMovieInfo()
   runtime=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Runtime']" 2> /dev/null)
   imdbScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][0]['Value']" 2> /dev/null)
   tomatoScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][1]['Value']" 2> /dev/null)
-  metacriticScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][2]['Value']" 2> /dev/null)
   rated=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Rated']" 2> /dev/null)
   genre=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Genre']" 2> /dev/null)
   director=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Director']" 2> /dev/null)
-  production=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Production']" 2> /dev/null)
-  boxOffice=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['BoxOffice']" 2> /dev/null)
   actors=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Actors']" 2> /dev/null)
   plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Plot']" 2> /dev/null)
-  awards=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Awards']" 2> /dev/null)
+  
+  if $detail; then
+    awards=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Awards']" 2> /dev/null)
+    boxOffice=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['BoxOffice']" 2> /dev/null)
+    metacriticScore=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Ratings'][2]['Value']" 2> /dev/null)
+    production=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Production']" 2> /dev/null)
+  fi
 }
 
 # Prints the movie information out in a human readable format
