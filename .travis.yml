@@ -7,7 +7,7 @@ matrix:
       sudo: required
     - os: osx
   allow_failures:
-    - os: osx
+    - os: linux
 
 before_install:
   - sudo ./install.sh all
