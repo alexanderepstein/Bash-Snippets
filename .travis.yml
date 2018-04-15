@@ -8,7 +8,7 @@ matrix:
     - os: osx
   allow_failures:
     - os: osx
-    
+
 before_install:
   - sudo ./install.sh all
 
@@ -19,8 +19,6 @@ install:
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq openssl; else brew install openssl; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then cpanm Sparrow --sudo --notest -q; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sparrow index update; fi
-  - if [ $TRAVIS_OS_NAME = linux ]; then sparrow plg install bash-snippets-interactive-test; fi
 
 script:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sparrow plg run bash-snippets-interactive-test --param dir=$PWD; fi
   - bats tests
