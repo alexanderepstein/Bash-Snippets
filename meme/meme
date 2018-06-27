@@ -81,9 +81,11 @@ main(){
     read bg
     echo -n "Enter the text for the first line: "
     read first
+    first=$(echo "$first"|tr "\ " "_")
     echo -n "Enter the text for the second line: "
     read second
-    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
+    second=$(echo "$second"|tr "\ " "_")
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.png || return 1
     return 0
 }
 
