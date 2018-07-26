@@ -18,5 +18,5 @@ install:
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install -qq openssl; else brew install openssl; fi
 
 script:
-  - bats tests
+  - sudo bats tests
   
