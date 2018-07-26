@@ -2,7 +2,7 @@
 
 @test "Testing taste tool" {
    echo taste
-   export TASTE_API_KEY="275041-BashSnip-KQ51U8H8" >> ~/.bash_profile
+   export "TASTE_API_KEY=290044-Taste-QIQUQKOZ"
 
 }
 
@@ -40,8 +40,8 @@ fi
   if [[ "$(uname)" == "Darwin" ]]; then
   run taste -s Kendrick Lamar
   [ "$status" -eq 0 ]
-  response=$(echo $(taste -s Kendrick Lamar) | grep -Eo "Kendrick Lamar Duckworth \(born June 17, 1987\) is an American rapper and songwriter.")
-  [ "$response" = "Kendrick Lamar Duckworth (born June 17, 1987) is an American rapper and songwriter." ]
+  response=$(echo $(taste -s Kendrick Lamar) | grep -Eo "Kendrick Lamar Duckworth")
+  [ "$response" = "Kendrick Lamar Duckworth" ]
 fi
 }
 
