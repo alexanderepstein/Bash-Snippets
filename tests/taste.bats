@@ -2,7 +2,7 @@
 
 @test "Testing taste tool" {
    echo taste
-   export "TASTE_API_KEY=290044-Taste-QIQUQKOZ"
+   export TASTE_API_KEY="290044-Taste-QIQUQKOZ"
 
 }
 
