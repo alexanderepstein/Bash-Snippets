@@ -3,7 +3,8 @@ language: bash
 matrix:
   include:
     - os: linux
-    - sudo: required
+    dist: trusty
+    sudo: required
     - os: osx
   allow_failures:
     - os: linux
