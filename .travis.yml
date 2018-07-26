@@ -11,6 +11,8 @@ matrix:
 
 before_install:
   - sudo ./install.sh all
+  - echo "'export TASTE_API_KEY="290044-Taste-QIQUQKOZ'" >> ~/.bashrc
+  - echo "'export TASTE_API_KEY="290044-Taste-QIQUQKOZ'" >> ~/.bash_profile
 
 install:
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo add-apt-repository ppa:duggan/bats --yes; fi
