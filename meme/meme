@@ -80,10 +80,26 @@ main(){
     echo -n "Enter the name for the meme's background (Ex. buzz, doge, blb ): "
     read bg
     echo -n "Enter the text for the first line: "
-    read first
+    read raw_first
+    almost_first=$(echo "$raw_first" | awk '{print tolower($0)}')
+    first=$(echo "$almost_first" | sed -e 's/ /_/g')
     echo -n "Enter the text for the second line: "
-    read second
-    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.jpg || return 1
+    read raw_second
+    almost_second=$(echo "$raw_second" | awk '{print tolower($0)}')
+    second=$(echo "$almost_second" | sed -e 's/ /_/g')
+    if [ -z "$first" ]
+    then
+    first=$(echo "_")
+    else
+      echo ""
+    fi
+    if [ -z "$second" ]
+    then
+    second=$(echo "_")
+    else
+      echo ""
+    fi
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.png || return 1
     return 0
 }
 
