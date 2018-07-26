@@ -33,8 +33,8 @@ fi
 }
 
 
-@test "Testing unkown topic due to misspelling" {
-  result=$( echo $(cheat go operators) | grep -Eo "Unknown" )
+@test "Testing unknown topic due to misspelling" {
+  result=$( echo $(cheat rustt) | grep -Eo "Unknown" )
   [ "$result" = "Unknown" ]
 }
 
