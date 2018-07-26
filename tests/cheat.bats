@@ -1,46 +1,43 @@
 #!/bin/env bats
 
-@test "Testing cheat tool" {
-   echo cheat
+@test "Testing stocks tool" {
+   echo stocks
 }
 
 @test "Check for latest version of bash-snippets on update" {
   if [[ "$(uname)" == "Linux" ]];then
-  run cheat update
+  run stocks update
   [ "$status" -eq 0 ]
   [ "$output" = "Bash-Snippets is already the latest version" ]
 fi
 }
 
+@test "The -h option should print usage" {
+  run stocks -h
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "Stocks" ]
+}
 
 @test "No arguments prints usage instructions" {
-  run cheat
+  run stocks
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Cheat" ]
+  [ "${lines[0]}" = "Stocks" ]
 }
 
-@test "The -h option should print usage" {
-  run cheat -h
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Cheat" ]
+@test "Get stock info by passing in ticker" {
+  result=$( echo $(stocks AAPL) | grep -Eo "AAPL stock info" )
+  [ "$result" = "AAPL stock info" ]
+
 }
 
-@test "Grabbing information on a programming language (rust)" {
-  run cheat rust
-  [ "$status" -eq 0 ]
-  result=$( echo $(cheat rust) | grep -Eo "Rust is a systems" )
-  [ "$result" = "Rust is a systems" ]
-}
-
-
-@test "Testing unknown topic due to misspelling" {
-  result=$( echo $(cheat rustt) | grep -Eo "Unknown" )
-  [ "$result" = "Unknown" ]
+@test "Get stock info by passing in company" {
+  result=$( echo $(stocks Apple) | grep -Eo "AAPL stock info" )
+  [ "$result" = "AAPL stock info" ]
 }
 
 @test "Get the tools version with -v" {
-  run cheat -v
+  run stocks -v
   [ "$status" -eq 0 ]
-  result=$( echo $(cheat -v) | grep -Eo "Version")
+  result=$( echo $(stocks -v) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }
