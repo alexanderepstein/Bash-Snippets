@@ -66,15 +66,15 @@ toolMenu()
       else c="0$count"; fi
       spaces=$((40 - $(echo $command | wc -c)))
       echo -n -e "\t\t\t$c."
-      for (( i = 0 ; i < $spaces; i++)) ;do
+      for (( i = 0 ; i < $spaces; i++)); do
         printf " "
       done
       echo "$command"
-      count=$(( $count + 1 ))
+      (( count++ ))
     done
     echo -e -n "\t\tChoose a tool or just press enter to go back: "
     read choice
-    if [[ $choice == "" ]];then clear; header; break; fi
+    if [[ $choice == "" ]]; then clear; header; break; fi
     echo -e -n "\t\tEnter any arguments you want to use with the tool: "
     read args
     clear
@@ -95,7 +95,7 @@ menu()
     echo -e "\t\t\t06.\t\t\t\tQuit"
     echo -e -n "\n\t\t\tChoose an option: "
     read choice
-    if [[ $choice -gt 6 || $choice -lt 1 ]];then
+    if [[ $choice -gt 6 || $choice -lt 1 ]]; then
       echo "Error invalid option!"
       sleep 2
       clear
@@ -104,15 +104,15 @@ menu()
     fi
     clear
     header
-    if   [[ $choice -eq 1 ]];then toolMenu
-    elif [[ $choice -eq 2 ]];then installationcheck
-    elif [[ $choice -eq 3 ]];then man bash-snippets
-    elif [[ $choice -eq 4 ]];then
+    if   [[ $choice -eq 1 ]]; then toolMenu
+    elif [[ $choice -eq 2 ]]; then installationcheck
+    elif [[ $choice -eq 3 ]]; then man bash-snippets
+    elif [[ $choice -eq 4 ]]; then
       ${validTools[1]} -u
       sleep 2
       clear
       header
-    elif [[ $choice -eq 5 ]];then
+    elif [[ $choice -eq 5 ]]; then
       clear
       echo -e "\t\tThanks for thinking of donating, that's pretty cool of you"
       echo -e "\n\t\tCryptocurrency Donation Addresses"
@@ -140,7 +140,7 @@ installationcheck()
       if $1; then
         echo -n -e "\t\t$tool"
         spaces=$(($start - $( echo $tool | wc -c)))
-        for (( i = 0 ; i < $spaces; i++)) ;do
+        for (( i = 0 ; i < $spaces; i++)); do
           printf " "
         done
         echo $state
@@ -167,8 +167,7 @@ elif [[ $# -eq 1 ]]; then
   if [[ $1 == "-u" || $1 == "update" ]]; then
     installationcheck false
     ${validTools[1]} -u
-  elif [[ $1 == "-h" || $1 == "help" ]];then  man bash-snippets
+  elif [[ $1 == "-h" || $1 == "help" ]]; then  man bash-snippets
   elif [[ $1 == "-v" ]]; then echo "Version $currentVersion"
   fi
-
 fi
