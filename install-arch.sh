@@ -65,7 +65,7 @@ copyManpage()
 {
   manPath="$prefix/share/man/man1"
   if [ -f "$prefix/man/man1/bash-snippets.1" ]; then rm -f "$prefix/man/man1/bash-snippets.1"; fi
-  cp bash-snippets.1 $manPath 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  sudo cp bash-snippets.1 $manPath 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
 }
 
 response=$( echo "$@" | grep -Eo "\-\-prefix")
