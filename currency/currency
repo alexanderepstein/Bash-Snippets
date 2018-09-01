@@ -136,7 +136,7 @@ checkInternet()
 ## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
-  exchangeRate=$(httpGet "https://exchangeratesapi.io/api/latest?base=$base&symbols=$base,$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
+  exchangeRate=$(httpGet "https://api.exchangeratesapi.io/latest?base=$base&symbols=$base,$exchangeTo" | grep -Eo "[0-9]*[.][0-9]*") > /dev/null
   if ! command -v bc &>/dev/null; then
     oldRate=$exchangeRate
     exchangeRate=$(echo $exchangeRate | grep -Eo "^[0-9]*" )
