@@ -1,3 +1,6 @@
+# IDE
+.idea
+
 # Meta files
 .DS_Store
 Thumbs.db

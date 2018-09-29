@@ -9,8 +9,9 @@ prefix="/usr/local"
 
 askInstall()
 {
-  echo -n "Do you wish to install $1 [Y/n]: "
-  read -r answer
+  read -p "Do you wish to install $1 [Y/n]: " answer
+  answer=${answer:-Y}
+
   if [[ "$answer" == [Yy] ]]; then
     cd $1 || return 1
     echo -n "Installing $1: "

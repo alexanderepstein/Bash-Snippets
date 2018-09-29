@@ -136,22 +136,21 @@ expandURL()
   else
     url=$1
   fi
-  response=$(httpGet http://ki.tc/short?url=$url)
-  errorCheck=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['message']" 2> /dev/null  )
-  if [[ $errorCheck == "Error in /short" ]]; then
+  response=$(httpGet https://unshorten.me/s/$url)
+  errorCheck=$(echo $response)
+  if [[ $errorCheck == "Invalid Short URL" ]]; then
   echo "Error: 404 could not find the website"
   return 1
 fi
-  returnedURL=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['/short']['destination']" 2>  /dev/null  )
-
+  returnedURL=$(echo $response)
 }
 
 shortenURL()
 {
 newURL=$1
 if [[ $(echo $1 | grep -Eo "^[h]ttp[s]?://") == "" ]]; then newURL="http://"$1; fi
-response=$(curl -A curl -s -i -H "Content-Type: application/json" -X POST -d "{\"url\": \"$newURL\"}" http://ki.tc/ || exit 1)
-returnedURL=$(echo $response | grep -Eo "http://ki.tc/[0-9a-zA-Z]*" | tail -n 1)
+response=$(httpGet http://tinyurl.com/api-create.php?url=$newURL)
+returnedURL=$(echo $response)
 }
 
 printResults()
