@@ -144,8 +144,23 @@ getTasks()
         echo "$tempTask). $task"  >> ~/.todo/getTemp.txt
         count=$(( $count + 1 ))
       done
-      cat ~/.todo/getTemp.txt | column -t -s ";"
+      # if task description is long, we truncate it so that lines do not wrap 
+      tty_str=$(tty)
+      term_width=$(stty -a <"$tty_str" | grep -Po '(?<=columns )\d+')
+      cat ~/.todo/getTemp.txt | while read tline; do
+        task=$(echo "$tline" | cut -d ";" -f 1)
+        task_len=${#task}
+        date_str=$(echo "$tline" | cut -d ";" -f 2)
+        date_str_len=${#date_str}
+        if [[ $(( $task_len + $date_str_len + 1 )) -ge $term_width ]]; then
+          max_task_len=$(( $term_width - $date_str_len - 2))
+          task=$(echo "$task" | cut -c-${max_task_len})
+        fi
+        echo "$task;$date_str" >> ~/.todo/getTemp2.txt
+      done
+      cat ~/.todo/getTemp2.txt | column -t -s ";"
       rm -f ~/.todo/getTemp.txt
+      rm -f ~/.todo/getTemp2.txt
     fi
   else
     echo "No tasks found"
