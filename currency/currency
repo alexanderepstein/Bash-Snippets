@@ -3,7 +3,7 @@
 
 unset base
 unset exchangeTo
-currentVersion="1.22.0"
+currentVersion="1.22.1"
 unset configuredClient
 currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
   EUR GBP HKD HRK HUF IDR ILS INR

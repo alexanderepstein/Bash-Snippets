@@ -2,6 +2,18 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.22.1
+</div>
+
+## Changes
+* Fix bugs in currency tool because of api changes
+* Fix bugs in cloudup tool because of api changes
+* Fixing movies tool
+* Fix bugs in meme tool
+* Fix default answer on install
+
+<div align="center">
+
 ## Version 1.22.0
 
 </div>

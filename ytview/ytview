@@ -6,7 +6,7 @@ if [[ -d $HOME/.cache/ytview ]]; then rm -rf $HOME/.cache/ytview/; fi
 
 player=""
 configuredClient=""
-currentVersion="1.22.0"
+currentVersion="1.22.1"
 flag=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one

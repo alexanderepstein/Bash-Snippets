@@ -3,7 +3,7 @@
 configuredDownloadClient=""
 configuredUploadClient=""
 configuredClient=""
-currentVersion="1.22.0"
+currentVersion="1.22.1"
 down="false"
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
