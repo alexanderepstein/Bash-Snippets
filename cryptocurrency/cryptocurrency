@@ -254,10 +254,13 @@ EOF
 
 
 
-while getopts "of:uvh" opt; do
+while getopts "c:of:uvh" opt; do
   case "$opt" in
     \?) echo "Invalid option: -$OPTARG" >&2
         exit 1
+        ;;
+    c)
+        currency=$OPTARG
         ;;
     h)  usage
         exit 0
@@ -305,8 +308,13 @@ fi
 
 getConfiguredClient || exit 1
 checkInternet || exit 1
+link="rate.sx"
 if [[ $fiat =~ [a-zA-Z] ]]; then
-  httpGet $fiat.rate.sx
-else
-  httpGet rate.sx
+  link="$fiat.$link"
 fi
+
+if [[ $currency =~ [a-zA-Z] ]]; then
+  link="$link/$currency"
+fi
+
+httpGet $link
