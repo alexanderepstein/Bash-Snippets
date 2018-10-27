@@ -13,7 +13,7 @@
 ### All of these scripts have been heavily tested on macOS and Linux
 ### Most of these scripts have been tested on Windows 10 and the official developer bash instance. Does not work with Cygwin or Mysys2.
 
-#### Looking for maintainers: I have been and probably will forever be to busy to maintain this properly on my own. I am looking for a few others to help out, if you want to be a maintainer either email me or raise an issue. I will probably only accept maintainers who have made a few contributions (no matter how small) and seem to understand the vision of this project.
+#### Looking for maintainers: I have been and probably will forever be too busy to maintain this properly on my own. I am looking for a few others to help out, if you want to be a maintainer either email me or raise an issue. I will probably only accept maintainers who have made a few contributions (no matter how small) and seem to understand the vision of this project.
 
 </div>
 
