@@ -37,7 +37,7 @@ cleanup() {
 	rm $pipename
 	rm $fifoname
 
-	exit 0
+	exit $1
 }
 
 
@@ -127,11 +127,11 @@ Usage: bak2dvd [flags] -t "[arguments]"
 
  Disc technology flags are:
 
-  -cd         for cd-rom"
+  -cd       for cd-rom"
   -dvd      for single layer DVD"
-  -dvd-dl for dual layer DVD"
+  -dvd-dl   for dual layer DVD"
   -bd       for single layer BluRay"
-  -bd-dl  for dual layer BluRay"
+  -bd-dl    for dual layer BluRay"
 
  Preset tar parameters are -cvpML and -f
 
@@ -146,7 +146,7 @@ options=0
 
 while test $# -gt 0; do
   case "$1" in
-    \?) echo "Invalid option: -$OPTARG" >&2
+    \?) echo "Invalid option: -$1" >&2
         exit 1
         ;;
    -h|--help)  usage
@@ -258,11 +258,11 @@ else
 	# otherwise something has gone wrong and we need to stop
 	echo
 	echo "Tar has died unexpectedly."
-	
 	# Call cleanup function here
-	cleanup
+	exitcode=1
+	cleanup $exitcode
 fi
-
-cleanup
+exitcode=0
+cleanup $exitcode
 
 exit 0
