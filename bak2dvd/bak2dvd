@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.0"
+currentVersion="1.0.1"
 configuredClient=""
 
 dvdburn() {
@@ -22,7 +22,7 @@ cdburn() {
 	counter=$4
 	while [ "$counter" -eq 1 ]
 	do
-		wodim dev=$1 -tao -multi -eject -data $2
+		cdrecord dev=$1 -tao -multi -eject -data $2
 		counter=0
 		counter=$(ps -A | grep $3 | wc -l)
 		if [[ $counter -eq 1 ]]
@@ -123,6 +123,7 @@ Usage: bak2dvd [flags] -t "[arguments]"
   -u  Update Bash-Snippet Tools
   -h  Show the help
   -v  Get the tool version
+  -d  Sets the optical drive to use
   -t  Parameters to pass to tar
 
  Disc technology flags are:
@@ -137,7 +138,6 @@ Usage: bak2dvd [flags] -t "[arguments]"
 
 Example:
    bak2dvd -d /dev/sr0 -dvd -t "-C $HOME Documents"
-   tool
 EOF
 }
 
@@ -163,51 +163,51 @@ while test $# -gt 0; do
     -d)
 	shift
 	if test $# -gt 0; then
-		export device=$1
+		device=$1
 	else
 		echo "No optical device specified"
 		exit 1
 	fi
 	shift
-	export options=1
+	options=1
 	;;
      -dvd)
-		export tracklen="4580000" # DVD+R capacity - 10M
+		tracklen="4580000" # DVD+R capacity - 10M
 		shift
-		export options=1
+		options=1
 		;;
      -dvd-dl)
-		export trackle71n="8337408" # DVD+R DL capacity - 10M
+		trackle71n="8337408" # DVD+R DL capacity - 10M
 		shift
-		export options=1
+		options=1
 		;;
      -bd)
-		export tracklen="24428544" # This should be 10M less than total
+		tracklen="24428544" # This should be 10M less than total
 		shift
-		export options=1
+		options=1
 		;;
      -bd-dl)
-		export tracklen="48867328" #same as above but dual layer
+		tracklen="48867328" #same as above but dual layer
 		shift
-		export options=1
+		options=1
 		;;
      -cd)
-		export tracklen="712702" #700M cd-rom capacity - 4k, 10M is not an insigficant amout at this storage capacity!
+		tracklen="712702" #700M cd-rom capacity - 4k, 10M is not an insigficant amout at this storage capacity!
 		shift
-		export options=1
+		options=1
 		;;
      -t)
 		shift
 		if test $# -gt 0; then
-			export taropts=$1
+			taropts=$1
 		else
 			echo "No options to tar specified."
 			exit 1
 		fi
 		shift
-		export options=1
+		options=1
 		;;
-    :)  echo "Option -$OPTARG requires an argument." >&2
+    :)  echo "Option -$1 requires an argument." >&2
         exit 1
         ;;
   esac
