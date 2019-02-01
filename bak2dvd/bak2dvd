@@ -128,11 +128,12 @@ Usage: bak2dvd [flags] -t "[arguments]"
 
  Disc technology flags are:
 
-  -cd       for cd-rom"
-  -dvd      for single layer DVD"
-  -dvd-dl   for dual layer DVD"
-  -bd       for single layer BluRay"
-  -bd-dl    for dual layer BluRay"
+  -cd       for cd-rom
+  -dvd      for single layer DVD+R
+  -dvd-dl   for dual layer DVD+R
+  -dvd-r    for single layer DVD-R
+  -bd       for single layer BluRay
+  -bd-dl    for dual layer BluRay
 
  Preset tar parameters are -cvpML and -f
 
@@ -165,7 +166,7 @@ while test $# -gt 0; do
 	if test $# -gt 0; then
 		device=$1
 	else
-		echo "No optical device specified"
+		echo "No optical device specified" >&2
 		exit 1
 	fi
 	shift
@@ -177,7 +178,12 @@ while test $# -gt 0; do
 		options=1
 		;;
      -dvd-dl)
-		trackle71n="8337408" # DVD+R DL capacity - 10M
+		tracklen="8337408" # DVD+R DL capacity - 10M
+		shift
+		options=1
+		;;
+     -dvd-r)
+		tracklen="4585536" #DVD-R single layer capacity -10M
 		shift
 		options=1
 		;;
@@ -201,7 +207,7 @@ while test $# -gt 0; do
 		if test $# -gt 0; then
 			taropts=$1
 		else
-			echo "No options to tar specified."
+			echo "No options to tar specified." >&2
 			exit 1
 		fi
 		shift
@@ -257,7 +263,7 @@ then
 else
 	# otherwise something has gone wrong and we need to stop
 	echo
-	echo "Tar has died unexpectedly."
+	echo "Tar has died unexpectedly." >&2
 	# Call cleanup function here
 	exitcode=1
 	cleanup $exitcode
