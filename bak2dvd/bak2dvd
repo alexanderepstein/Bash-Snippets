@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.0.1"
+currentVersion="1.0.3"
 configuredClient=""
 
 dvdburn() {
 	counter=$4
-	while [ "$counter" -eq 1 ]
+	countlim=$5
+	while [ "$counter" -eq $countlim ]
 	do
+		if [[ $(echo "$1" | grep "dev" | wc -l) -eq 0 ]]
+		then
+			echo "DVD or BluRay burning requires device from /dev."
+			exitcode=1
+			cleanup $exitcode
+		fi
         	growisofs -Z "$1"=$2
         	counter=0
         	counter=$(ps -A | grep $3 | wc -l)
-        	if [[ $counter -eq 1 ]]
+        	if [[ $counter -eq $countlim ]]
         	then
                 	read -p "Insert next disc and press Enter:"
                 	echo >&7
@@ -20,12 +27,31 @@ dvdburn() {
 
 cdburn() {
 	counter=$4
-	while [ "$counter" -eq 1 ]
+	countlim=$5
+	while [ "$counter" -eq $countlim ]
 	do
-		cdrecord dev=$1 -tao -multi -eject -data $2
+		if [[ $(uname | grep "FreeBSD" | wc -l) -gt 0 ]]
+		then
+			if [[ $(echo "$1" | grep "dev" | wc -l) -gt 0 ]]
+			then
+				echo "CD burning requires SCSI address in the form of b,t,l. Please use cdrecord -scanbus for a list of possible SCSI addresses."
+				exitcode=1
+				cleanup $exitcode
+			fi
+		elif [[ $(uname | grep "Linux" | wc -l) -gt 0 ]]
+		then
+			if [[ $(echo "$1" | grep "dev" | wc -l) -eq 0 ]]
+			then
+				# Chances are if it's Linux then wodim is being used and requires /dev/srX instead of SCSI address
+				echo "CD burning in Linux requires device from /dev."
+				exitcode=1
+				cleanup $exitcode
+			fi
+		fi
+		cdrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2 #Turned burnfree on just in case
 		counter=0
 		counter=$(ps -A | grep $3 | wc -l)
-		if [[ $counter -eq 1 ]]
+		if [[ $counter -eq $countlim ]]
 		then
 			read -p "Insert next disc and press Enter:"
 			echo >&7
@@ -34,6 +60,7 @@ cdburn() {
 }
 
 cleanup() {
+	kill $tarpid
 	rm $pipename
 	rm $fifoname
 
@@ -139,6 +166,7 @@ Usage: bak2dvd [flags] -t "[arguments]"
 
 Example:
    bak2dvd -d /dev/sr0 -dvd -t "-C $HOME Documents"
+   bak2dvd -d 1,0,0 -cd -t "-C $HOME Documents"
 EOF
 }
 
@@ -241,23 +269,36 @@ fi
 
 pipename="/tmp/$RANDOM.pipe"
 fifoname="/tmp/$RANDOM.fifo"
-mknod $pipename p
+#changed from mknod to mkfifo to  make script more cross platform
+mkfifo $pipename
 mkfifo $fifoname
 # Asign the fifo to a file descriptor. No need for ugly cat hack, and it actually works!
 exec 7<>$fifoname
-tar -cvpML $tracklen -f $pipename $taropts <&7 &
-tarpid=$!
+# FreeBSD needs to use gtar
+case $(uname) in
+	Linux)
+		tar -cvpML $tracklen -f $pipename $taropts <&7 &
+		tarpid=$!
+		countlimit=1
+		;;
+	FreeBSD)
+		gtar -cvpML $tracklen -f pipename $taropts <&7 &
+		tarpid=$!
+		countlimit=2
+		;;
+esac
+
 count=$(ps -A | grep $tarpid | wc -l)
 # Check that tar is alive and prompt for media
-if [[ $count -eq 1 ]]
+if [[ $count -eq $countlimit ]]
 then
 	read -p "Insert media and press Enter:"
 	#call appropriate burning function here
 	if [[ $tracklen -le 712702 ]]
 	then
-		cdburn $device $pipename $tarpid $count
+		cdburn $device $pipename $tarpid $count $countlimit
 	else
-		dvdburn $device $pipename $tarpid $count
+		dvdburn $device $pipename $tarpid $count $countlimit
 	fi
 
 else
