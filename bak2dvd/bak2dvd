@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.1"
+currentVersion="1.1.2"
 configuredClient=""
 
 tarwrite() {
@@ -32,18 +32,18 @@ tarread() {
 	pn=$1
 	tops=$2
 
-	case $(uname) in
-		Linux)
-			tar -xvpMf $pn $tops <&7 &
-			tarpid=$!
-			countlimit=1
-			;;
-		FreeBSD)
+		if command -v gtar &>/dev/null
 			gtar -cvpMf $pn $tops <&7 &
 			tarpid=$!
 			countlimit=2
-			;;
-	esac
+			return
+		fi
+
+		if command -v tar &>/dev/null
+			 tar -xvpMf $pn $tops <&7 &
+                         tarpid=$!
+                         countlimit=1
+		fi
 }
 
 discread() {
@@ -172,8 +172,8 @@ getCDburner() {
 			if command -v cdrecord &>/dev/null
 			then
 				cdburner="cdrecord"
+				return
 			fi
-			return
 			;;
 		wodim)
 			if command -v wodim &>/dev/null
@@ -186,15 +186,15 @@ getCDburner() {
 			if command -v cdrskin &>/dev/null
 			then
 				cdburner="cdrskin"
+				return
 			fi
-			return
 			;;
 		xorrecord)
 			if command -v xorrecord &>/dev/null
 			then
 				cdburner="xorrecord"
+				return
 			fi
-			return
 			;;
 	    esac
 
@@ -203,7 +203,7 @@ getCDburner() {
 }
 
 getAltDVDburner() {
-	altburners=( cdrskin xorrecord )
+	altburners=( xorrecord cdrskin )
 	declare -i i
 	i=0
 	while [ $i -le 1 ]
@@ -213,15 +213,15 @@ getAltDVDburner() {
 				if command -v &>/dev/null
 				then
 					altdvdburner="cdrskin"
+					break
 				fi
-				break
 				;;
 			xorrecord)
 				if command -v &>/dev/null
 				then
 					altdvdburner="xorrecord"
+					break
 				fi
-				break
 				;;
 		esac
 
@@ -399,7 +399,7 @@ while test $# -gt 0; do
 		options=1
 		;;
      -bd-dl)
-		tracklen=48605184 #same as above but dual layer
+		tracklen=47294464 #same as above but dual layer
 		comp=0
 		shift
 		getAltDVDburner
