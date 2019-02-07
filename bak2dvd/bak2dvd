@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.0.3"
+currentVersion="1.1.1"
 configuredClient=""
 
 tarwrite() {
@@ -81,8 +81,6 @@ dvdburn() {
 			cleanup $exitcode
 		fi
 		# Growisofs is untrustworthy for DL media.
-		if [[ $(echo "$altburn" | grep "cdrskin" | wc -l) || $(echo "$altburn" | grep "xorrecord" | wc -l) -eq 1 ]]
-		then
 			case "$altburn" in
 				cdrskin)
 					cdrskin dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
@@ -90,10 +88,9 @@ dvdburn() {
 				xorrecord)
 					xorrecord dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
 					;;
+				*)
+					growisofs -Z "$1"=$2
 			esac
-		else
-        		growisofs -Z "$1"=$2
-		fi
         	counter=0
         	counter=$(ps -A | grep $3 | wc -l)
         	if [[ $counter -eq $countlim ]]
