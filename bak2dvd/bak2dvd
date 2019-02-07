@@ -3,9 +3,75 @@
 currentVersion="1.0.3"
 configuredClient=""
 
+tarwrite() {
+	tl=$1
+	pn=$2
+	tops=$3
+	# FreeBSD needs to use gtar
+	# Make this a function for the addition of a restore option
+
+		if command -v gtar &>/dev/null
+		then
+			gtar -cvpML $tl -f $pn $tops <&7 &
+			tarpid=$!
+			countlimit=2
+			return
+		fi
+
+		if command -v tar &>/dev/null
+                        then
+                                tar -cvpML $tl -f $pn $tops <&7 &
+                                tarpid=$!
+                                countlimit=1
+                        fi
+
+
+}
+
+tarread() {
+	pn=$1
+	tops=$2
+
+	case $(uname) in
+		Linux)
+			tar -xvpMf $pn $tops <&7 &
+			tarpid=$!
+			countlimit=1
+			;;
+		FreeBSD)
+			gtar -cvpMf $pn $tops <&7 &
+			tarpid=$!
+			countlimit=2
+			;;
+	esac
+}
+
+discread() {
+	dev=$1
+	pn=$2
+	tpid=$3
+	counter=$4
+	countlim=$5
+	rl=$6
+
+	while [ "$counter" -eq $countlim ]
+	do
+		dd if=$dev of=$pn bs=1k count=$rl
+		eject $dev
+		counter=0
+		counter=$(ps -A | grep $tarpid | wc -l)
+		if [[ $counter -eq $countlim ]]
+		then
+			read -p "Insert next disc and press Enter:"
+			echo >&7
+		fi
+	done
+}
+
 dvdburn() {
 	counter=$4
 	countlim=$5
+	altburn=$6
 	while [ "$counter" -eq $countlim ]
 	do
 		if [[ $(echo "$1" | grep "dev" | wc -l) -eq 0 ]]
@@ -14,7 +80,20 @@ dvdburn() {
 			exitcode=1
 			cleanup $exitcode
 		fi
-        	growisofs -Z "$1"=$2
+		# Growisofs is untrustworthy for DL media.
+		if [[ $(echo "$altburn" | grep "cdrskin" | wc -l) || $(echo "$altburn" | grep "xorrecord" | wc -l) -eq 1 ]]
+		then
+			case "$altburn" in
+				cdrskin)
+					cdrskin dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
+					;;
+				xorrecord)
+					xorrecord dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
+					;;
+			esac
+		else
+        		growisofs -Z "$1"=$2
+		fi
         	counter=0
         	counter=$(ps -A | grep $3 | wc -l)
         	if [[ $counter -eq $countlim ]]
@@ -23,16 +102,19 @@ dvdburn() {
                 	echo >&7
         	fi
 	done
+# dvd-r restore needs tracklen + 4. Need to check +r single and dual layer as well as bd medias. Joy.
+# DVD+R needs no compensation.
 }
 
 cdburn() {
 	counter=$4
 	countlim=$5
+	cdb=$6
 	while [ "$counter" -eq $countlim ]
 	do
 		if [[ $(uname | grep "FreeBSD" | wc -l) -gt 0 ]]
 		then
-			if [[ $(echo "$1" | grep "dev" | wc -l) -gt 0 ]]
+			if [[ $(echo "$1" | grep "dev" | wc -l) -gt 0 && $(echo "$cdb" | grep "cdrecord" | wc -l) -gt 0 ]]
 			then
 				echo "CD burning requires SCSI address in the form of b,t,l. Please use cdrecord -scanbus for a list of possible SCSI addresses."
 				exitcode=1
@@ -43,12 +125,26 @@ cdburn() {
 			if [[ $(echo "$1" | grep "dev" | wc -l) -eq 0 ]]
 			then
 				# Chances are if it's Linux then wodim is being used and requires /dev/srX instead of SCSI address
-				echo "CD burning in Linux requires device from /dev."
+				echo "CD burning in Linux with cdrecord or wodim requires device from /dev."
 				exitcode=1
 				cleanup $exitcode
 			fi
 		fi
-		cdrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2 #Turned burnfree on just in case
+		case "$cdb" in
+			cdrecord)
+				cdrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2 #Turned burnfree on just in case. Restore needs tracklen + 8
+				;;
+			wodim)
+				wodim dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				;;
+			cdrskin)
+				cdrskin dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				;;
+			xorrecord)
+				xorrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				;;
+		esac
+
 		counter=0
 		counter=$(ps -A | grep $3 | wc -l)
 		if [[ $counter -eq $countlim ]]
@@ -67,6 +163,74 @@ cleanup() {
 	exit $1
 }
 
+getCDburner() {
+
+	declare -i i
+	i=0
+	burners=( cdrecord wodim cdrskin xorrecord )
+	while [ $i -le 3 ]
+	do
+	    case ${burners[$i]} in
+		cdrecord)
+			if command -v cdrecord &>/dev/null
+			then
+				cdburner="cdrecord"
+			fi
+			return
+			;;
+		wodim)
+			if command -v wodim &>/dev/null
+			then
+				cdburner="wodim"
+			fi
+			return
+			;;
+		cdrskin)
+			if command -v cdrskin &>/dev/null
+			then
+				cdburner="cdrskin"
+			fi
+			return
+			;;
+		xorrecord)
+			if command -v xorrecord &>/dev/null
+			then
+				cdburner="xorrecord"
+			fi
+			return
+			;;
+	    esac
+
+		i=$i+1
+	done
+}
+
+getAltDVDburner() {
+	altburners=( cdrskin xorrecord )
+	declare -i i
+	i=0
+	while [ $i -le 1 ]
+	do
+		case ${altburners[$i]} in
+			cdrskin)
+				if command -v &>/dev/null
+				then
+					altdvdburner="cdrskin"
+				fi
+				break
+				;;
+			xorrecord)
+				if command -v &>/dev/null
+				then
+					altdvdburner="xorrecord"
+				fi
+				break
+				;;
+		esac
+
+		i=$i+1
+	done
+}
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -152,6 +316,8 @@ Usage: bak2dvd [flags] -t "[arguments]"
   -v  Get the tool version
   -d  Sets the optical drive to use
   -t  Parameters to pass to tar
+  -w  Write to optical media
+  -r  Restore from optical media
 
  Disc technology flags are:
 
@@ -165,13 +331,23 @@ Usage: bak2dvd [flags] -t "[arguments]"
  Preset tar parameters are -cvpML and -f
 
 Example:
-   bak2dvd -d /dev/sr0 -dvd -t "-C $HOME Documents"
-   bak2dvd -d 1,0,0 -cd -t "-C $HOME Documents"
+
+To Write:
+   bak2dvd -w -d /dev/sr0 -dvd -t "-C $HOME Documents"
+   bak2dvd -w -d 1,0,0 -cd -t "-C $HOME Documents"
+
+To Restore:
+   bak2dvd -r -d /dev/sr0 -dvd -t "-C $HOME"
 EOF
 }
 
 
 options=0
+declare -i tracklen
+declare -i comp
+declare -i rw
+cdburner=""
+altdvdburner=""
 
 while test $# -gt 0; do
   case "$1" in
@@ -201,33 +377,42 @@ while test $# -gt 0; do
 	options=1
 	;;
      -dvd)
-		tracklen="4580000" # DVD+R capacity - 10M
+		tracklen=4580000 # DVD+R capacity - 10M
+		comp=0
 		shift
 		options=1
 		;;
      -dvd-dl)
-		tracklen="8337408" # DVD+R DL capacity - 10M
+		tracklen=8337408 # DVD+R DL capacity - 10M
+		comp=2
 		shift
+		getAltDVDburner
 		options=1
 		;;
      -dvd-r)
-		tracklen="4585536" #DVD-R single layer capacity -10M
+		tracklen=4585536 #DVD-R single layer capacity -10M
+		comp=4
 		shift
 		options=1
 		;;
      -bd)
-		tracklen="24428544" # This should be 10M less than total
+		tracklen=24166400 # This should be 10M less than total. Had miscalculated, now correct.
+		comp=0
 		shift
 		options=1
 		;;
      -bd-dl)
-		tracklen="48867328" #same as above but dual layer
+		tracklen=48605184 #same as above but dual layer
+		comp=0
 		shift
+		getAltDVDburner
 		options=1
 		;;
      -cd)
-		tracklen="712702" #700M cd-rom capacity - 4k, 10M is not an insigficant amout at this storage capacity!
+		tracklen=712702 #700M cd-rom capacity - 4k, 10M is not an insigficant amount at this storage capacity!
+		comp=8
 		shift
+		getCDburner
 		options=1
 		;;
      -t)
@@ -240,6 +425,14 @@ while test $# -gt 0; do
 		fi
 		shift
 		options=1
+		;;
+     -r)
+		rw=2
+		shift
+		;;
+     -w)
+		rw=1
+		shift
 		;;
     :)  echo "Option -$1 requires an argument." >&2
         exit 1
@@ -272,33 +465,36 @@ fifoname="/tmp/$RANDOM.fifo"
 #changed from mknod to mkfifo to  make script more cross platform
 mkfifo $pipename
 mkfifo $fifoname
+tarpid=""
 # Asign the fifo to a file descriptor. No need for ugly cat hack, and it actually works!
 exec 7<>$fifoname
-# FreeBSD needs to use gtar
-case $(uname) in
-	Linux)
-		tar -cvpML $tracklen -f $pipename $taropts <&7 &
-		tarpid=$!
-		countlimit=1
-		;;
-	FreeBSD)
-		gtar -cvpML $tracklen -f pipename $taropts <&7 &
-		tarpid=$!
-		countlimit=2
-		;;
-esac
+declare -i readlen
+if [[ $rw -eq 1 ]]
+then
+	tarwrite $tracklen $pipename "$taropts"
+elif [[ $rw -eq 2 ]]
+then
+	readlen=$tracklen+$comp
+	tarread $pipename "$taropts"
+fi
 
-count=$(ps -A | grep $tarpid | wc -l)
+count=$(ps -A | grep "$tarpid" | wc -l)
 # Check that tar is alive and prompt for media
 if [[ $count -eq $countlimit ]]
 then
 	read -p "Insert media and press Enter:"
-	#call appropriate burning function here
-	if [[ $tracklen -le 712702 ]]
+	if [[ $rw -eq 1 ]]
 	then
-		cdburn $device $pipename $tarpid $count $countlimit
-	else
-		dvdburn $device $pipename $tarpid $count $countlimit
+		#call appropriate burning function here
+		if [[ $tracklen -le 712702 ]]
+		then
+			cdburn $device $pipename $tarpid $count $countlimit $cdburner
+		else
+			dvdburn $device $pipename $tarpid $count $countlimit $altdvdburner
+		fi
+	elif [[ $rw -eq 2 ]]
+	then
+		discread $device $pipename $tarpid $count $countlimit $readlen
 	fi
 
 else
