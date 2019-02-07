@@ -33,6 +33,7 @@ tarread() {
 	tops=$2
 
 		if command -v gtar &>/dev/null
+		then
 			gtar -cvpMf $pn $tops <&7 &
 			tarpid=$!
 			countlimit=2
@@ -40,6 +41,7 @@ tarread() {
 		fi
 
 		if command -v tar &>/dev/null
+		then
 			 tar -xvpMf $pn $tops <&7 &
                          tarpid=$!
                          countlimit=1
