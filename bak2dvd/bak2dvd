@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.2"
+currentVersion="1.1.3"
 configuredClient=""
 
 tarwrite() {
@@ -85,10 +85,10 @@ dvdburn() {
 		# Growisofs is untrustworthy for DL media.
 			case "$altburn" in
 				cdrskin)
-					cdrskin dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
+					cdrskin dev="$1" stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
 					;;
 				xorrecord)
-					xorrecord dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
+					xorrecord dev="$1" stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
 					;;
 				*)
 					growisofs -Z "$1"=$2
@@ -164,71 +164,42 @@ cleanup() {
 
 getCDburner() {
 
-	declare -i i
-	i=0
-	burners=( cdrecord wodim cdrskin xorrecord )
-	while [ $i -le 3 ]
-	do
-	    case ${burners[$i]} in
-		cdrecord)
-			if command -v cdrecord &>/dev/null
-			then
-				cdburner="cdrecord"
-				return
-			fi
-			;;
-		wodim)
-			if command -v wodim &>/dev/null
-			then
-				cdburner="wodim"
-			fi
-			return
-			;;
-		cdrskin)
-			if command -v cdrskin &>/dev/null
-			then
-				cdburner="cdrskin"
-				return
-			fi
-			;;
-		xorrecord)
-			if command -v xorrecord &>/dev/null
-			then
-				cdburner="xorrecord"
-				return
-			fi
-			;;
-	    esac
+	if command -v cdrecord &>/dev/null
+	then
+		cdburner="cdrecord"
+		return
+	fi
+	if command -v wodim &>/dev/null
+	then
+		cdburner="wodim"
+		return
+	fi
+	if command -v cdrskin &>/dev/null
+	then
+		cdburner="cdrskin"
+		return
+	fi
+	if command -v xorrecord &>/dev/null
+	then
+		cdburner="xorrecord"
+		return
+	fi
 
-		i=$i+1
-	done
 }
 
 getAltDVDburner() {
-	altburners=( xorrecord cdrskin )
-	declare -i i
-	i=0
-	while [ $i -le 1 ]
-	do
-		case ${altburners[$i]} in
-			cdrskin)
-				if command -v &>/dev/null
-				then
-					altdvdburner="cdrskin"
-					break
-				fi
-				;;
-			xorrecord)
-				if command -v &>/dev/null
-				then
-					altdvdburner="xorrecord"
-					break
-				fi
-				;;
-		esac
 
-		i=$i+1
-	done
+	if command -v &>/dev/null
+	then
+		altdvdburner="cdrskin"
+		return
+	fi
+	if command -v &>/dev/null
+	then
+		altdvdburner="xorrecord"
+		return
+	fi
+
 }
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -398,6 +369,7 @@ while test $# -gt 0; do
 		tracklen=24166400 # This should be 10M less than total. Had miscalculated, now correct.
 		comp=0
 		shift
+		getAltDVDburner # While growisofs canb be trusted, it'll be slow with *any* bd-re media because of defect management.
 		options=1
 		;;
      -bd-dl)
