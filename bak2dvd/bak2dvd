@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.3"
+currentVersion="1.1.4"
 configuredClient=""
 
 tarwrite() {
@@ -19,11 +19,11 @@ tarwrite() {
 		fi
 
 		if command -v tar &>/dev/null
-                        then
-                                tar -cvpML $tl -f $pn $tops <&7 &
-                                tarpid=$!
-                                countlimit=1
-                        fi
+        then
+            tar -cvpML $tl -f $pn $tops <&7 &
+            tarpid=$!
+            countlimit=1
+        fi
 
 
 }
@@ -189,19 +189,28 @@ getCDburner() {
 
 getAltDVDburner() {
 
-	if command -v &>/dev/null
+	if command -v cdrskin &>/dev/null
 	then
 		altdvdburner="cdrskin"
 		return
 	fi
-	if command -v &>/dev/null
+	if command -v xorrecord &>/dev/null
 	then
 		altdvdburner="xorrecord"
 		return
-	fi
-
+	else
+        echo "To burn DVD-DL or BD media xorriso or cdrskin needs to be installed."
+        echo "I can burn using growisofs, but it may not burn DVD-DL media correctly or will burn BD-RE media very slowly."
+        read -p "If you wish to continue using growisofs then type YES then press [Enter], else just press [Enter] to abort: " yesno
+        if [[ "$yesno" -eq "YES" ]]
+        then
+            altdvdburner="growisofs"
+        else
+            exitcode=1
+            cleanup $exitcode
+        fi
+    fi
 }
-
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
 {
@@ -440,6 +449,7 @@ tarpid=""
 # Asign the fifo to a file descriptor. No need for ugly cat hack, and it actually works!
 exec 7<>$fifoname
 declare -i readlen
+countlimit=""
 if [[ $rw -eq 1 ]]
 then
 	tarwrite $tracklen $pipename "$taropts"
@@ -449,7 +459,7 @@ then
 	tarread $pipename "$taropts"
 fi
 
-count=$(ps -A | grep "$tarpid" | wc -l)
+count=$(ps -A | grep $tarpid | wc -l)
 # Check that tar is alive and prompt for media
 if [[ $count -eq $countlimit ]]
 then
