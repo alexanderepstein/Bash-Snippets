@@ -64,8 +64,8 @@ discread() {
 		counter=$(ps -A | grep $tarpid | wc -l)
 		if [[ $counter -eq $countlim ]]
 		then
-			read -p "Insert next disc and press Enter:"
-			echo >&7
+			read -p "Insert next disc and press Enter:" response
+			echo "$response" >&7
 		fi
 	done
 }
@@ -97,8 +97,8 @@ dvdburn() {
         	counter=$(ps -A | grep $3 | wc -l)
         	if [[ $counter -eq $countlim ]]
         	then
-                	read -p "Insert next disc and press Enter:"
-                	echo >&7
+                	read -p "Insert next disc and press Enter:" response
+                	echo "$response" >&7
         	fi
 	done
 # dvd-r restore needs tracklen + 4. Need to check +r single and dual layer as well as bd medias. Joy.
@@ -148,14 +148,14 @@ cdburn() {
 		counter=$(ps -A | grep $3 | wc -l)
 		if [[ $counter -eq $countlim ]]
 		then
-			read -p "Insert next disc and press Enter:"
-			echo >&7
+			read -p "Insert next disc and press Enter:" response
+			echo "$response" >&7
 		fi
 	done
 }
 
 cleanup() {
-	kill $tarpid
+	kill $tarpid &>/dev/null
 	rm $pipename
 	rm $fifoname
 
@@ -204,7 +204,10 @@ getAltDVDburner() {
         read -p "If you wish to continue using growisofs then type YES then press [Enter], else just press [Enter] to abort: " yesno
         if [[ "$yesno" -eq "YES" ]]
         then
-            altdvdburner="growisofs"
+            if command -v growisofs &>/dev/null
+            then
+                altdvdburner="growisofs"
+            fi
         else
             exitcode=1
             cleanup $exitcode
@@ -383,7 +386,7 @@ while test $# -gt 0; do
 		;;
      -bd-dl)
 		tracklen=47294464 #same as above but dual layer
-		comp=0
+		comp=6
 		shift
 		getAltDVDburner
 		options=1
@@ -440,6 +443,7 @@ fi
 ## Make sure to use checkInternet at least once before any time httpGet will be called.
 ## Make sure to call getConfiguredClient at least once before ever calling checkInternet.
 
+trap "cleanup 2" 2
 pipename="/tmp/$RANDOM.pipe"
 fifoname="/tmp/$RANDOM.fifo"
 #changed from mknod to mkfifo to  make script more cross platform
@@ -476,6 +480,10 @@ then
 	elif [[ $rw -eq 2 ]]
 	then
 		discread $device $pipename $tarpid $count $countlimit $readlen
+    else
+        echo "You need to specify option -w for writing a backup or -r for restoring from backup."
+        exitcode=1
+        cleanup $exitcode
 	fi
 
 else
