@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.4"
+currentVersion="1.1.5"
 configuredClient=""
 
 tarwrite() {
@@ -12,7 +12,7 @@ tarwrite() {
 
 		if command -v gtar &>/dev/null
 		then
-			gtar -cvpML $tl -f $pn $tops <&7 &
+			gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" "${excludes[@]}" <&7 &
 			tarpid=$!
 			countlimit=2
 			return
@@ -20,7 +20,7 @@ tarwrite() {
 
 		if command -v tar &>/dev/null
         then
-            tar -cvpML $tl -f $pn $tops <&7 &
+            tar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" "${excludes[@]}" <&7 &
             tarpid=$!
             countlimit=1
         fi
@@ -34,7 +34,7 @@ tarread() {
 
 		if command -v gtar &>/dev/null
 		then
-			gtar -cvpMf $pn $tops <&7 &
+			gtar -cvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
 			tarpid=$!
 			countlimit=2
 			return
@@ -42,7 +42,7 @@ tarread() {
 
 		if command -v tar &>/dev/null
 		then
-			 tar -xvpMf $pn $tops <&7 &
+			 tar -xvpMf $pn $tops "${dir[@]}" "$filenames[@]}" <&7 &
                          tarpid=$!
                          countlimit=1
 		fi
@@ -297,8 +297,11 @@ Usage: bak2dvd [flags] -t "[arguments]"
   -h  Show the help
   -v  Get the tool version
   -d  Sets the optical drive to use
+  -C Change to directory
+  -a Include file or directory into archive
   -t  Parameters to pass to tar
-  -w  Write to optical media
+  -w Write to optical media
+  -X Exclude file or directory from archive
   -r  Restore from optical media
 
  Disc technology flags are:
@@ -315,11 +318,11 @@ Usage: bak2dvd [flags] -t "[arguments]"
 Example:
 
 To Write:
-   bak2dvd -w -d /dev/sr0 -dvd -t "-C $HOME Documents"
-   bak2dvd -w -d 1,0,0 -cd -t "-C $HOME Documents"
+   bak2dvd -w -d /dev/optical -dvd -C $HOME -a Documents -a "Library Files"
+   bak2dvd -w -d 1,0,0 -cd -C $HOME -a Documents -a "Library Files"
 
 To Restore:
-   bak2dvd -r -d /dev/sr0 -dvd -t "-C $HOME"
+   bak2dvd -r -d /dev/optical -dvd -C $HOME
 EOF
 }
 
@@ -328,6 +331,10 @@ options=0
 declare -i tracklen
 declare -i comp
 declare -i rw
+declare -a dir
+declare -a filenames
+dir=""
+filenames=""
 cdburner=""
 altdvdburner=""
 
@@ -398,6 +405,27 @@ while test $# -gt 0; do
 		getCDburner
 		options=1
 		;;
+    -a)
+        shift
+        if test $# -gt 0; then
+            filenames=( "${filenames[@]}" "$1" )
+        else
+            echo "No filename or directory specified" >&2
+            exit 1
+        fi
+        shift
+        ;;
+    -C)
+            shift
+            if test $# -gt 0; then
+            dir=( "-C" )
+            dir=( "${dir[@]}" "$1" )
+        else
+            echo "No directory specified." >&2
+            exit 1
+        fi
+        shift
+        ;;
      -t)
 		shift
 		if test $# -gt 0; then
@@ -417,7 +445,22 @@ while test $# -gt 0; do
 		rw=1
 		shift
 		;;
+    -X)
+        shift
+        if test $# -gt 0; then
+            excludes=( "${excludes[@]}" "-X" )
+            excludes=( "${excludes[@]}" "$1" )
+        else
+            echo "No excluded file or directory specified."
+            exit 1
+        fi
+        shift
+        ;;
     :)  echo "Option -$1 requires an argument." >&2
+        exit 1
+        ;;
+    *)
+        echo "Something bad happened or malformed arguments."
         exit 1
         ;;
   esac
@@ -442,7 +485,6 @@ fi
 ## The rest of the conditions and code would go here
 ## Make sure to use checkInternet at least once before any time httpGet will be called.
 ## Make sure to call getConfiguredClient at least once before ever calling checkInternet.
-
 trap "cleanup 2" 2
 pipename="/tmp/$RANDOM.pipe"
 fifoname="/tmp/$RANDOM.fifo"
