@@ -34,7 +34,7 @@ tarread() {
 
 		if command -v gtar &>/dev/null
 		then
-			gtar -cvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+			gtar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
 			tarpid=$!
 			countlimit=2
 			return
@@ -55,7 +55,24 @@ discread() {
 	counter=$4
 	countlim=$5
 	rl=$6
-
+    # FreeBSD is a brain damaged OS written by brain damaged developers who, when given a choice, will run headlong into
+    # making a task or operation as difficult as possible.
+    if [[ $(uname | grep "FreeBSD" | wc -l) -gt 0 ]]
+    then
+        while [ "$counter" -eq $countlim ]
+        do
+            dd if=$dev of=$pn bs=2048
+            eject $dev
+            counter=0
+            counter=$(ps -A | grep $tarpid | wc -l)
+            if [[ $counter -eq $countlim ]]
+            then
+                echo
+                read -p "Insert next disc and press Enter:" response
+                echo "$response" >&7
+            fi
+        done
+    else
 	while [ "$counter" -eq $countlim ]
 	do
 		dd if=$dev of=$pn bs=1k count=$rl
@@ -68,6 +85,7 @@ discread() {
 			echo "$response" >&7
 		fi
 	done
+	fi
 }
 
 dvdburn() {
@@ -334,7 +352,7 @@ declare -i rw
 declare -a dir
 declare -a filenames
 dir=""
-filenames=""
+#filenames=""
 cdburner=""
 altdvdburner=""
 
