@@ -42,7 +42,7 @@ tarread() {
 
 		if command -v tar &>/dev/null
 		then
-			 tar -xvpMf $pn $tops "${dir[@]}" "$filenames[@]}" <&7 &
+			 tar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
                          tarpid=$!
                          countlimit=1
 		fi
