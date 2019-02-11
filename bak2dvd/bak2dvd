@@ -12,7 +12,7 @@ tarwrite() {
 
 		if command -v gtar &>/dev/null
 		then
-			gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" "${excludes[@]}" <&7 &
+			gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
 			tarpid=$!
 			countlimit=2
 			return
@@ -20,7 +20,7 @@ tarwrite() {
 
 		if command -v tar &>/dev/null
         then
-            tar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" "${excludes[@]}" <&7 &
+            tar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
             tarpid=$!
             countlimit=1
         fi
@@ -448,8 +448,8 @@ while test $# -gt 0; do
     -X)
         shift
         if test $# -gt 0; then
-            excludes=( "${excludes[@]}" "-X" )
-            excludes=( "${excludes[@]}" "$1" )
+            excludes=( "${excludes[@]}" "--exclude=" )
+            excludes=( "${excludes[@]}""$1" )
         else
             echo "No excluded file or directory specified."
             exit 1
