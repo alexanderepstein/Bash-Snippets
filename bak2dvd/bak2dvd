@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.5"
+currentVersion="1.1.6"
 configuredClient=""
 
 tarwrite() {
@@ -9,21 +9,110 @@ tarwrite() {
 	tops=$3
 	# FreeBSD needs to use gtar
 	# Make this a function for the addition of a restore option
-
+    	# These if statements test for all possible combinations of null strings and executes the permutation
+    	# of tar or gtar that excludes the null string.
 		if command -v gtar &>/dev/null
 		then
-			gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
-			tarpid=$!
-			countlimit=2
-			return
-		fi
+            if [[ -z "$tops" && -n "$dir" && -n "$excludes" ]]
+            then
+                gtar -cvpML $tl -f $pn "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+            elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
+            then
+                gtar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    elif [[ -n "$tops" && -n "$dir" && -z "$excludes" ]]
+	    then
+                gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
+	    then
+                gtar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    elif [[ -n "$tops" && -z "$dir" && -z "$excludes" ]]
+	    then
+                gtar -cvpML $tl -f $pn $tops "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    elif [[ -z "$tops" && -z "$dir" && -n "$excludes" ]]
+	    then
+                gtar -cvpML $tl -f $pn "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    elif [[ -z "$tops" && -z "$dir" && -z "$excludes" ]]
+	    then
+                gtar -cvpML $tl -f $pn "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    else
+                gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+	    fi
+    fi
 
-		if command -v tar &>/dev/null
+	if command -v tar &>/dev/null
         then
-            tar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
-            tarpid=$!
-            countlimit=1
+            if [[ -z "$tops" && -n "$dir" && -n "$excludes" ]]
+            then
+                tar -cvpML $tl -f $pn "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+            elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
+            then
+                tar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    elif [[ -n "$tops" && -n "$dir" && -z "$excludes" ]]
+	    then
+                tar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
+	    then
+                tar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    elif [[ -n "$tops" && -z "$dir" && -z "$excludes" ]]
+	    then
+                tar -cvpML $tl -f $pn $tops "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    elif [[ -z "$tops" && -z "$dir" && -n "$excludes" ]]
+	    then
+                tar -cvpML $tl -f $pn "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    elif [[ -z "$tops" && -z "$dir" && -z "$excludes" ]]
+	    then
+                tar -cvpML $tl -f $pn "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	   else
+                tar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
         fi
+    fi
 
 
 }
@@ -31,21 +120,110 @@ tarwrite() {
 tarread() {
 	pn=$1
 	tops=$2
-
-		if command -v gtar &>/dev/null
-		then
-			gtar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
-			tarpid=$!
-			countlimit=2
+    # These if statements test for null strings and then excutes the permutation of tar or gtar
+    # that excludes the null strings.
+	if command -v gtar &>/dev/null
+	then
+            if [[ -n "$tops" && -n "$dir" && -z "$filenames" ]]
+            then
+                gtar -xvpMf $pn $tops "${dir[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+            elif [[ -n "$tops" && -z "$dir" && -n "$filenames" ]]
+            then
+                gtar -xvpMf $pn $tops "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+			elif [[ -n "$tops" && -z "$dir" && -z "$filenames" ]]
+            then
+                gtar -xvpMf $pn $tops <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+			elif [[ -z "$tops" && -n "$dir" && -n "$filenames" ]]
+            then
+                gtar -xvpMf $pn "${dir[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+			elif [[ -z "$tops" && -n "$dir" && -z "$filenames" ]]
+            then
+                gtar -xvpMf $pn "${dir[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+			elif [[ -z "$tops" && -z "$dir" && -n "$filenames" ]]
+            then
+                gtar -xvpMf $pn "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
+			return
+			elif [[ -z "$tops" && -z "$dir" && -z "$filenames" ]]
+            then
+                gtar -xvpMf $pn <&7 &
+                tarpid=$!
+                countlimit=2
+                return
+			else
+                gtar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=2
 			return
 		fi
+    fi
 
 		if command -v tar &>/dev/null
 		then
-			 tar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
-                         tarpid=$!
-                         countlimit=1
-		fi
+		if [[ -n "$tops" && -n "$dir" && -z "$filenames" ]]
+            then
+                tar -xvpMf $pn $tops "${dir[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+            elif [[ -n "$tops" && -z "$dir" && -n "$filenames" ]]
+            then
+                tar -xvpMf $pn $tops "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+			elif [[ -n "$tops" && -z "$dir" && -z "$filenames" ]]
+            then
+                tar -xvpMf $pn $tops <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+			elif [[ -z "$tops" && -n "$dir" && -n "$filenames" ]]
+            then
+                tar -xvpMf $pn "${dir[@]}" "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+			elif [[ -z "$tops" && -n "$dir" && -z "$filenames" ]]
+            then
+                tar -xvpMf $pn "${dir[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+			elif [[ -z "$tops" && -z "$dir" && -n "$filenames" ]]
+            then
+                tar -xvpMf $pn "${filenames[@]}" <&7 &
+                tarpid=$!
+                countlimit=1
+			return
+			elif [[ -z "$tops" && -z "$dir" && -z "$filenames" ]]
+            then
+                tar -xvpMf $pn <&7 &
+                tarpid=$!
+                countlimit=1
+                return
+	    else
+		 tar -xvpMf $pn $tops "${dir[@]}" "{$filenames[@]}" <&7 &
+             	tarpid=$!
+             	countlimit=1
+	    fi
+    fi
 }
 
 discread() {
@@ -73,19 +251,19 @@ discread() {
             fi
         done
     else
-	while [ "$counter" -eq $countlim ]
-	do
-		dd if=$dev of=$pn bs=1k count=$rl
-		eject $dev
-		counter=0
-		counter=$(ps -A | grep $tarpid | wc -l)
-		if [[ $counter -eq $countlim ]]
-		then
-			read -p "Insert next disc and press Enter:" response
-			echo "$response" >&7
-		fi
-	done
-	fi
+        while [ "$counter" -eq $countlim ]
+        do
+            dd if=$dev of=$pn bs=1k count=$rl
+            eject $dev
+            counter=0
+            counter=$(ps -A | grep $tarpid | wc -l)
+            if [[ $counter -eq $countlim ]]
+            then
+                read -p "Insert next disc and press Enter:" response
+                echo "$response" >&7
+            fi
+        done
+    fi
 }
 
 dvdburn() {
@@ -100,13 +278,15 @@ dvdburn() {
 			exitcode=1
 			cleanup $exitcode
 		fi
-		# Growisofs is untrustworthy for DL media.
+		# Growisofs is untrustworthy for DL media, and is slow for BD-RE/DVD-RAM media because of defect management.
 			case "$altburn" in
 				cdrskin)
-					cdrskin dev="$1" stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
+                    			# cdrskin doesn't like -multi when burning BD-R media.
+					# BD-RE media needs to be formatted before recording
+					cdrskin dev="$1" blank=as_needed stream_recording=on driveropts=burnfree -tao -eject -data "$2"
 					;;
 				xorrecord)
-					xorrecord dev="$1" stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
+					xorrecord dev="$1" blank=as_needed stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
 					;;
 				*)
 					growisofs -Z "$1"=$2
@@ -204,7 +384,8 @@ getCDburner() {
 	fi
 
 }
-
+# This function finds an alternative burner to growisofs if DVD-DL, DVD-RAM, or BD-R(E) media is chosen to improve speed
+# or to actually write a full dataset in the case of DVD-DL media.
 getAltDVDburner() {
 
 	if command -v cdrskin &>/dev/null
@@ -328,6 +509,7 @@ Usage: bak2dvd [flags] -t "[arguments]"
   -dvd      for single layer DVD+R
   -dvd-dl   for dual layer DVD+R
   -dvd-r    for single layer DVD-R
+  -dvd-ram  for those who have it
   -bd       for single layer BluRay
   -bd-dl    for dual layer BluRay
 
@@ -352,9 +534,11 @@ declare -i rw
 declare -a dir
 declare -a filenames
 dir=""
-#filenames=""
+filenames=""
 cdburner=""
 altdvdburner=""
+device=""
+taropts=""
 
 while test $# -gt 0; do
   case "$1" in
@@ -389,6 +573,14 @@ while test $# -gt 0; do
 		shift
 		options=1
 		;;
+    -dvd-ram)
+        # DVD-RAM for those who have this under appreciated, and under utilized media format
+        tracklen=4463168 # DVD-RAM capacity - 10M
+        comp=2
+        shift
+        getAltDVDburner # Media has same defect management as BD-RE. In fact you might call it the orginal.
+        options=1
+        ;;
      -dvd-dl)
 		tracklen=8337408 # DVD+R DL capacity - 10M
 		comp=2
@@ -514,6 +706,15 @@ tarpid=""
 exec 7<>$fifoname
 declare -i readlen
 countlimit=""
+# If no -d option was set then the script will be able to get this far, but will be stopped 
+# otherwise confusing errors will happen. May change to give the user a chance to specify a device or quit at this point.
+if [[ -z "$device" ]]
+then
+    echo "No device specified."
+    exitcode=1
+    cleanup $exitcode
+fi
+
 if [[ $rw -eq 1 ]]
 then
 	tarwrite $tracklen $pipename "$taropts"
@@ -530,7 +731,7 @@ then
 	read -p "Insert media and press Enter:"
 	if [[ $rw -eq 1 ]]
 	then
-		#call appropriate burning function here
+		#call appropriate burning function here. Want to add support for mini CD's and mini DVD's at some point.
 		if [[ $tracklen -le 712702 ]]
 		then
 			cdburn $device $pipename $tarpid $count $countlimit $cdburner
@@ -556,5 +757,5 @@ else
 fi
 exitcode=0
 cleanup $exitcode
-
+# This exit is a sheet anchor. It probably isn't needed, but it makes me feel better.
 exit 0
