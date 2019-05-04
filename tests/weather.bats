@@ -21,7 +21,9 @@ fi
 @test "Testing weather with specified location" {
   run weather Paramus
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Weather report: Paramus, United States of America" ]
+  # API changed
+  #[ "${lines[0]}" = "Weather report: Paramus, United States of America" ]
+  [ "${lines[0]}" = "Weather report: Paramus" ]
 }
 
 @test "Get the tools version with -v" {
