@@ -1,9 +1,9 @@
 #!/usr/bin/env bats
 
-export TOOL_NAME='cheat'
+export TOOL_NAME='skeleton'
 
 setup() {
-  # $REPO_DIR/tests/tool.bats
+  # $REPO_DIR/tests/skeleton.bats
   REPO_DIR="$( cd "$( dirname "${BATS_TEST_DIRNAME}")" >/dev/null 2>&1 && pwd)"
   TOOL_DIR="$( cd "${REPO_DIR}/${TOOL_NAME}" >/dev/null 2>&1 && pwd)"
 }
@@ -48,14 +48,15 @@ setup() {
   [[ "printf '%s\n' ${lines[0]}" =~ 'Version' ]]
 }
 
-@test "Grabbing information on a programming language (rust)" {
-  run "${TOOL_DIR}/${TOOL_NAME}" rust
+# Tool specific tests
+@test "Do that cool thing" {
+  run "${TOOL_DIR}/${TOOL_NAME}" cool
   [[ "$status" -eq 0 ]]
-  [[ "${lines[0]}" =~ 'Rust is a systems' ]]
+  [[ "${lines[0]}" =~ 'This is awesome' ]]
 }
 
-@test "Testing unkown topic due to misspelling" {
-  run "${TOOL_DIR}/${TOOL_NAME}" suuuper thiingsa
+@test "Testing coolness factor" {
+  run "${TOOL_DIR}/${TOOL_NAME}" cool --even-cooler
   [[ "$status" -eq 0 ]]
-  [[ "printf '%s\n' ${lines[1]}" =~ 'Unknown' ]]
+  [[ "printf '%s\n' ${lines[1]}" =~ 'subzero' ]]
 }
