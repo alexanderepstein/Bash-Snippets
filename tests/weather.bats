@@ -1,4 +1,4 @@
-#!/bin/env bats
+#!/usr/bin/env bats
 
 @test "Testing weather tool" {
    echo weather

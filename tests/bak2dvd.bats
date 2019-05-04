@@ -1,4 +1,4 @@
-#!/bin/env bats
+#!/usr/bin/env bats
 
 @test "Testing bak2dvd tool" {
    echo bak2dvd
