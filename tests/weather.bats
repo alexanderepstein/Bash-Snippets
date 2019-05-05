@@ -47,17 +47,12 @@ setup() {
   fi
 }
 
-@test "No arguments prints usage instructions" {
+@test "No arguments shows weather at current location" {
   run "${TOOL_DIR}/${TOOL_NAME}"
 
   [[ "$status" -eq 0 ]]
-  # if bash is less than 7 yrs old
-  if ((${BASH_VERSINFO[0]} >= 4)); then
-    [[ "${lines[0]}" = "${TOOL_NAME^}" ]]
-  else
-    # or im probably a stoneage mac
-    [[ "$(echo "${output}" | grep -i "${TOOL_NAME}")" ]]
-  fi
+  expected='Weather report: Lat'
+  [[ "${lines[0]}" =~ "${expected}" ]]
 }
 
 @test "Get the tools version with -v" {
