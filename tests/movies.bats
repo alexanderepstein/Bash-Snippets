@@ -1,4 +1,4 @@
-#!/bin/env bats
+#!/usr/bin/env bats
 
 @test "Testing movies tool" {
    echo movies

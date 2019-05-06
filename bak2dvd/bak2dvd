@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.1.6"
+currentVersion="1.22.1"
 configuredClient=""
 
 tarwrite() {
@@ -551,7 +551,8 @@ while test $# -gt 0; do
     -v)  echo "Version $currentVersion"
         exit 0
         ;;
-    -u)  getConfiguredClient || exit 1
+    -u|update)
+	getConfiguredClient || exit 1
         checkInternet || exit 1
         update
         exit 0
