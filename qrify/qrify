@@ -163,6 +163,10 @@ Examples:
     qrify github.com (no http:// or https://)
     qrify -f fileoutputName google.com
     qrify -d fileName.png
+
+[31mPlease pay attention:[0m
+This script needs access to an external API.
+[5m[1mDo not use it to encode sensitive data.[0m
 EOF
 }
 
