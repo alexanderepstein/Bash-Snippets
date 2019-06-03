@@ -137,7 +137,7 @@ check_for_spd-say () {
 if [[ $(which spd-say) == "" ]]
 then
 echo "You need to install spd-say to use this tool. This tool uses speech to alert you."
-echo "Try the command `sudo apt install spd-say."
+echo "Try the command `sudo apt install spd-say`."
 exit 1
 fi
 }
