@@ -133,6 +133,16 @@ get_time () {
     read -p "How long? Enter minutes: " the_time
 }
 
+check_for_spd-say () {
+if [[ $(which spd-say) == "" ]]
+then
+echo "You need to install spd-say to use this tool. This tool uses speech to alert you."
+echo "Try the command `sudo apt install spd-say."
+exit 1
+fi
+}
+
+check_for_spd-say
 get_time
 #don't enter a non-number or a negative number
 while ! [ "$the_time" -ge 0 ] 2> /dev/null # must use single brackets
