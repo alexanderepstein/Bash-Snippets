@@ -5,9 +5,9 @@ unset base
 unset exchangeTo
 currentVersion="1.22.1"
 unset configuredClient
-currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
+currencyCodes=(AUD BAM BGN BMD BND BRL CAD CHF CNY CZK DJF DKK
   EUR GBP HKD HRK HUF IDR ILS INR
-  JPY KRW MXN MYR NOK NZD PHP PLN
+  JPY KRW MXN MYR NOK NZD PAB PHP PLN
   RON RUB SEK SGD THB TRY USD ZAR)
 
   ## This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -25,6 +25,18 @@ currencyCodes=(AUD BGN BRL CAD CHF CNY CZK DKK
       echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
       return 1
     fi
+  }
+
+  peggedTo()
+  {
+    case "$@" in
+      BAM)  echo "EUR:1.95583" ;;
+      BMD)  echo "USD:1.0" ;;
+      BND)  echo "SGD:1.0" ;;
+      DJF)  echo "USD:177.721" ;;
+      PAB)  echo "USD:1.0" ;;
+      *)    echo "1" ;;
+    esac
   }
 
   ## Allows to call the users configured client without if statements everywhere
@@ -136,14 +148,35 @@ checkInternet()
 ## Grabs the exchange rate and does the math for converting the currency
 convertCurrency()
 {
-  exchangeRate=$(httpGet "https://api.exchangeratesapi.io/latest?base=$base" | grep -Eo "$exchangeTo\":[1-9.]*" | grep -Eo "[0-9.]*") > /dev/null
-  if ! command -v bc &>/dev/null; then
-    oldRate=$exchangeRate
-    exchangeRate=$(echo $exchangeRate | grep -Eo "^[0-9]*" )
-    amount=$(echo $amount | grep -Eo "^[0-9]*" )
-    exchangeAmount=$(( $exchangeRate * $amount ))
-    exchangeRate=$oldRate
+  trueBase=$base
+  trueTarget=$exchangeTo
+  peggedBase=$( peggedTo "$base" )
+  peggedTarget=$( peggedTo "$exchangeTo" )
+  coef1="1"
+  coef2="1"
+  if [[ "$peggedBase" =~ ^[A-Z]+:[0-9.]+$ ]]; then
+    trueBase=$(echo "$peggedBase" | grep -Eo "^[A-Z]*")
+    coef1=$(echo "$peggedBase" | grep -Eo "[0-9.]*$")
+  fi
+  if [[ "$peggedTarget" =~ ^[A-Z]+:[0-9.]+$ ]]; then
+    trueTarget=$(echo "$peggedTarget" | grep -Eo "^[A-Z]*")
+    coef2=$(echo "$peggedTarget" | grep -Eo "[0-9.]*$")
+  fi
+  if [[ "$trueBase" == "$exchangeTo" || "$base" == "$trueTarget" ]]; then
+    exchangeRate="1"
   else
+    exchangeRate=$(httpGet "https://api.exchangeratesapi.io/latest?base=$trueBase" | grep -Eo "$trueTarget\":[0-9.]*" | grep -Eo "[0-9.]*") > /dev/null
+  fi
+  if ! command -v bc &>/dev/null; then
+    exchangeRate=$(echo "$exchangeRate" | grep -Eo "^[0-9]*" )
+    amount=$(echo "$amount" | grep -Eo "^[0-9]*" )
+    coef1=$(echo "$coef1" | grep -Eo "^[0-9]*" )
+    exchangeRate=$(( exchangeRate / coef1 ))
+    exchangeRate=$(( exchangeRate * coef2 ))
+    exchangeAmount=$(( exchangeRate * amount ))
+  else
+    exchangeRate=$( echo "scale=8; $exchangeRate / $coef1" | bc )
+    exchangeRate=$( echo "$exchangeRate * $coef2" | bc )
     exchangeAmount=$( echo "$exchangeRate * $amount" | bc )
   fi
 
