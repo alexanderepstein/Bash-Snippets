@@ -4,40 +4,32 @@
    echo stocks
 }
 
-@test "Check for latest version of bash-snippets on update" {
-  if [[ "$(uname)" == "Linux" ]];then
-  run stocks update
+@test "The help command should print usage" {
+  run stocks help
   [ "$status" -eq 0 ]
-  [ "$output" = "Bash-Snippets is already the latest version" ]
-fi
-}
-
-@test "The -h option should print usage" {
-  run stocks -h
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Stocks" ]
+  [ "${lines[0]}" = "Stocks Usage" ]
 }
 
 @test "No arguments prints usage instructions" {
   run stocks
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Stocks" ]
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "Stocks Usage" ]
 }
 
 @test "Get stock info by passing in ticker" {
-  result=$( echo $(stocks AAPL) | grep -Eo "AAPL stock info" )
-  [ "$result" = "AAPL stock info" ]
+  result=$( echo $(stocks AAPL) | grep -Eo "Apple, Inc. -- Stock Information" )
+  [ "$result" = "Apple, Inc. -- Stock Information" ]
 
 }
 
 @test "Get stock info by passing in company" {
-  result=$( echo $(stocks Apple) | grep -Eo "AAPL stock info" )
-  [ "$result" = "AAPL stock info" ]
+  result=$( echo $(stocks Apple) | grep -Eo "Apple, Inc. -- Stock Information" )
+  [ "$result" = "Apple, Inc. -- Stock Information" ]
 }
 
-@test "Get the tools version with -v" {
-  run stocks -v
+@test "Get the tools version" {
+  run stocks version
   [ "$status" -eq 0 ]
-  result=$( echo $(stocks -v) | grep -Eo "Version")
+  result=$( echo $(stocks version) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }
