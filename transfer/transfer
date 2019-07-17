@@ -16,7 +16,7 @@ getConfiguredDownloadClient()
   elif command -v fetch &>/dev/null; then
     configuredDownloadClient="fetch"
   else
-    echo "Error: Downloading with this tool reqires either curl, wget, or fetch to be installed." >&2
+    echo "Error: Downloading with this tool requires either curl, wget, or fetch to be installed." >&2
     return 1
   fi
 }
@@ -44,7 +44,7 @@ getConfiguredClient()
   elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
-    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
+    echo "Error: This tool requires either curl, wget, httpie or fetch to be installed." >&2
     return 1
   fi
 }
@@ -57,7 +57,7 @@ getconfiguredUploadClient()
   elif command -v wget &>/dev/null; then
     configuredUploadClient="wget"
   else
-    echo "Error: Uploading with this tool reqires either curl or wget to be installed." >&2
+    echo "Error: Uploading with this tool requires either curl or wget to be installed." >&2
     return 1
   fi
 }
