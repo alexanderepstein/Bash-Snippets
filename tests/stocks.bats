@@ -25,14 +25,14 @@ fi
 }
 
 @test "Get stock info by passing in ticker" {
-  result=$( echo $(stocks AAPL) | grep -Eo "AAPL stock info" )
-  [ "$result" = "AAPL stock info" ]
+  result=$( echo $(stocks AAPL) | grep -Eo "Apple Inc. -- Stock Information" )
+  [ "$result" = "Apple Inc. -- Stock Information" ]
 
 }
 
 @test "Get stock info by passing in company" {
-  result=$( echo $(stocks Apple) | grep -Eo "AAPL stock info" )
-  [ "$result" = "AAPL stock info" ]
+  result=$( echo $(stocks Apple) | grep -Eo "Apple Inc. -- Stock Information" )
+  [ "$result" = "Apple Inc. -- Stock Information" ]
 }
 
 @test "Get the tools version with -v" {

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
 # Author: Navan Chauhan https://github.com/navanchauhan
+# Author: Tyler Stubenvoll https://github.com/tjstub
 
 currentVersion="1.22.1"
 configuredClient=""
@@ -18,7 +19,7 @@ getConfiguredClient()
   elif command -v fetch &>/dev/null; then
     configuredClient="fetch"
   else
-    echo "Error: This tool reqires either curl, wget, httpie or fetch to be installed." >&2
+    echo "Error: This tool requires either curl, wget, httpie or fetch to be installed." >&2
     return 1
   fi
 }
@@ -61,57 +62,78 @@ checkInternet()
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
 }
 
-## This function grabs information about a stock and using python parses the
-## JSON response to extrapolate the information for storage
-getStockInformation()
-{
-  stockInfo=$(httpGet  "https://api.iextrading.com/1.0/stock/$1/quote") > /dev/null #grab the JSON response
-  export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['companyName']" > /dev/null 2>&1 || { echo "Not a valid stock symbol"; exit 1; } #checking if we get any information back from the server if not chances are it isnt a valid stock symbol
-  # The rest of the code is just extrapolating the data with python from the JSON response
-  exchangeName=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['primaryExchange']")
-  latestPrice=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestPrice']")
-  open=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['open']")
-  high=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['week52High']")
-  low=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['week52Low']")
-  close=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['close']")
-  priceChange=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['change']")
-  priceChangePercentage=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['changePercent']")
-  volume=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestVolume']")
-  lastUpdated=$(echo $stockInfo | python -c "import sys, json; print json.load(sys.stdin)['latestUpdate']")
-  unset stockInfo # done with the JSON response not needed anymore
+## Grabs an element from a a json string and then echoes it to stdout
+## $1 = the JSON string
+## $n+1 = the elements to be indexed
+AccessJsonElement() {
+  json="$1"
+  shift
+
+  accessor=""
+  for element in "$@"; do
+      accessor="${accessor}['$element']"
+  done
+  echo "$json" | python -c "import sys, json; print json.load(sys.stdin)${accessor}"
+  return "$?"
 }
 
-## This function uses all the variables that are set by getStockInformation and
-## prints them out to the user in a human readable format
+## This function grabs information about a stock and prints it for consumption
 printStockInformation()
 {
-  echo
-  echo $symbol stock info
-  echo "============================================="
-  echo "| Exchange Name: $exchangeName"
-  echo "| Latest Price: $latestPrice"
-  if [[ $open != "--" ]]; then echo "| Open (Current Trading Day): $open"; fi ## sometime this is blank only print if value is present
-  if [[ $high != "--" ]]; then echo "| High (Week52): $high"; fi ## sometime this is blank only print if value is present
-  if [[ $low != "--" ]]; then echo "| Low (Week52): $low"; fi ## sometime this /is blank only print if value is present
-  echo "| Close (Previous Trading Day): $close"
-  echo "| Price Change: $priceChange"
-  if [[ $priceChangePercentage != "%" ]];then echo "| Price Change Percentage: $priceChangePercentage"; fi ## sometime this is blank only print if value is present
-  if [[ $volume != "--" ]];then echo "| Volume (Current Trading Day): $volume"; fi ## sometime this is blank only print if value is present
-  echo "| Last Updated: $lastUpdated"
-  echo "============================================="
-  echo
+  # this data is updated hourly.
+  stockProfile="$(httpGet "https://financialmodellingprep.com/api/v3/company/profile/${1}")" > /dev/null
+  # this is realtime data.
+  stockPrice="$(httpGet "https://financialmodellingprep.com/api/v3/stock/real-time-price/${1}")" > /dev/null
+
+  # necessary for python in some cases
+  export PYTHONIOENCODING=utf8
+  # checking if we get any information back from the server if not 
+  # chances are it isnt a valid stock symbol
+  AccessJsonElement "$stockProfile" "profile" "companyName" > /dev/null 2>&1 \
+    || { echo "$1: Not a valid stock symbol"; exit 1; } 
+  
+  
+  # The rest of the code is just extrapolating the data with python 
+  # from the JSON response
+  name="$(AccessJsonElement "$stockProfile" "profile" "companyName")"
+  exchangeName="$(AccessJsonElement "$stockProfile" "profile" "exchange")"
+  latestPrice="$(AccessJsonElement "$stockPrice" "price")"
+  range="$(AccessJsonElement "$stockProfile" "profile" "range")"
+  priceChange="$(AccessJsonElement "$stockProfile" "profile" "changes")"
+  priceChangePercentage="$(AccessJsonElement "$stockProfile" "profile" "changesPercentage")"
+  volumeAvg="$(AccessJsonElement "$stockProfile" "profile" "volAvg")"
+
+  cat <<EOF
+
+==============================================
+| $name -- Stock Information
+==============================================
+| Stock Details
+|   * symbol: $1
+|   * Exchange: $exchangeName
+| Real time data
+|   * Latest Price: $latestPrice
+| Hourly data
+|   * 52 week range: $range
+|   * Price Change: $priceChange
+|   * PriceChangePercent: $priceChangePercentage
+|   * Volume average: $volumeAvg
+==============================================
+EOF
+
 }
 
-## This function queries google to determine the stock ticker for a certain company
+## This function queries yahoo to determine the stock ticker for a certain company
 ## this allows the usage of stocks to be extended where now you can enter stocks appple
 ## and it will determine the stock symbol for apple is AAPL and move on from there
 getTicker()
 {
-  input=$(echo "$@" | tr " " +)
-  response=$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$input&region=1&lang=en%22") > /dev/null
-  symbol=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']") # using python to extrapolate the stock symbol
-  unset response #just unsets the entire response after using it since all I need is the stock ticker
+  input="$(echo "$@" | tr " " +)"
+  response="$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$input&region=1&lang=en%22")" > /dev/null
+  # using python to extrapolate the stock symbol
+  symbol="$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']")"
+  # just unsets the entire response after using it since all I need is the stock ticker
+  unset response 
 }
 
 update()
@@ -210,8 +232,10 @@ elif [[ $# == "0" ]]; then
   exit 0
 else
   checkInternet || exit 1
-  getTicker "$@" # the company name might have spaces so passing in all args allows for this
-  getStockInformation $symbol # based on the stock symbol exrapolated by the getTicker function get information on the stock
-  printStockInformation  # print this information out to the user in a human readable format
+  # the company name might have spaces so passing in all args allows for this
+  getTicker "$@"
+  # based on the stock symbol exrapolated by the getTicker function get 
+  # information on the stock
+  printStockInformation "$symbol"
   exit 0
 fi
