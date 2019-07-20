@@ -37,12 +37,14 @@ httpGet()
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null; then
+  if command -v python3 &>/dev/null; then
+    configuredPython="python3"
+  elif  command -v python2 &>/dev/null; then
     configuredPython="python2"
   elif command -v python &>/dev/null; then
     configuredPython="python"
   else
-    echo "Error: This tool requires python 2 to be installed."
+    echo "Error: This tool requires python to be installed."
     return 1
   fi
 }
@@ -51,6 +53,7 @@ if [[ $(uname) != "Darwin" ]]; then
   python()
   {
     case "$configuredPython" in
+      python3) python3 "$@" ;;
       python2) python2 "$@" ;;
       python)  python "$@" ;;
     esac
@@ -68,12 +71,11 @@ checkInternet()
 AccessJsonElement() {
   json="$1"
   shift
-
   accessor=""
   for element in "$@"; do
       accessor="${accessor}['$element']"
   done
-  echo "$json" | python -c "import sys, json; print json.load(sys.stdin)${accessor}"
+  echo "$json" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)${accessor})"
   return "$?"
 }
 
@@ -84,15 +86,12 @@ printStockInformation()
   stockProfile="$(httpGet "https://financialmodellingprep.com/api/v3/company/profile/${1}")" > /dev/null
   # this is realtime data.
   stockPrice="$(httpGet "https://financialmodellingprep.com/api/v3/stock/real-time-price/${1}")" > /dev/null
-
   # necessary for python in some cases
   export PYTHONIOENCODING=utf8
   # checking if we get any information back from the server if not 
   # chances are it isnt a valid stock symbol
   AccessJsonElement "$stockProfile" "profile" "companyName" > /dev/null 2>&1 \
     || { echo "$1: Not a valid stock symbol"; exit 1; } 
-  
-  
   # The rest of the code is just extrapolating the data with python 
   # from the JSON response
   name="$(AccessJsonElement "$stockProfile" "profile" "companyName")"
@@ -131,7 +130,7 @@ getTicker()
   input="$(echo "$@" | tr " " +)"
   response="$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$input&region=1&lang=en%22")" > /dev/null
   # using python to extrapolate the stock symbol
-  symbol="$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['ResultSet']['Result'][0]['symbol']")"
+  symbol="$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['ResultSet']['Result'][0]['symbol'])")"
   # just unsets the entire response after using it since all I need is the stock ticker
   unset response 
 }
@@ -239,3 +238,4 @@ else
   printStockInformation "$symbol"
   exit 0
 fi
+
