@@ -68,7 +68,7 @@ version() {
 
 # Fetches WAN IP address
 wan_search() {
-  httpGet https://api.ipify.org?format=json | grep -Eo "[0-9.]*"
+  httpGet https://api.ipify.org
 }
 
 # Fetches current LAN IP address
