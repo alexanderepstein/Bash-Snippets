@@ -25,12 +25,14 @@ getConfiguredClient()
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null ; then
+  if command -v python3 &>/dev/null; then
+    configuredPython="python3"
+  elif  command -v python2 &>/dev/null; then
     configuredPython="python2"
-  elif command -v python &>/dev/null ; then
+  elif command -v python &>/dev/null; then
     configuredPython="python"
   else
-    echo "Error: This tool requires python 2 to be installed."
+    echo "Error: This tool requires python to be installed."
     return 1
   fi
 }
@@ -39,11 +41,27 @@ if [[ $(uname) != "Darwin" ]]; then
   python()
   {
     case "$configuredPython" in
-      python2) python2 "$@";;
-      python) python "$@";;
+      python3) python3 "$@" ;;
+      python2) python2 "$@" ;;
+      python)  python "$@" ;;
     esac
   }
 fi
+
+## Grabs an element from a a json string and then echoes it to stdout
+## $1 = the JSON string
+## $n+1 = the elements to be indexed
+AccessJsonElement() {
+  json="$1"
+  shift
+  accessor=""
+  for element in "$@"; do
+      accessor="${accessor}['$element']"
+  done
+  echo "$json" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)${accessor})" 2> /dev/null
+  return "$?"
+}
+
 
 
 ## Allows to call the users configured client without if statements everywhere
@@ -107,7 +125,7 @@ getLyrics()
   encodedArtist=$(echo $1 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
   encodedSong=$(echo $2 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
   response=$(httpGet "https://api.lyrics.ovh/v1/$encodedArtist/$encodedSong")
-  lyrics=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['lyrics']" 2> /dev/null)
+  lyrics="$(AccessJsonElement $response "lyrics" 2> /dev/null)"
   if [[ $lyrics == "" ]];then { echo "Error: no lyrics found!"; return 1; }; fi
 }
 

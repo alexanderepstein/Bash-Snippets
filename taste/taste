@@ -39,12 +39,14 @@ httpGet()
 
 getConfiguredPython()
 {
-  if  command -v python2 &>/dev/null; then
+  if command -v python3 &>/dev/null; then
+    configuredPython="python3"
+  elif  command -v python2 &>/dev/null; then
     configuredPython="python2"
   elif command -v python &>/dev/null; then
     configuredPython="python"
   else
-    echo "Error: This tool requires python 2 to be installed."
+    echo "Error: This tool requires python to be installed."
     return 1
   fi
 }
@@ -53,11 +55,26 @@ if [[ $(uname) != "Darwin" ]]; then
   python()
   {
     case "$configuredPython" in
+      python3) python3 "$@" ;;
       python2) python2 "$@" ;;
       python)  python "$@" ;;
     esac
   }
 fi
+
+## Grabs an element from a a json string and then echoes it to stdout
+## $1 = the JSON string
+## $n+1 = the elements to be indexed
+AccessJsonElement() {
+  json="$1"
+  shift
+  accessor=""
+  for element in "$@"; do
+      accessor="${accessor}['$element']"
+  done
+  echo "$json" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)${accessor})"
+  return "$?"
+}
 
 checkInternet()
 {
@@ -115,17 +132,17 @@ getSimilar()
   media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
   ## Extrapolate the information by parsing the JSON
-  nameOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['Name']" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
-  typeOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['Type']" 2>  /dev/null)
-  nameTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['Name']" 2>  /dev/null)
-  typeTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['Type']" 2>  /dev/null)
-  nameThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['Name']" 2>  /dev/null)
-  typeThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['Type']" 2>  /dev/null)
+  nameOne=$(echo $response |python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Name'])" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
+  typeOne=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Type'])" 2>  /dev/null)
+  nameTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Name'])" 2>  /dev/null)
+  typeTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Type'])" 2>  /dev/null)
+  nameThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Name'])" 2>  /dev/null)
+  typeThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Type'])" 2>  /dev/null)
   if [[ $info == "1" ]];then ## if we want more detailed info we have to grab a few more fields
-    wikiOne=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['wTeaser']" 2>  /dev/null)
-    wikiTwo=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][1]['wTeaser']" 2>  /dev/null)
-    wikiThree=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][2]['wTeaser']" 2>  /dev/null)
-    youtube=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Results'][0]['yUrl']" 2>  /dev/null)
+    wikiOne=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['wTeaser'])" 2>  /dev/null)
+    wikiTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['wTeaser'])" 2>  /dev/null)
+    wikiThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['wTeaser'])" 2>  /dev/null)
+    youtube=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['yUrl'])" 2>  /dev/null)
   fi
 }
 
@@ -135,11 +152,11 @@ getInfo()
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
-  name=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['Name']")
-  type=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['Type']")
+  name=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Name'])")
+  type=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Type'])")
   if [[ $info == "1" ]]; then
-    wiki=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['wTeaser']")
-    youtube=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['Similar']['Info'][0]['yUrl']")
+    wiki=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['wTeaser'])")
+    youtube=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['yUrl'])")
   else
     wiki="None"
     youtube="None"

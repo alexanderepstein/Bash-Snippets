@@ -33,30 +33,6 @@ httpGet()
   esac
 }
 
-
-getConfiguredPython()
-{
-  if  command -v python2 &>/dev/null; then
-    configuredPython="python2"
-  elif command -v python &>/dev/null; then
-    configuredPython="python"
-  else
-    echo "Error: This tool requires python 2 to be installed."
-    return 1
-  fi
-}
-
-if [[ $(uname) != "Darwin" ]];then
-  python()
-  {
-    case "$configuredPython" in
-      python2) python2 "$@" ;;
-      python)  python "$@" ;;
-    esac
-  }
-fi
-
-
 checkInternet()
 {
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
@@ -173,7 +149,6 @@ Shortened URL: $returnedURL
 EOF
 }
 
-if [[ $(uname) != "Darwin" ]]; then getConfiguredPython || exit 1; fi
 getConfiguredClient || exit 1
 
 
