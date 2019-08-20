@@ -88,6 +88,10 @@ update()
 
 getConfiguredPlayer()
 {
+  if [[ ! -v YTVIEWPLAYER ]]; then
+    player="$YTVIEWPLAYER"
+    return 0
+  fi
   if [[ $(uname -s) == "Linux" ]]; then
     if command -v vlc &>/dev/null; then
       player="vlc"
