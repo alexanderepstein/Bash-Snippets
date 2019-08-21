@@ -2,7 +2,7 @@
 # Author: Navan Chauhan and Alexander Epstein
 declare -a tools=(cheat cloudup crypt cryptocurrency currency geo lyrics meme movies newton pwned qrify short siteciphers stocks taste todo transfer weather ytview)
 declare -a validTools=()
-currentVersion="1.22.1"
+currentVersion="1.23.0"
 configuredClient=""
 
 

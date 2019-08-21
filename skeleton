@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-currentVersion="1.22.1"
+currentVersion="1.23.0"
 configuredClient=""
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one

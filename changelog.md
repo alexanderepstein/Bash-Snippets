@@ -2,7 +2,21 @@
 
 # Bash-Snippets Changelog
 
+## Version 1.23.0
+
+## Changes
+* Added python3 support
+* Added new feature from rates.sx for cryptocurrency
+* Added new component bak2dvd
+* Fixed stocks script and pointing it to new api
+* Fixing Wlan IP on Mac for geo
+* Adding environment variable YTVIEWPLAYER for choice of default player for ytview
+</div>
+
+<div align="center">
+
 ## Version 1.22.1
+
 </div>
 
 ## Changes

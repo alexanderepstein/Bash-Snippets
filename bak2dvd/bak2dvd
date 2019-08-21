@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Charles Oblender https://github.com/oblende
-currentVersion="1.22.1"
+currentVersion="1.23.0"
 configuredClient=""
 
 tarwrite() {
