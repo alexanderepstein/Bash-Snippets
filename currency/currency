@@ -247,14 +247,16 @@ Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]
   -v  Get the tool version
 Supported Currencies:
  _______________________
-| AUD | BGN | BRL | CAD |
-| CHF | CNY | CZK | DKK |
+| AUD | BAM | BGN | BMD |
+| BND | BRL | CAD | CHF |
+| CNY | CZK | DJF | DKK |
 | EUR | GBP | HKD | HRK |
 | HUF | IDR | ILS | INR |
 | JPY | KRW | MXN | MYR |
-| NOK | NZD | PHP | PLN |
-| RON | RUB | SEK | SGD |
-| THB | TRY | USD | ZAR |
+| NOK | NZD | PAB | PHP |
+| PLN | RON | RUB | SEK |
+| SGD | THB | TRY | USD |
+| ZAR |     |     |     |
  _______________________
 Examples:
   currency EUR USD 12.35
