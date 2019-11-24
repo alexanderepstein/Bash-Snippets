@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
+# Expanded: Rohit Goswami https://github.com/HaoZeke
 
 unset base
 unset exchangeTo
 currentVersion="1.23.0"
 unset configuredClient
 currencyCodes=(AUD BAM BGN BMD BND BRL CAD CHF CNY CZK DJF DKK
-  EUR GBP HKD HRK HUF IDR ILS INR
+  EUR GBP HKD HRK HUF IDR ISK ILS INR
   JPY KRW MXN MYR NOK NZD PAB PHP PLN
   RON RUB SEK SGD THB TRY USD ZAR)
 
@@ -246,16 +247,16 @@ Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]
   -h  Show the help
   -v  Get the tool version
 Supported Currencies:
- _______________________
-| AUD | BGN | BRL | CAD |
-| CHF | CNY | CZK | DKK |
-| EUR | GBP | HKD | HRK |
-| HUF | IDR | ILS | INR |
-| JPY | KRW | MXN | MYR |
-| NOK | NZD | PHP | PLN |
-| RON | RUB | SEK | SGD |
-| THB | TRY | USD | ZAR |
- _______________________
+ ______________________________
+| AUD | BGN | BRL | CAD | ZAR |
+| CHF | CNY | CZK | DKK |     |
+| EUR | GBP | HKD | HRK |     |
+| HUF | ISK | IDR | ILS |     |
+| INR | JPY | KRW | MXN |     |
+| MYR | NOK | NZD | PHP |     |
+| PLN | RON | RUB | SEK |     |
+| SGD | THB | TRY | USD |     |
+ ______________________________
 Examples:
   currency EUR USD 12.35
   currency
