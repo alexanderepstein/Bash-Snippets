@@ -83,9 +83,9 @@ AccessJsonElement() {
 printStockInformation()
 {
   # this data is updated hourly.
-  stockProfile="$(httpGet "https://financialmodellingprep.com/api/v3/company/profile/${1}")" > /dev/null
+  stockProfile="$(httpGet "https://financialmodelingprep.com/api/v3/company/profile/${1}")" > /dev/null
   # this is realtime data.
-  stockPrice="$(httpGet "https://financialmodellingprep.com/api/v3/stock/real-time-price/${1}")" > /dev/null
+  stockPrice="$(httpGet "https://financialmodelingprep.com/api/v3/stock/real-time-price/${1}")" > /dev/null
   # necessary for python in some cases
   export PYTHONIOENCODING=utf8
   # checking if we get any information back from the server if not 
