@@ -167,7 +167,7 @@ elif [[ $# -eq 1 ]]; then
   if [[ $1 == "-u" || $1 == "update" ]]; then
     installationcheck false
     ${validTools[1]} -u
-  elif [[ $1 == "-h" || $1 == "help" ]];then  man bash-snippets
+  elif [[ $1 == "-h" || $1 == "help" ]]; then man bash-snippets
   elif [[ $1 == "-v" ]]; then echo "Version $currentVersion"
   fi
 
