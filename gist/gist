@@ -46,6 +46,7 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 folder=~/gist && mkdir -p $folder
 action="${EDITOR:-vi} ."
 auto_sync=true # automatically clone the gist repo
+[[ -z $hint ]] && hint=true # default to show hint with list of gist
 
 # Shell configuration
 set -o pipefail
@@ -243,8 +244,8 @@ _show_list() {
     echo '    gist update'
     return 0
   fi
-  [[ -z $1 ]] && local filter='/^ *s/ d; /^$/ d'
-  [[ $1 == "s" ]] && local filter='/^ *[^ s]/ d; /^$/ d'
+  local filter='/^ *s/ d; /^$/ d'
+  [[ $mark == 's' ]] && filter='/^ *[^ s]/ d; /^$/ d'
 
   sed -e "$filter" $INDEX \
   | while read index link blob_code file_num comment_num author description; do
@@ -256,7 +257,9 @@ _show_list() {
     echo -e "$(printf "% 3s" $index)" $link $name $extra $description \
     | cut -c -$(tput cols)
   done
-  echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty
+
+  [[ $hint == 'true' ]] && echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty \
+  || return 0
 }
 
 # TODO support filenames, file contents
@@ -312,7 +315,6 @@ _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
   echo
   local route="users/$user/gists"
-  local mark=""
   local filter='/^[^s]/ d; /^$/ d'
   if [[ $1 =~ ^(star|s)$ ]];then
     route="gists/starred"
@@ -320,11 +322,11 @@ _fetch_gists() {
     filter='/^[s]/ d; /^$/ d'
   fi
 
-  result=$(http_method GET $GITHUB_API/$route | _parse_response)
+  result=$(http_method GET $GITHUB_API/$route | mark=$mark _parse_response)
   [[ -z $result ]] && echo Failed to update gists && return 1
 
   sed -i'' -e "$filter" $INDEX && echo "$result" >> $INDEX
-  _show_list $mark
+  mark=$mark _show_list
 
   if [[ $auto_sync != 'false' ]]; then (_sync_repos $1 > /dev/null 2>&1 &); fi
 }
@@ -521,7 +523,7 @@ _create_gist() {
 
   if [[ $? -eq 0 ]]; then
     echo 'Gist is created'
-    _show_list | tail -1
+    hint=false _show_list | tail -1
   else
     echo 'Failed to create gist'
   fi
@@ -538,7 +540,7 @@ _edit_gist() {
   http_data=$(mktemp)
   echo { \"description\": \"$(echo $DESC | sed -e 's/"/\\"/g')\" } > $http_data
   http_method PATCH $http_data $GITHUB_API/gists/$GIST_ID > /dev/null \
-  && _fetch_gists
+  && hint=false _fetch_gists | grep -E "^[ ]+$1"
 }
 
 usage() {
@@ -552,7 +554,7 @@ case "$1" in
   "")
     _show_list ;;
   star | s)
-    _show_list s ;;
+    mark=s _show_list ;;
   fetch | f)
     _fetch_gists "$2" ;;
   new | n)
