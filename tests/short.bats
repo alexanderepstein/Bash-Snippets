@@ -75,8 +75,8 @@ setup() {
   run "${TOOL_DIR}/${TOOL_NAME}" -s "${longurl}"
   
   [[ "$status" -eq 0 ]]
-  expected='http://tinyurl.com/uowfbb5'
-  [[ "${lines[2]}" =~ "${expected}" ]]
+  expected='http://tinyurl.com/.+'
+  [[ "${lines[2]}" =~ (${expected}) ]]
 }
 
 @test "Expand tinyurl URL" {
