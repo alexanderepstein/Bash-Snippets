@@ -9,6 +9,8 @@ gist
 gist new
 # edit files in your third gist(default action), and get the path
 gist 3
+# push changes in your third gist to the remote repo
+gist push 3
 # update the description of your third gist
 gist edit 3
 # delete gists with index 3, 4 and 5
@@ -21,7 +23,7 @@ gist github 3
 gist help
 ```
 ## Commands
-### Update information from Github
+### Update information and clone gists from Github
 Run `gist fetch` to fetch your all gists with Github API and keep short information for each gist in a index file inside a given folder. (default to `~/gist/index`)
 - Automatically Clone/Pull each gist with git into a given folder. (default to `~/gist/`)
 - Run `gist fetch star` to fetch you starred gist
@@ -51,8 +53,13 @@ Run `gist new` to create a new gist
 - You can specify filename with `--file`, and description with `--desc`, like `gist new --file new --desc 'a new gist'`
 - If you don't specify filename or description, a prompt will shows up!
 
+### Modify a gist
+Run `gist <index-of-gist>` to use default editor to open files in local repo (by default action). Also use `cd $(gist <index-of-gist>)` to cd to that repo. You can do some trick to simplify it.(See [action](#action) and [Tips](#Tips))
+
+Since now a gist is a local cloned repo, it is your business to do git commit and git push. Use `gist push <index-of-gist>` is not recommended.
+
 ### Clean unnecessary local repos
-Say you delete gists with command `gist delete <index>...`, the local git repositories are still at `~/gist/`. Run `gist clean` to move them into `/tmp`
+Say you delete gists with command `gist delete <index-of-gist>...`, the local git repositories are still at `~/gist/`. Run `gist clean` to move them into `/tmp`
     
 ## Configuration
 `gist` stores your configuraion inside `~/.config/gist.conf`, with `<key>=<value>` format for each line. And just do `source ~/.config/gist.con` at runtime. This file is created automatically when you do the first configuration, and only allows current user to read and write (permission 600).
@@ -89,20 +96,20 @@ Use `gist config toekn <your-github-api-token>` to set the value if needed.
 Use `gist config folder <prefered-directory>` to set the value if needed.
 
 ### auto_sync
-**[Optional]** Automatically clone/update your gists and starred gists as git repos when doing [`gist fetch`](#gist\ fetch) . Default to be `true`
+**[Optional]** Automatically clone/update your gists and starred gists as git repos when doing `gist fetch`. Default to be `true`.
 
 Use `gist config auto_sync false` to disable this feature.
 
 ### action
-**[Optional]** Action performs when you do `gist <index-of-gist>` (like `gist 3` for your third gist). If is being set, `gist` will automatically cd to the folder of gist repo, and just simply use `eval` to perform action.  Default to be 
+**[Optional]** A custom action is performed when you do `gist <index-of-gist>` (like `gist 3` for your third gist). If is being set, `gist` will automatically cd to the folder of gist repo, and just simply use `eval` to perform action.  Default to be 
 ```
 ${EDITOR:-vi} .
 ```
 That is, use default editor or vi (if not set) to open the folder where the git repo of this gist is stored.
 
-For example, you can use the following command to change the action into print the content of files for specified gist.
+For example, you can use the following command to change the action into "print the content of files and list filenames".
 ```
-gist config action 'cat *'
+gist config action 'cat *; ls'
 ```
 
 Also, if you run `gist <index-of-gist>` with `--no-action`, then action would not performs.
