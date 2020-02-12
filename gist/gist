@@ -225,7 +225,11 @@ _apply_config() {
 
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
-      if [[ $auto_sync ]]; then echo "\e[32m[cloning]\e[0m"; fi
+      if [[ $auto_sync == 'true' ]]; then 
+        echo "\e[32m[cloning]\e[0m"; 
+      else
+        echo "\e[32m[Not cloned yet]\e[0m"; 
+      fi
     else
       cd $1
       if [[ -n $(git status --short) ]] &>/dev/null; then 
@@ -328,7 +332,7 @@ _fetch_gists() {
   sed -i'' -e "$filter" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
 
-  if [[ $auto_sync != 'false' ]]; then (_sync_repos $1 > /dev/null 2>&1 &); fi
+  [[ $auto_sync == 'true' ]] && (_sync_repos $1 > /dev/null 2>&1 &)
 }
 
 _query_user() {
