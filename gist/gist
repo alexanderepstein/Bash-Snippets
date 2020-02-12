@@ -146,8 +146,8 @@ update() {
 _configure() {
   [[ -z $@ ]] && (${EDITOR:-vi} $CONFIG) && return 0
 
-  local target=""
-  if [[ $1 =~ ^(user|token|folder|auto_sync|EDITOR|action)$ ]]; then
+  local valid_keys='user|token|folder|auto_sync|EDITOR|action'
+  if [[ $1 =~ ^($valid_keys)$ ]]; then
     if [[ $1 == 'user' ]]; then
       [[ -z $2 ]] && echo "Must specify username" >&2 && return 1
     elif [[ $1 == 'token' ]]; then
@@ -156,11 +156,14 @@ _configure() {
     elif [[ $1 == 'auto_sync' ]]; then
       [[ ! $2 =~ ^(true|false)$ ]] && return 1
     fi
-    target=$1=$2
+    local key=$1 && shift && local target=$key=\'$@\'
+  else 
+    echo "Not a valid key for configuration, use <$valid_keys> instead."
+    return 1
   fi
 
   umask 0077 && touch $CONFIG
-  sed -i'' -e "/^$1=/ d" $CONFIG && [[ -n "$target" ]] && echo $target >> $CONFIG
+  sed -i'' -e "/^$key=/ d" $CONFIG && [[ -n $target ]] && echo $target >> $CONFIG
   cat $CONFIG
 }
 
@@ -192,6 +195,7 @@ _ask_token() {
 # check configuration is fine with user setting
 _validate_config(){
   source $CONFIG 2> /dev/null
+  [[ $1 =~ ^(c|config|h|help|u|user|update|version) ]] && return 0
   if [[ -z $user ]]; then
     echo 'Hi fellow! To access your gists, I need your Github username'
     echo "Also a personal token with scope which allows "gist"!'"
