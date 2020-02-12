@@ -24,6 +24,7 @@
 #   push, p   <pattern>           Push changes by git (well, better to make commit by youself)
 #   github, G <index_of_gist>     Import selected gist as a new Github repo
 #   help, h                       Show this help message
+#   version                       Get the tool version
 #   update                        Update Bash-Snippet Tools
 # 
 # Example:
@@ -31,12 +32,11 @@
 #   gist update (update the list of gists from github.com)
 #   gist 3 (show the repo path of your 3rd gist, and do custom actions)
 #   gist 3 --no-action (show the repo path of your 3rd gist, and do not perform actions)
-#   gist new foo --desc bar (create a new gist with file and description)
+#   gist new --desc bar foo (create a new gist with file and description)
 # 
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
-# TODO test on bats, mac and remote machine
 currentVersion="1.23.0"
 configuredClient=""
 
@@ -68,6 +68,7 @@ getConfiguredClient() {
 }
 
 # Allows to call the users configured client without if statements everywhere
+# TODO return false if code is not 20x
 http_method() {
   local METHOD=$1; shift
   case "$configuredClient" in
@@ -172,8 +173,8 @@ _ask_username() {
   _configure user $user
 }
 
-# prompt for toekn
-# TODO token check, ref: https://developer.github.com/v3/apps/oauth_applications/#check-a-token
+# prompt for token
+# TODO check token scope contains gist, ref: https://developer.github.com/v3/apps/oauth_applications/#check-a-token
 _ask_token() {
   echo -n "Create a new token from web browser? [Y/n] "
   read answer < /dev/tty
@@ -201,7 +202,7 @@ _validate_config(){
         echo 'To create/edit/delete a gist, a token is needed'
         return 1
     fi
-  elif [[ -z $token && $1 =~ ^(u|update)$ && $2 =~ ^(s|star) ]]; then
+  elif [[ -z $token && $1 =~ ^(f|fetch)$ && $2 =~ ^(s|star) ]]; then
     if ! (_ask_token); then
         echo 'To get user starred gists, a token is needed'
         return 1
@@ -259,9 +260,10 @@ _grep_content() {
   _show_list | grep -i $1
 }
 
+# Open Github repository import page
 _import_to_github() {
   _gist_id $1
-  echo put the folowing URL into webpage:
+  echo put the folowing URL into web page:
   echo -n git@github.com:$GIST_ID.git
   python -mwebbrowser https://github.com/new/import
 }
@@ -310,7 +312,7 @@ _fetch_gists() {
   local filter='/^[^s]/ d; /^$/ d'
   if [[ "$1" =~ ^(star|s)$ ]];then
     route="gists/starred"
-    mark="s"
+    local mark="s"
     filter='/^[s]/ d; /^$/ d'
   fi
 
@@ -364,7 +366,7 @@ _gist_id() {
   GIST_ID=$( (grep -hs '' $INDEX || true) | sed -n -e "/^$1 / p" | cut -d' ' -f2 | sed -E -e 's#.*/##')
   if [[ -z "$GIST_ID" ]]; then
     echo -e "Not a valid index: \e[31m$1\e[0m"
-    echo Use the index in the first column instead:
+    echo 'Use the index in the first column instead (like 1 or s1):'
     echo
     _show_list
     return 1
@@ -522,6 +524,7 @@ _create_gist() {
 }
 
 # update description of a gist
+# TODO use response to modify index file, do not fetch gists again
 _edit_gist() {
   _gist_id $1
 
