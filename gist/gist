@@ -49,8 +49,8 @@ auto_sync=true # automatically clone the gist repo
 
 # Shell configuration
 set -o pipefail
-[ "$TRACE" ] && set -x
-[ $(uname) == 'Darwin' ] && alias tac='tail -r'
+[[ $TRACE == 'true' ]] && set -x
+[[ $(uname) == 'Darwin' ]] && alias tac='tail -r'
 trap 'rm -f "$http_data" "$tmp_file"' EXIT
 
 # This function determines which http get tool the system has installed and returns an error if there isnt one
@@ -115,11 +115,11 @@ update() {
     echo "Error: no active internet connection" >&2
     exit 1
   else
-    if [[ "$latestVersion" != "$currentVersion" ]]; then
+    if [[ $latestVersion != $currentVersion ]]; then
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
-      if [[ "$answer" == [Yy] ]]; then
+      if [[ $answer == [Yy] ]]; then
         cd ~ || { echo 'Update Failed'; exit 1; }
         if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
         echo -n "Downloading latest version of: $repositoryName."
@@ -144,7 +144,7 @@ update() {
 
 # handle configuration cases
 _configure() {
-  [[ -z "$@" ]] && (${EDITOR:-vi} $CONFIG) && return 0
+  [[ -z $@ ]] && (${EDITOR:-vi} $CONFIG) && return 0
 
   local target=""
   if [[ $1 =~ ^(user|token|folder|auto_sync|EDITOR|action)$ ]]; then
@@ -310,7 +310,7 @@ _fetch_gists() {
   local route="users/$user/gists"
   local mark=""
   local filter='/^[^s]/ d; /^$/ d'
-  if [[ "$1" =~ ^(star|s)$ ]];then
+  if [[ $1 =~ ^(star|s)$ ]];then
     route="gists/starred"
     local mark="s"
     filter='/^[s]/ d; /^$/ d'
@@ -364,7 +364,7 @@ _sync_repos() {
 # get gist id from index files
 _gist_id() {
   GIST_ID=$( (grep -hs '' $INDEX || true) | sed -n -e "/^$1 / p" | cut -d' ' -f2 | sed -E -e 's#.*/##')
-  if [[ -z "$GIST_ID" ]]; then
+  if [[ -z $GIST_ID ]]; then
     echo -e "Not a valid index: \e[31m$1\e[0m"
     echo 'Use the index in the first column instead (like 1 or s1):'
     echo
@@ -395,7 +395,7 @@ _goto_gist() {
 _delete_gist() {
   read -r -p "Delete gists above? [y/N] " response
   response=${response,,}
-  [[ ! "$response" =~ ^(yes|y)$ ]] && return 0
+  [[ ! $response =~ ^(yes|y)$ ]] && return 0
 
   for i in "$@"; do
     _gist_id "$i"
@@ -455,7 +455,7 @@ _show_detail() {
 # set filename/description/permission for a new gist
 _set_gist() {
   public=True
-  while [[ -n "$@" ]]; do case $1 in
+  while [[ -n $@ ]]; do case $1 in
     -d | --desc)
       description="$2"
       shift; shift;;
@@ -479,7 +479,7 @@ _new_file() {
   tmp_file=$(mktemp)
   cat > $tmp_file
   echo -e '\n' > /dev/tty
-  [[ -z "$1" ]] && read -p 'Type file name: ' filename < /dev/tty
+  [[ -z $1 ]] && read -p 'Type file name: ' filename < /dev/tty
   mv $tmp_file /tmp/$filename
   echo /tmp/$filename
 }
@@ -500,8 +500,8 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
 # create a new gist with files
 _create_gist() {
   _set_gist "$@" || return 1
-  [[ -z "$files" ]] && files=$(_new_file $filename)
-  [[ -z "$description" ]] && read -p 'Type description: ' description < /dev/tty
+  [[ -z $files ]] && files=$(_new_file $filename)
+  [[ -z $description ]] && read -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
   http_data=$(mktemp)
