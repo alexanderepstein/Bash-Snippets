@@ -51,8 +51,8 @@ setup() {
   run "${TOOL_DIR}/${TOOL_NAME}"
 
   [[ "$status" -eq 0 ]]
-  expected='Weather report: Lat'
-  [[ "${lines[0]}" =~ "${expected}" ]]
+  expected='Weather report: .+'
+  [[ "${lines[0]}" =~ ${expected} ]]
 }
 
 @test "Get the tools version with -v" {
