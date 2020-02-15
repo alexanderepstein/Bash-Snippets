@@ -21,7 +21,7 @@
 #   config, c [token | user | folder | auto_sync | EDITOR | action [value] ] Do configuration
 #   user, U   <user>              Get gists from a given Github user
 #   grep, g   <pattern>           Grep gists by a given pattern
-#   push, p   <pattern>           Push changes by git (well, better to make commit by youself)
+#   push, p   <index_of_gist>     Push changes by git (well, better to make commit by youself)
 #   github, G <index_of_gist>     Import selected gist as a new Github repo
 #   help, h                       Show this help message
 #   version                       Get the tool version
