@@ -72,16 +72,17 @@ getConfiguredClient() {
 # TODO return false if code is not 20x
 http_method() {
   local METHOD=$1; shift
+  local header_opt; local header; local data_opt
   case "$configuredClient" in
-    curl)   [[ -n $token ]] && local extra="--header" local header="Authorization: token $token"
-      [[ $METHOD =~ (POST|PATCH) ]] && extra2="--data"
-      curl -X $METHOD -A curl -s $extra "$header" $extra2 @$http_data "$@" ;;
-    wget)   [[ -n $token ]] && local extra="--header" local header="Authorization: token $token"
-      [[ $METHOD =~ (POST|PATCH) ]] && extra2='--body-file'
-      wget --method=$METHOD -qO- $extra "$header" $extra2 $http_data "$@" ;;
+    curl)   [[ -n $token ]] && header_opt="--header" header="Authorization: token $token"
+      [[ $METHOD =~ (POST|PATCH) ]] && data_opt='--data'
+      curl -X "$METHOD" -A curl -s $header_opt "$header" $data_opt "@$http_data" "$@" ;;
+    wget)   [[ -n $token ]] && header_opt="--header" header="Authorization: token $token"
+      [[ $METHOD =~ (POST|PATCH) ]] && data_opt='--body-file'
+      wget --method="$METHOD" -qO- $header_opt "$header" $data_opt "$http_data" "$@" ;;
     httpie) [[ -n $token ]] && header="Authorization:token $token"
-      [[ $METHOD =~ (POST|PATCH) ]] && extra2="@$http_data"
-      http -b $METHOD "$@" "$header" $extra2 ;;
+      [[ $METHOD =~ (POST|PATCH) ]] && data_opt="@$http_data"
+      http -b "$METHOD" "$@" "$header" "$data_opt" ;;
   esac
 }
 
@@ -116,14 +117,15 @@ update() {
     echo "Error: no active internet connection" >&2
     exit 1
   else
-    if [[ $latestVersion != $currentVersion ]]; then
+    if [[ $latestVersion != "$currentVersion" ]]; then
       echo "Version $latestVersion available"
       echo -n "Do you wish to update $repositoryName [Y/n]: "
       read -r answer
       if [[ $answer == [Yy] ]]; then
         cd ~ || { echo 'Update Failed'; exit 1; }
         if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        echo -n "Downloading latest version of: $repositoryName."
+        echo -n "Downloading latest version of: $repositoryName." 
+        # shellcheck disable=SC2015
         git clone -q "https://github.com/$githubUserName/$repositoryName" && touch .BSnippetsHiddenFile || { echo "Failure!"; exit 1; } &
         while [ ! -f .BSnippetsHiddenFile ]; do { echo -n "."; sleep 2; };done
         rm -f .BSnippetsHiddenFile
@@ -145,7 +147,7 @@ update() {
 
 # handle configuration cases
 _configure() {
-  [[ -z $@ ]] && (${EDITOR:-vi} $CONFIG) && return 0
+  [[ $# == 0 ]] && (${EDITOR:-vi} "$CONFIG") && return 0
 
   local valid_keys='user|token|folder|auto_sync|EDITOR|action'
   if [[ $1 =~ ^($valid_keys)$ ]]; then
@@ -157,49 +159,50 @@ _configure() {
     elif [[ $1 == 'auto_sync' ]]; then
       [[ ! $2 =~ ^(true|false)$ ]] && return 1
     fi
-    local key=$1 && shift && local target=$key=\'$@\'
+    local key=$1 && shift && local target=$key="'$*'"
   else 
     echo "Not a valid key for configuration, use <$valid_keys> instead."
     return 1
   fi
 
-  umask 0077 && touch $CONFIG
-  sed -i'' -e "/^$key=/ d" $CONFIG && [[ -n $target ]] && echo $target >> $CONFIG
-  cat $CONFIG
+  umask 0077 && touch "$CONFIG"
+  sed -i'' -e "/^$key=/ d" "$CONFIG" && [[ -n $target ]] && echo "$target" >> "$CONFIG"
+  cat "$CONFIG"
 }
 
 # prompt for username
 _ask_username() {
   while [[ ! $user =~ ^[[:alnum:]]+$ ]]; do
     [[ -n $user ]] && echo "Not a valid username"
-    read -p "Github username: " user < /dev/tty
+    read -r -p "Github username: " user < /dev/tty
   done
-  _configure user $user
+  _configure user "$user"
 }
 
 # prompt for token
 # TODO check token scope contains gist, ref: https://developer.github.com/v3/apps/oauth_applications/#check-a-token
 _ask_token() {
   echo -n "Create a new token from web browser? [Y/n] "
-  read answer < /dev/tty
+  read -r answer < /dev/tty
   if [[ ! $answer =~ ^(N|n|No|NO|no)$ ]]; then
-    python -mwebbrowser https://github.com/settings/tokens/new\?scopes\=gist
+    python -mwebbrowser https://github.com/settings/tokens/new?scopes=gist
   fi
 
   while [[ ! $token =~ ^[[:alnum:]]{40}$ ]]; do
     [[ -n $token ]] && echo "Not a valid token"
-    read -p "Paste your token here (Ctrl-C to skip): " token < /dev/tty
+    read -r -p "Paste your token here (Ctrl-C to skip): " token < /dev/tty
   done
-  _configure token $token
+  _configure token "$token"
 }
 
 # check configuration is fine with user setting
 _validate_config(){
-  source $CONFIG 2> /dev/null
+  # shellcheck source=/dev/null
+  source "$CONFIG" 2> /dev/null
   [[ $1 =~ ^(c|config|h|help|u|user|update|version) ]] && return 0
   if [[ -z $user ]]; then
     echo 'Hi fellow! To access your gists, I need your Github username'
-    echo "Also a personal token with scope which allows "gist"!'"
+    echo "Also a personal token with scope which allows \"gist\"!"
     echo
     _ask_username && _ask_token && init=true
   elif [[ -z $token && $1 =~ ^(n|new|e|edit|D|delete)$ ]]; then
@@ -218,8 +221,6 @@ _validate_config(){
 # load configuration
 _apply_config() {
   _validate_config "$@" || return 1
-
-  AUTH_HEADER="Authorization: token $token"
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
 
@@ -231,17 +232,18 @@ _check_repo_status() {
         echo "\e[32m[Not cloned yet]\e[0m"; 
       fi
     else
-      cd $1
+      cd "$1" || exit
       if [[ -n $(git status --short) ]] &>/dev/null; then 
         echo "\e[36m[working]\e[0m"
       else 
-        [[ $(_blob_code $1) != $2 ]] 2>/dev/null && echo "\e[31m[outdated]\e[0m"
+        [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && echo "\e[31m[outdated]\e[0m"
         [[ -n $(git cherry) ]] 2>/dev/null && echo "\e[31m[ahead]\e[0m"
       fi
     fi
 }
 
 # Show the list of gist, but not updated time
+# show username for starred gist
 _show_list() {
   if [[ ! -e $INDEX ]]; then 
     echo 'No local file found for last update, please run command:'
@@ -252,14 +254,15 @@ _show_list() {
   [[ $mark == 's' ]] && filter='/^ *[^ s]/ d; /^$/ d'
 
   sed -e "$filter" $INDEX \
-  | while read index link blob_code file_num comment_num author description; do
-    [[ $1 == "s" ]] && local name=$author
-    local repo=$folder/$(echo $link | sed 's#.*/##')
-    local extra=$(_check_repo_status $repo $blob_code)
+  | while read -r index link blob_code file_num comment_num author description; do
+    [[ $mark == 's' ]] && local name=$author
+    #local repo; repo=$folder/$(echo $link | sed 's#.*/##')
+    local repo; repo=$folder/${link##*/}
+    local extra; extra=$(_check_repo_status "$repo" "$blob_code")
     [[ -z $extra ]] && extra="$file_num $comment_num"
 
-    echo -e "$(printf "% 3s" $index)" $link $name $extra $description \
-    | cut -c -$(tput cols)
+    echo -e "$(printf "% 3s" "$index") $link $name $extra $description" \
+    | cut -c -"$(tput cols)"
   done
 
   [[ $hint == 'true' ]] && echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty \
@@ -268,20 +271,20 @@ _show_list() {
 
 # TODO support filenames, file contents
 _grep_content() {
-  _show_list | grep -i $1
+  _show_list | grep -i "$1"
 }
 
 # Open Github repository import page
 _import_to_github() {
-  _gist_id $1
+  _gist_id "$1"
   echo put the folowing URL into web page:
-  echo -n git@github.com:$GIST_ID.git
+  echo -n "git@github.com:$GIST_ID.git"
   python -mwebbrowser https://github.com/new/import
 }
 
 _push_to_remote() {
-  _gist_id $1
-  cd $folder/$GIST_ID && git add . \
+  _gist_id "$1"
+  cd "$folder/$GIST_ID" && git add . \
   && git commit --allow-empty-message -m '' && git push origin master
 }
 
@@ -304,11 +307,11 @@ for gist in raw:
 _parse_response() {
   _parse_gists \
   | tac | sed -e 's/, /,/g' | nl -s' ' \
-  | while read index link file_url_array public file_num comment_num author description; do
-    local blob_code=$(echo $file_url_array | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
+  | while read -r index link file_url_array public file_num comment_num author description; do
+    local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     [[ $public == 'False' ]] && local mark=p
     [[ -n $1 ]] && local index=$1
-    echo $mark$index $link $blob_code $file_num $comment_num $author $description | tr -d '"'
+    echo "$mark$index $link $blob_code $file_num $comment_num $author $description" | tr -d '"'
   done
 }
 
@@ -332,22 +335,22 @@ _fetch_gists() {
   sed -i'' -e "$filter" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
 
-  [[ $auto_sync == 'true' ]] && (_sync_repos $1 > /dev/null 2>&1 &)
+  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" > /dev/null 2>&1 &)
 }
 
 _query_user() {
   local route="users/$1/gists"
-  result=$(http_method GET $GITHUB_API/$route | _parse_response)
+  result=$(http_method GET $GITHUB_API/"$route" | _parse_response)
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
-  | while read index link blob_code file_num extra description; do
-    echo $link $file_num $extra $description | cut -c -$(tput cols)
+  | while read -r index link blob_code file_num extra description; do
+    echo "$link $file_num $extra $description" | cut -c -"$(tput cols)"
   done
 }
 
 _blob_code() {
-  cd $1 && git ls-tree master | cut -d' ' -f3 | cut -c-7 | sort | paste -sd '-'
+  cd "$1" && git ls-tree master | cut -d' ' -f3 | cut -c-7 | sort | paste -sd '-'
 }
 
 # update local git repos
@@ -355,16 +358,16 @@ _blob_code() {
 _sync_repos() {
   # clone repos which are not in the local
   comm -13 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
-           <(cat $INDEX | cut -d' ' -f2 | sed -e 's#.*/##' | sort) \
+           <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort) \
   | xargs -I{} --max-procs 8 git clone git@github.com:{}.git $folder/{}
 
   # pull if remote repo has different blob objects
-  cat $INDEX | cut -d' ' -f2,3 \
-  | while read url blob_code_remote; do
-    local repo=$folder/$(echo $url | sed -e 's#.*/##')
-    local blob_code_local=$(_blob_code $repo)
-    cd $repo \
-    && [[ $blob_code_local != $blob_code_remote ]] \
+  cut -d' ' -f2,3 < "$INDEX" \
+  | while read -r url blob_code_remote; do
+    local repo; repo=$folder/${url##*/}
+    local blob_code_local; blob_code_local=$(_blob_code "$repo")
+    cd "$repo" \
+    && [[ $blob_code_local != "$blob_code_remote" ]] \
     && [[ $(git rev-parse origin/master) == $(git rev-parse master) ]] \
     && git pull
   done
@@ -384,13 +387,11 @@ _gist_id() {
 }
 
 _goto_gist() {
-  _gist_id $1 || return 1
+  _gist_id "$1" || return 1
 
   if [[ ! -d $folder/$GIST_ID  ]]; then
     echo 'Cloning gist as repo...'
-    git clone git@github.com:$GIST_ID.git $folder/$GIST_ID
-
-    if [[ $? -eq 0 ]]; then
+    if git clone "git@github.com:$GIST_ID".git "$folder/$GIST_ID"; then
       echo 'Repo is cloned' > /dev/tty
     else
       echo 'Failed to clone the gist' > /dev/tty
@@ -398,8 +399,8 @@ _goto_gist() {
     fi
   fi
 
-  [[ $2 != '--no-action' ]] && cd $folder/$GIST_ID && eval "$action"
-  echo $folder/$GIST_ID
+  [[ $2 != '--no-action' ]] && cd "$folder/$GIST_ID" && eval "$action"
+  echo "$folder/$GIST_ID"
 }
 
 _delete_gist() {
@@ -409,7 +410,7 @@ _delete_gist() {
 
   for i in "$@"; do
     _gist_id "$i"
-    http_method DELETE $GITHUB_API/gists/$GIST_ID \
+    http_method DELETE "$GITHUB_API/gists/$GIST_ID" \
     && echo "$i" deleted \
     && sed -E -i'' -e "/^$i / d" $INDEX
   done
@@ -418,9 +419,9 @@ _delete_gist() {
 # remove repos which are not in user gists anymore
 _clean_repos() {
   comm -23 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
-           <(cat $INDEX 2> /dev/null | cut -d' ' -f2 | sed -e 's#.*/##' | sort) \
-  | while read dir; do
-    mv $folder/$dir /tmp && echo move $folder/$dir to /tmp
+           <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort 2> /dev/null ) \
+  | while read -r dir; do
+    mv $folder/"$dir" /tmp && echo move $folder/"$dir" to /tmp
   done
 }
 
@@ -454,18 +455,19 @@ for comment in raw:
 }
 
 _show_detail() {
-  _gist_id $1
-  http_method GET $GITHUB_API/gists/$GIST_ID \
+  _gist_id "$1"
+  http_method GET "$GITHUB_API/gists/$GIST_ID" \
   | _parse_gist
 
-  http_method GET $GITHUB_API/gists/$GIST_ID/comments \
+  http_method GET "$GITHUB_API/gists/$GIST_ID"/comments \
   | _parse_comment
 }
 
 # set filename/description/permission for a new gist
 _set_gist() {
+  files=()
   public=True
-  while [[ -n $@ ]]; do case $1 in
+  while [[ -n "$*" ]]; do case $1 in
     -d | --desc)
       description="$2"
       shift; shift;;
@@ -476,22 +478,22 @@ _set_gist() {
       public=False
       shift;;
     *)
-      files="$1 $files"
+      files+=($1)
       shift;;
     esac
   done
-  ls $files > /dev/null || return 1
+  ls "${files[@]}" > /dev/null || return 1
 }
 
 # Let user type the content of gist before setting filename
 _new_file() {
   [[ -t 0 ]] && echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
   tmp_file=$(mktemp)
-  cat > $tmp_file
+  cat > "$tmp_file"
   echo -e '\n' > /dev/tty
-  [[ -z $1 ]] && read -p 'Type file name: ' filename < /dev/tty
-  mv $tmp_file /tmp/$filename
-  echo /tmp/$filename
+  [[ -z $1 ]] && read -r -p 'Type file name: ' filename < /dev/tty
+  mv "$tmp_file" /tmp/"$filename"
+  echo /tmp/"$filename"
 }
 
 _gist_body(){
@@ -510,14 +512,14 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
 # create a new gist with files
 _create_gist() {
   _set_gist "$@" || return 1
-  [[ -z $files ]] && files=$(_new_file $filename)
-  [[ -z $description ]] && read -p 'Type description: ' description < /dev/tty
+  [[ -z $files ]] && files=(_new_file "$filename")
+  [[ -z $description ]] && read -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
   http_data=$(mktemp)
 
-  echo -e "$files\n$description" \
-  | _gist_body > $http_data \
+  echo -e "${files[*]}\n$description" \
+  | _gist_body > "$http_data" \
   && http_method POST $GITHUB_API/gists \
   | sed -e '1 s/^/[/; $ s/$/]/' \
   | _parse_response $(( $(sed -e '/^s/ d' $INDEX | wc -l) +1 )) \
@@ -536,19 +538,19 @@ _create_gist() {
 # update description of a gist
 # TODO use response to modify index file, do not fetch gists again
 _edit_gist() {
-  _gist_id $1
+  _gist_id "$1"
 
   echo -n 'Type new description: '
-  read DESC < /dev/tty
+  read -r DESC < /dev/tty
   
   http_data=$(mktemp)
-  echo { \"description\": \"$(echo $DESC | sed -e 's/"/\\"/g')\" } > $http_data
-  http_method PATCH $http_data $GITHUB_API/gists/$GIST_ID > /dev/null \
+  echo '{' \"description\": \"${$DESC//\"/\\\"}\" '}' > "$http_data"
+  http_method PATCH "$http_data $GITHUB_API/gists/$GIST_ID" > /dev/null \
   && hint=false _fetch_gists | grep -E "^[ ]+$1"
 }
 
 usage() {
-  sed -E -n -e ' /^$/ q; 7,$ s/^# //p' $0
+  sed -E -n -e ' /^$/ q; 7,$ s/^# //p' "$0"
 }
 
 _apply_config "$@" || exit 1
