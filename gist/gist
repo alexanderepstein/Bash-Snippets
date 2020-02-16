@@ -513,7 +513,7 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
 # create a new gist with files
 _create_gist() {
   _set_gist "$@" || return 1
-  [[ -z $files ]] && files=(_new_file "$filename")
+  [[ -z $files ]] && files+=$(_new_file "$filename")
   [[ -z $description ]] && read -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
