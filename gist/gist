@@ -302,7 +302,6 @@ for gist in raw:
     '
 }
 
-# TODO check if a user has no gist
 # parse response from gists require
 _parse_response() {
   _parse_gists \
@@ -330,7 +329,7 @@ _fetch_gists() {
   fi
 
   result=$(http_method GET $GITHUB_API/$route | mark=$mark _parse_response)
-  [[ -z $result ]] && echo Failed to update gists && return 1
+  [[ -z $result ]] && echo 'Not a single valid gist' && return 0
 
   sed -i'' -e "$filter" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
