@@ -314,7 +314,7 @@ _parse_response() {
   done
 }
 
-# TODO pagnation for more than 30 gists
+# TODO pagnation for more than 100 gists
 # TODO add files and date of a gist
 # get latest list of gists from Github API
 _fetch_gists() {
@@ -328,7 +328,7 @@ _fetch_gists() {
     filter='/^[s]/ d; /^$/ d'
   fi
 
-  result=$(http_method GET $GITHUB_API/$route | mark=$mark _parse_response)
+  result=$(http_method GET $GITHUB_API/$route?per_page=100 | mark=$mark _parse_response)
   [[ -z $result ]] && echo 'Not a single valid gist' && return 0
 
   sed -i'' -e "$filter" $INDEX && echo "$result" >> $INDEX
