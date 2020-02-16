@@ -8,7 +8,7 @@
 # Description: Manage your gists with git and Github API v3
 # Usage: gist [command] [<args>]
 #
-#   [star | s]                    List your gists with format below, star for your starred gists: 
+#   [star | s]                    List your gists with format below, star for your starred gists:
 #                                 [index_of_gist] [url] [file_num] [comment_num] [short description]
 #   fetch, f [star | s]           Update the local list of your gists, star for your starred gists
 #   <index_of_gist> [--no-action] Show the path of local gist repo and do custom actions
@@ -124,7 +124,7 @@ update() {
       if [[ $answer == [Yy] ]]; then
         cd ~ || { echo 'Update Failed'; exit 1; }
         if [[ -d  ~/$repositoryName ]]; then rm -r -f $repositoryName || { echo "Permissions Error: try running the update as sudo"; exit 1; } ; fi
-        echo -n "Downloading latest version of: $repositoryName." 
+        echo -n "Downloading latest version of: $repositoryName."
         # shellcheck disable=SC2015
         git clone -q "https://github.com/$githubUserName/$repositoryName" && touch .BSnippetsHiddenFile || { echo "Failure!"; exit 1; } &
         while [ ! -f .BSnippetsHiddenFile ]; do { echo -n "."; sleep 2; };done
@@ -160,7 +160,7 @@ _configure() {
       [[ ! $2 =~ ^(true|false)$ ]] && return 1
     fi
     local key=$1 && shift && local target=$key="'$*'"
-  else 
+  else
     echo "Not a valid key for configuration, use <$valid_keys> instead."
     return 1
   fi
@@ -226,16 +226,16 @@ _apply_config() {
 
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
-      if [[ $auto_sync == 'true' ]]; then 
-        echo "\e[32m[cloning]\e[0m"; 
+      if [[ $auto_sync == 'true' ]]; then
+        echo "\e[32m[cloning]\e[0m";
       else
-        echo "\e[32m[Not cloned yet]\e[0m"; 
+        echo "\e[32m[Not cloned yet]\e[0m";
       fi
     else
       cd "$1" || exit
-      if [[ -n $(git status --short) ]] &>/dev/null; then 
+      if [[ -n $(git status --short) ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
-      else 
+      else
         [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && echo "\e[31m[outdated]\e[0m"
         [[ -n $(git cherry) ]] 2>/dev/null && echo "\e[31m[ahead]\e[0m"
       fi
@@ -245,7 +245,7 @@ _check_repo_status() {
 # Show the list of gist, but not updated time
 # show username for starred gist
 _show_list() {
-  if [[ ! -e $INDEX ]]; then 
+  if [[ ! -e $INDEX ]]; then
     echo 'No local file found for last update, please run command:'
     echo '    gist update'
     return 0
@@ -299,7 +299,7 @@ for gist in raw:
     print(gist["comments"], end=" ")
     print(gist["owner"]["login"], end=" ")
     print(gist["description"])
-    ' 
+    '
 }
 
 # TODO check if a user has no gist
@@ -316,7 +316,7 @@ _parse_response() {
 }
 
 # TODO pagnation for more than 30 gists
-# TODO add files and date of a gist 
+# TODO add files and date of a gist
 # get latest list of gists from Github API
 _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
@@ -438,7 +438,7 @@ print("updated_at:", raw["updated_at"])
 print("files:")
 for file in raw["files"].keys():
     print("   ", file)
-  ' 
+  '
 }
 
 # equal to jq '.[] | {user: .user.login, created_at: .created_at, updated_at: .updated_at, body: .body}'
@@ -451,7 +451,7 @@ for comment in raw:
     print("|", "created_at:", comment["created_at"])
     print("|", "updated_at:", comment["updated_at"])
     print("|", comment["body"])
-  ' 
+  '
 }
 
 _show_detail() {
@@ -542,7 +542,7 @@ _edit_gist() {
 
   echo -n 'Type new description: '
   read -r DESC < /dev/tty
-  
+
   http_data=$(mktemp)
   echo '{' \"description\": \"${$DESC//\"/\\\"}\" '}' > "$http_data"
   http_method PATCH "$http_data $GITHUB_API/gists/$GIST_ID" > /dev/null \
@@ -596,7 +596,7 @@ case "$1" in
   version)
     echo "Version $currentVersion"
     exit 0 ;;
-  update)  
+  update)
     checkInternet || exit 1
     update
     exit 0
