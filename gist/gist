@@ -549,8 +549,8 @@ _edit_gist() {
   fi
 
   http_data=$(mktemp)
-  echo '{' \"description\": \"${$DESC//\"/\\\"}\" '}' > "$http_data"
-  http_method PATCH "$http_data $GITHUB_API/gists/$GIST_ID" > /dev/null \
+  echo '{' \"description\": \"${DESC//\"/\\\"}\" '}' > "$http_data"
+  http_method PATCH "$GITHUB_API/gists/$GIST_ID" > /dev/null \
   && hint=false _fetch_gists | grep -E "^[ ]+$1"
 }
 
