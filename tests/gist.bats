@@ -2,7 +2,7 @@
 
 export TOOL_NAME='gist'
 export GIST_USER='phamhsieh'
-export GIST_API_TOKEN='72b2bcb477796e52968f2a2862b64f0874167f00'
+export GIST_API_TOKEN='dd43dc9949a5b4a1d6c7''b779f13af357282016e4'
 
 setup() {
   # $REPO_DIR/tests/taste.bats
