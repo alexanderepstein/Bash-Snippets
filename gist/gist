@@ -403,9 +403,11 @@ _goto_gist() {
 }
 
 _delete_gist() {
-  read -r -p "Delete gists above? [y/N] " response
-  response=${response,,}
-  [[ ! $response =~ ^(yes|y)$ ]] && return 0
+  if [[ $confirm != false ]]; then
+    read -r -p "Delete gists above? [y/N] " response
+    response=${response,,}
+    [[ ! $response =~ ^(yes|y)$ ]] && return 0
+  fi
 
   for i in "$@"; do
     _gist_id "$i"
