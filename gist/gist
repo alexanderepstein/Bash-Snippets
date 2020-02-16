@@ -541,8 +541,12 @@ _create_gist() {
 _edit_gist() {
   _gist_id "$1"
 
-  echo -n 'Type new description: '
-  read -r DESC < /dev/tty
+  if [[ -z $2 ]]; then
+    echo -n 'Type new description: '
+    read -r DESC < /dev/tty
+  else
+    DESC="$2"
+  fi
 
   http_data=$(mktemp)
   echo '{' \"description\": \"${$DESC//\"/\\\"}\" '}' > "$http_data"
@@ -568,7 +572,8 @@ case "$1" in
     shift
     _create_gist "$@" ;;
   edit | e)
-    _edit_gist "$2" ;;
+    shift
+    _edit_gist "$@" ;;
   sync | S)
     _sync_repos ;;
   detail | d)
