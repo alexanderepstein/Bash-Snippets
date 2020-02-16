@@ -550,7 +550,6 @@ _edit_gist() {
   http_data=$(mktemp)
   echo '{' \"description\": \"${DESC//\"/\\\"}\" '}' > "$http_data"
   new_record=$( http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
-                | tee foo \
                 | sed -e '1 s/^/[/; $ s/$/]/' \
                 | _parse_response $1 )
   [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
