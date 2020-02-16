@@ -537,7 +537,6 @@ _create_gist() {
 }
 
 # update description of a gist
-# TODO use response to modify index file, do not fetch gists again
 _edit_gist() {
   _gist_id "$1"
 
@@ -550,8 +549,13 @@ _edit_gist() {
 
   http_data=$(mktemp)
   echo '{' \"description\": \"${DESC//\"/\\\"}\" '}' > "$http_data"
-  http_method PATCH "$GITHUB_API/gists/$GIST_ID" > /dev/null \
-  && hint=false _fetch_gists | grep -E "^[ ]+$1"
+  new_record=$( http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
+                | tee foo \
+                | sed -e '1 s/^/[/; $ s/$/]/' \
+                | _parse_response $1 )
+  [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
+  && hint=false _show_list | grep -E "^[ ]+$1" \
+  || echo 'Fail to modify gist description'
 }
 
 usage() {
