@@ -554,8 +554,8 @@ _edit_gist() {
   _gist_id "$1"
 
   if [[ -z $2 ]]; then
-    echo -n 'Type new description: '
-    read -r DESC < /dev/tty
+    echo 'Type new description:'
+    read -e -r DESC < /dev/tty
   else
     DESC="$2"
   fi
