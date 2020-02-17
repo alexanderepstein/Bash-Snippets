@@ -335,6 +335,7 @@ _fetch_gists() {
   mark=$mark _show_list
 
   [[ $auto_sync == 'true' ]] && (_sync_repos "$1" > /dev/null 2>&1 &)
+  true
 }
 
 _query_user() {
