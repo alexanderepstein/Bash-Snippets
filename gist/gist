@@ -18,7 +18,7 @@
 #   edit, e   <index_of_gist>     Edit a gist's description
 #   delete, D <index_of_gist>...  Delete a gist
 #   clean, C                      Clean removed gists in local
-#   config, c [token | user | folder | auto_sync | EDITOR | action [value] ] Do configuration
+#   config, c [token | user | folder | auto_sync | EDITOR | action | protocol [value] ] Do configuration
 #   user, U   <user>              Get gists from a given Github user
 #   grep, g   <pattern>           Grep gists by a given pattern
 #   push, p   <index_of_gist>     Push changes by git (well, better to make commit by youself)
@@ -45,9 +45,10 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
 folder=~/gist && mkdir -p $folder
 action="${EDITOR:-vi} ."
-auto_sync=true # automatically clone the gist repo
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
 [[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
+auto_sync=true # automatically clone the gist repo
+protocol=https
 
 # Shell configuration
 set -o pipefail
@@ -150,7 +151,7 @@ update() {
 _configure() {
   [[ $# == 0 ]] && (${EDITOR:-vi} "$CONFIG") && return 0
 
-  local valid_keys='user|token|folder|auto_sync|EDITOR|action'
+  local valid_keys='user|token|folder|auto_sync|EDITOR|action|protocol'
   if [[ $1 =~ ^($valid_keys)$ ]]; then
     if [[ $1 == 'user' ]]; then
       [[ -z $2 ]] && echo "Must specify username" >&2 && return 1
@@ -159,6 +160,8 @@ _configure() {
       && return 1
     elif [[ $1 == 'auto_sync' ]]; then
       [[ ! $2 =~ ^(true|false)$ ]] && return 1
+    elif [[ $1 == 'protocol' ]]; then
+      [[ ! $2 =~ ^(https|ssh)$ ]] && return 1
     fi
     local key=$1 && shift && local target=$key="'$*'"
   else
@@ -355,12 +358,11 @@ _blob_code() {
 }
 
 # update local git repos
-# TODO support HTTPS protocol
 _sync_repos() {
   # clone repos which are not in the local
   comm -13 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
            <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort) \
-  | xargs -I{} --max-procs 8 git clone git@github.com:{}.git $folder/{}
+  | xargs -I{} --max-procs 8 git clone "$(_repo_url {})" $folder/{}
 
   # pull if remote repo has different blob objects
   cut -d' ' -f2,3 < "$INDEX" \
@@ -373,6 +375,15 @@ _sync_repos() {
     && git pull
   done
   echo Everything is fine!
+}
+
+# get the url where to clone repo, take user and repo name as parameters
+_repo_url() {
+  if [[ $protocol == 'ssh' ]]; then
+    echo "git@gist.github.com:$1.git"
+  else
+    echo "https://gist.github.com/$1.git"
+  fi
 }
 
 # get gist id from index files
@@ -392,7 +403,7 @@ _goto_gist() {
 
   if [[ ! -d $folder/$GIST_ID  ]]; then
     echo 'Cloning gist as repo...'
-    if git clone "git@github.com:$GIST_ID".git "$folder/$GIST_ID"; then
+    if git clone "$(_repo_url "$GIST_ID")" "$folder/$GIST_ID"; then
       echo 'Repo is cloned' > /dev/tty
     else
       echo 'Failed to clone the gist' > /dev/tty
@@ -527,7 +538,7 @@ _create_gist() {
   | _parse_response $(( $(sed -e '/^s/ d' $INDEX | wc -l) +1 )) \
   | tee -a $INDEX \
   | cut -d' ' -f2 | sed -E -e 's#.*/##' \
-  | (xargs -I{} git clone git@github.com:{}.git $folder/{} &> /dev/null &)
+  | (xargs -I{} git clone "$(_repo_url {})" $folder/{} &> /dev/null &)
 
   # shellcheck disable=2181
   if [[ $? -eq 0 ]]; then

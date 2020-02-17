@@ -119,6 +119,14 @@ Also, if you run `gist <index-of-gist>` with `--no-action`, then action would no
 
 For example, use `gist config EDITOR code` to use VSCode instead.
 
+### protocol
+**[Optional]** Protocol to clone git repo. Default to HTTPS
+valid values are:
+- https
+- ssh
+
+For example, use `gist config protocol ssh` to use SSH protocol instead.
+
 ## Tips
 ### Jump to gist repo
 Sometimes you want to switch to the specified gist repo as working directory.
