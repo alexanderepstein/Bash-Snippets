@@ -47,6 +47,7 @@ folder=~/gist && mkdir -p $folder
 action="${EDITOR:-vi} ."
 auto_sync=true # automatically clone the gist repo
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
+[[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
 
 # Shell configuration
 set -o pipefail
@@ -514,12 +515,11 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
 # create a new gist with files
 _create_gist() {
   _set_gist "$@" || return 1
-  [[ -z $files ]] && files+=$(_new_file "$filename")
+  [[ -z ${files[*]} ]] && files+=($(_new_file "$filename"))
   [[ -z $description ]] && read -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
   http_data=$(mktemp)
-
   echo -e "${files[*]}\n$description" \
   | _gist_body > "$http_data" \
   && http_method POST $GITHUB_API/gists \
@@ -529,6 +529,7 @@ _create_gist() {
   | cut -d' ' -f2 | sed -E -e 's#.*/##' \
   | (xargs -I{} git clone git@github.com:{}.git $folder/{} &> /dev/null &)
 
+  # shellcheck disable=2181
   if [[ $? -eq 0 ]]; then
     echo 'Gist is created'
     hint=false _show_list | tail -1
@@ -549,10 +550,10 @@ _edit_gist() {
   fi
 
   http_data=$(mktemp)
-  echo '{' \"description\": \"${DESC//\"/\\\"}\" '}' > "$http_data"
+  echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
   new_record=$( http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
                 | sed -e '1 s/^/[/; $ s/$/]/' \
-                | _parse_response $1 )
+                | _parse_response "$1" )
   [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
   && hint=false _show_list | grep -E "^[ ]+$1" \
   || echo 'Fail to modify gist description'
