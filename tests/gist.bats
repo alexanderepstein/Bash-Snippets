@@ -52,13 +52,13 @@ setup() {
 @test "The new command should create a new public gist with gist command" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}" new --file gist --desc 'Manage gist like a pro' "${TOOL_DIR}/${TOOL_NAME}"
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ (^ *[0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
 }
 
 @test "The fetch command should fetch user gists" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}" fetch
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ (^ *[0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
 }
 
 @test "The fetch command should fetch starred gists" {
@@ -71,7 +71,7 @@ setup() {
 @test "No arguments prints the list of gists" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}"
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ (^ *[0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
 }
 
 @test "Specify an index to return the path of cloned repo" {
