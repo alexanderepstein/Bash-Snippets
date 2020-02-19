@@ -52,33 +52,33 @@ setup() {
 @test "The new command should create a new public gist with gist command" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}" new --file gist --desc 'Manage gist like a pro' "${TOOL_DIR}/${TOOL_NAME}"
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[0-9a-z]+) ]]
 }
 
 @test "The fetch command should fetch user gists" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}" fetch
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[0-9a-z]+) ]]
 }
 
 @test "The fetch command should fetch starred gists" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}" fetch star
   [ "$status" -eq 0 ]
   echo ${lines[-1]}
-  [[ "${lines[-1]}" =~ (Not a single valid gist|^ *s[0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ (Not a single valid gist|^ *s[0-9]+ https://gist.github.com/[0-9a-z]+) ]]
 }
 
 @test "No arguments prints the list of gists" {
   hint=false run "${TOOL_DIR}/${TOOL_NAME}"
   [ "$status" -eq 0 ]
-  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[[:alnum:]]+) ]]
+  [[ "${lines[-1]}" =~ ([0-9]+ https://gist.github.com/[0-9a-z]+) ]]
 }
 
 @test "Specify an index to return the path of cloned repo" {
   run "${TOOL_DIR}/${TOOL_NAME}" 1 --no-action
   echo ${lines[0]}
   [ "$status" -eq 0 ]
-  [[ "${lines[0]}" =~ (${HOME}/gist/[[:alnum:]]+) ]]
+  [[ "${lines[0]}" =~ (${HOME}/gist/[0-9a-z]+) ]]
 }
 
 @test "The edit command should modify the description of a gist" {
@@ -96,5 +96,5 @@ setup() {
 @test "The user command should get the list of public gists from a user" {
   run "${TOOL_DIR}/${TOOL_NAME}" user defunkt
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "https://gist.github.com/406608 2 6 defunkt My Ruby Setup" ]
+  [[ "${lines[0]}" =~ (https://gist.github.com/[0-9a-z]+ [0-9]+ [0-9]+ defunkt) ]]
 }
