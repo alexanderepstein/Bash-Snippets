@@ -342,9 +342,10 @@ _fetch_gists() {
   true
 }
 
+# TODO pagnation for more than 100 gists
 _query_user() {
   local route="users/$1/gists"
-  result=$(http_method GET $GITHUB_API/"$route" | _parse_response)
+  result=$(http_method GET $GITHUB_API/$route?per_page=100 | _parse_response)
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
