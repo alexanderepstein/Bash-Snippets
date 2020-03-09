@@ -264,6 +264,7 @@ _show_list() {
     local repo; repo=$folder/${link##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
     [[ -z $extra ]] && extra="$file_num $comment_num"
+    description=$(echo $description | sed -E 's/\[(.+)\]/\\e[33m[\1]\\e[0m/')
 
     echo -e "$(printf "% 3s" "$index") $link $name $extra $description" \
     | cut -c -"$(tput cols)"
