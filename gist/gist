@@ -332,7 +332,7 @@ _fetch_gists() {
   local route="users/$user/gists"
   local filter='/^[^s]/ d; /^$/ d'
   if [[ $1 =~ ^(star|s)$ ]];then
-    route="gists/starred"
+    route='gists/starred'
     local mark="s"
     filter='/^[s]/ d; /^$/ d'
   fi
