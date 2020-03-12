@@ -29,7 +29,9 @@
 # 
 # Example:
 #   gist (Show your gists)
-#   gist update (update the list of gists from github.com)
+#   gist star (Show your starred gists)
+#   gist fetch (update the list of gists from github.com)
+#   gist fetch star (update the list of starred gists from github.com)
 #   gist 3 (show the repo path of your 3rd gist, and do custom actions)
 #   gist 3 --no-action (show the repo path of your 3rd gist, and do not perform actions)
 #   gist new --desc bar foo (create a new gist with file and description)
