@@ -1,4 +1,4 @@
-# gist - Manage you gist like a pro
+# gist - Manage your gist like a pro
 ## Getting started
 ```bash
 # fetch your gists and clone them into ~/gist as git repos
@@ -64,7 +64,7 @@ Say you delete gists with command `gist delete <index-of-gist>...`, the local gi
 ## Configuration
 `gist` stores your configuraion inside `~/.config/gist.conf`, with `<key>=<value>` format for each line. And just do `source ~/.config/gist.con` at runtime. This file is created automatically when you do the first configuration, and only allows current user to read and write (permission 600).
 
-Valid keys are [`user`](#user), [`token`](#token), [`folder`](#folder), [`auto_sync`](#auto_sync), [`action`](#action) and [`EDITOR`](#EDITOR). Use the following commads to set value:
+Valid keys are [`user`](#user), [`token`](#token), [`folder`](#folder), [`auto_sync`](#auto_sync), [`action`](#action), [`EDITOR`](#EDITOR) and [protocol](#protocol). Use the following commads to set value:
 ``` bash
 gist config <key> <value>
 
