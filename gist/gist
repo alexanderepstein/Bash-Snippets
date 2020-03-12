@@ -45,7 +45,6 @@ configuredClient=""
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
-folder=~/gist && mkdir -p $folder
 action="${EDITOR:-vi} ."
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
 [[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
@@ -227,6 +226,9 @@ _validate_config(){
 # load configuration
 _apply_config() {
   _validate_config "$@" || return 1
+
+  [[ -z $folder || ! -w $(dirname $folder) ]] && folder=~/gist
+  mkdir -p $folder
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
 
