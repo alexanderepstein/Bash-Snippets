@@ -587,6 +587,19 @@ usage() {
   sed -E -n -e ' /^$/ q; 7,$ s/^# //p' "$0"
 }
 
+_check_protocol() {
+  find $folder -maxdepth 1 -mindepth 1 -type d \
+  | while read -r repo; do
+    cd "$repo" || exit 1
+    url=$(git remote get-url origin)
+    if [[ $protocol == 'ssh' && $url =~ ^https ]]; then
+      git remote set-url origin "git@gist.github.com:$(basename `pwd`).git"
+    elif [[ $protocol == 'https' && $url =~ ^git ]]; then
+      git remote set-url origin "https://gist.github.com/$(basename `pwd`).git"
+    fi
+  done
+}
+
 _apply_config "$@" || exit 1
 getConfiguredClient || exit 1
 if [[ $init ]]; then _fetch_gists; exit 0; fi
@@ -615,7 +628,7 @@ case "$1" in
     _clean_repos ;;
   config | c)
     shift
-    _configure "$@" ;;
+    _configure "$@" && (_apply_config config && _check_protocol) ;;
   user | U)
     shift
     _query_user "$@" ;;
