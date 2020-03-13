@@ -284,14 +284,14 @@ _grep_content() {
 
 # Open Github repository import page
 _import_to_github() {
-  _gist_id "$1"
+  _gist_id "$1" || return 1
   echo put the folowing URL into web page:
   echo -n "git@github.com:$GIST_ID.git"
   python -mwebbrowser https://github.com/new/import
 }
 
 _push_to_remote() {
-  _gist_id "$1"
+  _gist_id "$1" || return 1
   cd "$folder/$GIST_ID" && git add . \
   && git commit --allow-empty-message -m '' && git push origin master
 }
@@ -398,7 +398,7 @@ _gist_id() {
     echo -e "Not a valid index: \e[31m$1\e[0m"
     echo 'Use the index in the first column instead (like 1 or s1):'
     echo
-    _show_list
+    hint=false _show_list
     return 1
   fi
 }
@@ -436,7 +436,7 @@ _delete_gist() {
   fi
 
   for i in "$@"; do
-    _gist_id "$i"
+    _gist_id "$i" || continue
     http_method DELETE "$GITHUB_API/gists/$GIST_ID" \
     && echo "$i" deleted \
     && sed -E -i'' -e "/^$i / d" $INDEX
@@ -482,7 +482,7 @@ for comment in raw:
 }
 
 _show_detail() {
-  _gist_id "$1"
+  _gist_id "$1" || return 1
   http_method GET "$GITHUB_API/gists/$GIST_ID" \
   | _parse_gist
 
@@ -564,7 +564,7 @@ _create_gist() {
 
 # update description of a gist
 _edit_gist() {
-  _gist_id "$1"
+  _gist_id "$1" || return 1
 
   if [[ -z $2 ]]; then
     echo 'Type new description:'
