@@ -154,14 +154,13 @@ _configure() {
   local valid_keys='user|token|folder|auto_sync|EDITOR|action|protocol'
   if [[ $1 =~ ^($valid_keys)$ ]]; then
     if [[ $1 == 'user' ]]; then
-      [[ -z $2 ]] && echo "Must specify username" >&2 && return 1
+      [[ -z $2 ]] && echo 'Must specify username' >&2 && return 1
     elif [[ $1 == 'token' ]]; then
-      [[ ${#2} -ne 40 ]] && echo 'Invalid token format, it is not 40 chars' >&2 \
-      && return 1
+      [[ ${#2} -ne 40 ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
     elif [[ $1 == 'auto_sync' ]]; then
-      [[ ! $2 =~ ^(true|false)$ ]] && return 1
+      [[ ! $2 =~ ^(true|false)$ ]] && echo 'auto_sync must be either true or false' >&2 && return 1
     elif [[ $1 == 'protocol' ]]; then
-      [[ ! $2 =~ ^(https|ssh)$ ]] && return 1
+      [[ ! $2 =~ ^(https|ssh)$ ]] && echo 'protocol must be either https or ssh' >&2 && return 1
     fi
     local key=$1 && shift && local target=$key="'$*'"
   else
