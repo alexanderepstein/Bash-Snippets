@@ -7,8 +7,12 @@ gist fetch
 gist
 # create a new gist
 gist new
-# edit files in your third gist(default action), and get the path
+# create private gist with files 'foo' and 'bar'
+gist new -p foo bar
+# get the path of cloned repo of your third gist
 gist 3
+# cd to the cloned repo
+cd `gist 3`
 # push changes in your third gist to the remote repo
 gist push 3
 # update the description of your third gist
@@ -101,18 +105,20 @@ Use `gist config folder <prefered-directory>` to set the value if needed.
 Use `gist config auto_sync false` to disable this feature.
 
 ### action
-**[Optional]** A custom action is performed when you do `gist <index-of-gist>` (like `gist 3` for your third gist). If is being set, `gist` will automatically cd to the folder of gist repo, and just simply use `eval` to perform action.  Default to be 
-```
-${EDITOR:-vi} .
-```
-That is, use default editor or vi (if not set) to open the folder where the git repo of this gist is stored.
+**[Optional]** A custom action is performed when you do `gist <index-of-gist>` (like `gist 3` for your third gist). If is being set, `gist` will `cd` to the cloned repo, and just simply use `eval` to perform action.
 
-For example, you can use the following command to change the action into "print the content of files and list filenames".
+For example, you can use the following command to set the action for:
+**print the filename and its content of all files inside the given gist**
 ```
-gist config action 'cat *; ls'
+gist config action 'tail -n +1 *'
 ```
+or do
+```
+gist config action '${EDITOR:-vi} .'
+```
+That is, use default editor or vi (if not being set) to open the cloned repo.
 
-Also, if you run `gist <index-of-gist>` with `--no-action`, then action would not performs.
+Also, if you run `gist <index-of-gist>` with `--no-action`, then action would be ignored.
 
 ### EDITOR
 **[Optional]** Editor to open `~/.config/gist.conf`. Default to be `vi` . 
@@ -142,7 +148,7 @@ But since `gist` is a bash script which goes in subshell, if you want to achieve
  And run `cdgist 3` to jump to the repo of your third gist.
  
 ### Useful action for gist repo
-Though default [`action`](#action) is to open gist repo in vi, I strongly recommend use [`tig`](https://github.com/jonas/tig) instead. It is the most powerful git CLI tool as far as I know, and also easy to get in most of the Linux distros and Homebrew for mac. Give it a try!
+I strongly recommend using [`tig`](https://github.com/jonas/tig) as [action](#action). It is the most powerful git CLI tool as far as I know, and also easy to get in most of the Linux distros or Homebrew for mac. Give it a try!
 
 If [`tig`](https://github.com/jonas/tig) is installed, run the following command to configure it as custom action:
 
