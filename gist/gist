@@ -315,9 +315,10 @@ _parse_response() {
   | tac | sed -e 's/, /,/g' | nl -s' ' \
   | while read -r index link file_url_array public file_num comment_num author description; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
-    [[ $public == 'False' ]] && local mark=p || local mark=''
+    local prefix=$mark
+    [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=$1
-    echo "$mark$index $link $blob_code $file_num $comment_num $author $description" | tr -d '"'
+    echo "$prefix$index $link $blob_code $file_num $comment_num $author $description" | tr -d '"'
   done
 }
 
