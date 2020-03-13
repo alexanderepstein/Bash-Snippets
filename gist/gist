@@ -45,7 +45,6 @@ configuredClient=""
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
-action="${EDITOR:-vi} ."
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
 [[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
 auto_sync=true # automatically clone the gist repo
@@ -417,8 +416,16 @@ _goto_gist() {
     fi
   fi
 
-  [[ $2 != '--no-action' ]] && cd "$folder/$GIST_ID" && eval "$action"
   echo "$folder/$GIST_ID"
+  if [[ $2 == '--no-action' ]]; then
+    return 0
+  elif [[ -z $action ]]; then
+    echo > /dev/tty
+    echo 'hint: set action inside the repo, for example:' > /dev/tty
+    echo "  gist config action 'ls' # list files of the given gist" > /dev/tty
+  else
+    cd "$folder/$GIST_ID" && eval "$action"
+  fi
 }
 
 _delete_gist() {
