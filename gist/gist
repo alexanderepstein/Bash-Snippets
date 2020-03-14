@@ -259,7 +259,7 @@ _show_list() {
 
   local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
   sed -Ene "/^$prefix/ p" $INDEX \
-  | while read -r index link blob_code file_num comment_num author description; do
+  | while read -r index link blob_code file_num comment_num author _ _ description; do
     [[ $index =~ ^s ]] && local name=$author
     local repo; repo=$folder/${link##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
@@ -303,6 +303,8 @@ for gist in raw:
     print(len(gist["files"]), end=" ")
     print(gist["comments"], end=" ")
     print(gist["owner"]["login"], end=" ")
+    print(gist["created_at"], end=" ")
+    print(gist["updated_at"], end=" ")
     print(gist["description"])
     '
 }
@@ -311,11 +313,11 @@ for gist in raw:
 _parse_response() {
   _parse_gists \
   | tac | sed -e 's/, /,/g' | nl -s' ' \
-  | while read -r index link file_url_array public file_num comment_num author description; do
+  | while read -r index link file_url_array public file_num comment_num author created_at updated_at description; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=$1
-    echo "$prefix$index $link $blob_code $file_num $comment_num $author $description" | tr -d '"'
+    echo "$prefix$index $link $blob_code $file_num $comment_num $author $created_at $updated_at $description" | tr -d '"'
   done
 }
 
@@ -448,22 +450,6 @@ _clean_repos() {
   done
 }
 
-# parse JSON from gist detail
-_parse_gist() {
-  _process_json '
-raw = json.load(sys.stdin)
-print("site:", raw["html_url"])
-print("description:", raw["description"])
-print("public:", raw["public"])
-print("API:", raw["url"])
-print("created_at:", raw["created_at"])
-print("updated_at:", raw["updated_at"])
-print("files:")
-for file in raw["files"].keys():
-    print("   ", file)
-  '
-}
-
 # equal to jq '.[] | {user: .user.login, created_at: .created_at, updated_at: .updated_at, body: .body}'
 _parse_comment() {
   _process_json '
@@ -479,11 +465,17 @@ for comment in raw:
 
 _show_detail() {
   _gist_id "$1" || return 1
-  http_method GET "$GITHUB_API/gists/$GIST_ID" \
-  | _parse_gist
-
-  http_method GET "$GITHUB_API/gists/$GIST_ID"/comments \
-  | _parse_comment
+  record=$(sed -ne "/^$1 / p" $INDEX)
+  echo description: $(echo $record | cut -d' ' -f9-)
+  echo site: https://gist.github.com/$GIST_ID
+  echo API: https://api.github.com/gists/$GIST_ID
+  echo created_at: $(echo $record | cut -d' ' -f7)
+  echo updated_at: $(echo $record | cut -d' ' -f8)
+  repo=$folder/$GIST_ID
+  if [[ -d $repo ]]; then
+    echo files:
+    ls $repo | sed -e 's/^/    /'
+  fi
 }
 
 # set filename/description/permission for a new gist
