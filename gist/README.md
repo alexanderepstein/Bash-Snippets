@@ -44,7 +44,7 @@ like following:
 - Use `gist star` to show your starred gist
 - Index with prefix `s` is a starred gist, index with prefix `p` is a private gist
 - There are colorful hints for each gist in the following cases:
-    - **working:** some changes are made locally but not yet do `git commit`
+    - **working:** some changes are made locally but not yet do `git commit`, or you are not in `master` branch
     - **ahead:** your local head is yet to be applied to upstream
     - **outdated:** your local head is differs from the last fetched gists, do `gist fetch` to refresh index file and pull if needed
     

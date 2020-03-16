@@ -239,7 +239,7 @@ _check_repo_status() {
       fi
     else
       cd "$1" || exit
-      if [[ -n $(git status --short) ]] &>/dev/null; then
+      if [[ -n $(git status --short) || $(git branch | sed -n '/\* / s///p') != 'master' ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
       else
         [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && echo "\e[31m[outdated]\e[0m"
