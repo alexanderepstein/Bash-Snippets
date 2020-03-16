@@ -242,8 +242,9 @@ _check_repo_status() {
       if [[ -n $(git status --short) || $(git branch | sed -n '/\* / s///p') != 'master' ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
       else
-        [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && echo "\e[31m[outdated]\e[0m"
-        [[ -n $(git cherry) ]] 2>/dev/null && echo "\e[31m[ahead]\e[0m"
+        [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && local status="\e[31m[outdated]\e[0m"
+        [[ -n $(git cherry) ]] 2>/dev/null && local status="\e[31m[ahead]\e[0m"
+        echo $status
       fi
     fi
 }
