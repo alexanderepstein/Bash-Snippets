@@ -351,8 +351,8 @@ _query_user() {
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
-  | while read -r index link blob_code file_num extra description; do
-    echo "$link $file_num $extra $description" | cut -c -"$(tput cols)"
+  | while read -r index link blob_code file_num comment_num author _ _ description; do
+    echo "$link $author $file_num $comment_num $description" | cut -c -"$(tput cols)"
   done
 }
 
