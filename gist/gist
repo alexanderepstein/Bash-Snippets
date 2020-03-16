@@ -8,22 +8,22 @@
 # Description: Manage your gists with git and Github API v3
 # Usage: gist [command] [<args>]
 #
-#   [star | s]                    List your gists with format below, star for your starred gists:
-#                                 [index_of_gist] [url] [file_num] [comment_num] [short description]
-#   fetch, f [star | s]           Update the local list of your gists, star for your starred gists
+#   [star | s]                    List your gists, use argument 'star' for your starred gists. Format is like: 
+#                                 <index_of_gist> <url> <file_num> <comment_num> <description>
+#   fetch,  f [star | s]          Update the local list of your gists, 'star' for your starred gists
 #   <index_of_gist> [--no-action] Show the path of local gist repo and do custom actions
-#   new, n [-d | --desc <description>] [-p] <files>... create a new gist with files
-#   new, n [-d | --desc <description>] [-p] [-f | --file <file_name>] create a new gist from STDIN
+#   new,    n [-d | --desc <description>] [-p] <file1> <file2>... create a new gist with files
+#   new,    n [-d | --desc <description>] [-p] [-f | --file <file_name>] create a new gist from STDIN
 #   detail, d <index_of_gist>     Show the detail of a gist
-#   edit, e   <index_of_gist>     Edit a gist's description
+#   edit,   e <index_of_gist>     Edit a gist's description
 #   delete, D <index_of_gist>...  Delete a gist
-#   clean, C                      Clean removed gists in local
+#   clean,  C                     Clean removed gists in local
 #   config, c [token | user | folder | auto_sync | EDITOR | action | protocol [value] ] Do configuration
-#   user, U   <user>              Get gists from a given Github user
-#   grep, g   <pattern>           Grep gists by a given pattern
-#   push, p   <index_of_gist>     Push changes by git (well, better to make commit by youself)
+#   user,   U <user>              Get gists from a given Github user
+#   grep,   g <pattern>           Grep gists by a given pattern
+#   push,   p <index_of_gist>     Push changes by git (well, better to make commit by youself)
 #   github, G <index_of_gist>     Import selected gist as a new Github repo
-#   help, h                       Show this help message
+#   help,   h                     Show this help message
 #   version                       Get the tool version
 #   update                        Update Bash-Snippet Tools
 # 
@@ -322,7 +322,7 @@ _parse_response() {
 }
 
 # TODO pagnation for more than 100 gists
-# TODO add files and date of a gist
+# TODO add files of a gist
 # get latest list of gists from Github API
 _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
