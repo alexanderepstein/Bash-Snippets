@@ -276,7 +276,21 @@ _show_list() {
 
 # TODO support filenames, file contents
 _grep_content() {
-  hint=false mark=. _show_list | grep -Ei "^ *[^ ]+ [^ ]+ .*$1.*"
+  if [[ -z $1 ]]; then echo 'Please give a pattern' && return 1; fi
+  while read -r index url _ _ _ _ _ _ description; do
+    if grep --color=always -iq "$1" <<<"$description"; then
+      hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
+    else
+      repo=$folder/$(echo $url | sed -E -e 's#.*/##')
+      [[ -d $repo ]] && cd $repo || continue
+      file=$(ls $repo | grep --color=always -Ei "$1")
+      content=$(grep --color=always -EHi "$1" * | head -1)
+
+      [[ -n $file && file="$file\n" || -n $content ]] \
+      && hint=false mark="$index " _show_list \
+      && echo -e "$file$content\n" | sed -e 's/^/    /'
+    fi
+  done < $INDEX
 }
 
 # Open Github repository import page
