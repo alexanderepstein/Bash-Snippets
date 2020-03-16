@@ -328,6 +328,7 @@ _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
   echo
   local route="users/$user/gists"
+  local mark=''
   if [[ $1 =~ ^(star|s)$ ]];then
     route='gists/starred'
     local mark=s
