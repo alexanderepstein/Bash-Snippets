@@ -95,7 +95,7 @@ httpGet(){
   http_method GET "$@"
 }
 
-# parse JSON from STDIN with string of commands
+# Parse JSON from STDIN with string of commands
 _process_json() {
     PYTHONIOENCODING=utf-8 \
     python -c "from __future__ import print_function; import sys, json; $1"
@@ -150,7 +150,7 @@ update() {
   fi
 }
 
-# handle configuration cases
+# Handle configuration cases
 _configure() {
   [[ $# == 0 ]] && (${EDITOR:-vi} "$CONFIG") && return 0
 
@@ -176,7 +176,7 @@ _configure() {
   cat "$CONFIG"
 }
 
-# prompt for username
+# Prompt for username
 _ask_username() {
   while [[ ! $user =~ ^[[:alnum:]]+$ ]]; do
     [[ -n $user ]] && echo "Not a valid username"
@@ -185,7 +185,7 @@ _ask_username() {
   _configure user "$user"
 }
 
-# prompt for token
+# Prompt for token
 # TODO check token scope contains gist, ref: https://developer.github.com/v3/apps/oauth_applications/#check-a-token
 _ask_token() {
   echo -n "Create a new token from web browser? [Y/n] "
@@ -201,7 +201,7 @@ _ask_token() {
   _configure token "$token"
 }
 
-# check configuration is fine with user setting
+# Check configuration is fine with user setting
 _validate_config(){
   # shellcheck source=/dev/null
   source "$CONFIG" 2> /dev/null
@@ -224,7 +224,7 @@ _validate_config(){
   fi
 }
 
-# load configuration
+# Load configuration
 _apply_config() {
   _validate_config "$@" || return 1
 
@@ -233,6 +233,7 @@ _apply_config() {
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
 
+# Return git status of a given repo
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
       if [[ $auto_sync == 'true' ]]; then
@@ -241,7 +242,7 @@ _check_repo_status() {
         echo "\e[32m[Not cloned yet]\e[0m";
       fi
     else
-      cd "$1" || exit
+      cd "$1"
       if [[ -n $(git status --short) || $(git branch | sed -n '/\* / s///p') != 'master' ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
       else
@@ -252,8 +253,8 @@ _check_repo_status() {
     fi
 }
 
-# Show the list of gist, but not updated time
-# show username for starred gist
+# Display the list of gist, show username for starred gist
+# If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
 # TODO color private/starred mark
 _show_list() {
   if [[ ! -e $INDEX ]]; then
@@ -279,6 +280,7 @@ _show_list() {
   || return 0
 }
 
+# Grep description, filename or file content with a given pattern
 # TODO support filenames, file contents
 # TODO add option to configure case-sensitive
 _grep_content() {
@@ -307,12 +309,14 @@ _import_to_github() {
   python -mwebbrowser https://github.com/new/import
 }
 
+# Simply commit current changes and push to remote
 _push_to_remote() {
   _gist_id "$1" || return 1
   cd "$folder/$GIST_ID" && git add . \
   && git commit --allow-empty-message -m '' && git push origin master
 }
 
+# Parse JSON object of the result of gist fetch
 _parse_gists() {
     _process_json '
 raw = json.load(sys.stdin)
@@ -329,7 +333,7 @@ for gist in raw:
     '
 }
 
-# parse response from gists require
+# Parse response from 'gist fetch' to the format for index file
 _parse_response() {
   _parse_gists \
   | tac | sed -e 's/, /,/g' | nl -s' ' \
@@ -341,9 +345,9 @@ _parse_response() {
   done
 }
 
+# Get latest list of gists from Github API
 # TODO pagnation for more than 100 gists
 # TODO add files of a gist
-# get latest list of gists from Github API
 _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
   echo
@@ -365,6 +369,7 @@ _fetch_gists() {
   true
 }
 
+# Fetch gists for a given user
 # TODO pagnation for more than 100 gists
 _query_user() {
   local route="users/$1/gists"
@@ -377,11 +382,13 @@ _query_user() {
   done
 }
 
+# Return the unique code for current commit, to compare repo status and the result of 'gist fetch'
+# Because there is no way to get commit SHA with 'gist fetch'
 _blob_code() {
   cd "$1" && git ls-tree master | cut -d' ' -f3 | cut -c-7 | sort | paste -sd '-'
 }
 
-# update local git repos
+# Update local git repos
 _sync_repos() {
   # clone repos which are not in the local
   comm -13 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
@@ -401,7 +408,7 @@ _sync_repos() {
   echo Everything is fine!
 }
 
-# get the url where to clone repo, take user and repo name as parameters
+# Get the url where to clone repo, take user and repo name as parameters
 _repo_url() {
   if [[ $protocol == 'ssh' ]]; then
     echo "git@gist.github.com:$1.git"
@@ -410,7 +417,7 @@ _repo_url() {
   fi
 }
 
-# get gist id from index files
+# Get gist id from index files
 _gist_id() {
   GIST_ID=$( (grep -hs '' $INDEX || true) | sed -n -e "/^$1 / p" | cut -d' ' -f2 | sed -E -e 's#.*/##')
   if [[ -z $GIST_ID ]]; then
@@ -422,6 +429,8 @@ _gist_id() {
   fi
 }
 
+# Return the path of local repo with a given index
+# If action is not empty, eval it!
 _goto_gist() {
   _gist_id "$1" || return 1
 
@@ -447,6 +456,8 @@ _goto_gist() {
   fi
 }
 
+# Delete gists with given indices
+# Specify confirm=false to suppress confirmation
 _delete_gist() {
   if [[ $confirm != false ]]; then
     read -r -p "Delete gists above? [y/N] " response
@@ -462,7 +473,7 @@ _delete_gist() {
   done
 }
 
-# remove repos which are not in user gists anymore
+# Remove repos which are not in index file anymore
 _clean_repos() {
   comm -23 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
            <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort 2> /dev/null ) \
@@ -471,7 +482,7 @@ _clean_repos() {
   done
 }
 
-# equal to jq '.[] | {user: .user.login, created_at: .created_at, updated_at: .updated_at, body: .body}'
+# Parse JSON object of gist user comments
 _parse_comment() {
   _process_json '
 raw = json.load(sys.stdin);
@@ -484,6 +495,7 @@ for comment in raw:
   '
 }
 
+# Show the detail of a gist
 # TODO add parameter --comment to fetch comments
 _show_detail() {
   _gist_id "$1" || return 1
@@ -500,7 +512,7 @@ _show_detail() {
   fi
 }
 
-# set filename/description/permission for a new gist
+# Set filename/description/permission for a new gist
 _set_gist() {
   files=()
   public=True
@@ -533,6 +545,7 @@ _new_file() {
   echo /tmp/"$filename"
 }
 
+# Parse JSON object of a single gist 
 _gist_body(){
   _process_json "
 import os.path
@@ -546,7 +559,7 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
   "
 }
 
-# create a new gist with files
+# Create a new gist with files. If success, also update index file and clone the repo
 _create_gist() {
   _set_gist "$@" || return 1
   [[ -z ${files[*]} ]] && files+=($(_new_file "$filename"))
@@ -572,7 +585,7 @@ _create_gist() {
   fi
 }
 
-# update description of a gist
+# Update description of a gist
 _edit_gist() {
   _gist_id "$1" || return 1
 
@@ -593,10 +606,13 @@ _edit_gist() {
   || echo 'Fail to modify gist description'
 }
 
+# Print helper message
 usage() {
   sed -E -n -e ' /^$/ q; 7,$ s/^# //p' "$0"
 }
 
+# Check remote urls of all repos match current protocol in configuration file
+# If not, update them
 _check_protocol() {
   find $folder -maxdepth 1 -mindepth 1 -type d \
   | while read -r repo; do
