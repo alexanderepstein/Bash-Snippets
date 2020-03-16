@@ -39,6 +39,9 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
+# TODO subcommand tag for #TAG in description
+# TODO migrate to gh-page, with install.sh and check_md5 in README
+
 currentVersion="1.23.0"
 configuredClient=""
 
@@ -251,6 +254,7 @@ _check_repo_status() {
 
 # Show the list of gist, but not updated time
 # show username for starred gist
+# TODO color private/starred mark
 _show_list() {
   if [[ ! -e $INDEX ]]; then
     echo 'No local file found for last update, please run command:'
@@ -276,6 +280,7 @@ _show_list() {
 }
 
 # TODO support filenames, file contents
+# TODO add option to configure case-sensitive
 _grep_content() {
   if [[ -z $1 ]]; then echo 'Please give a pattern' && return 1; fi
   while read -r index url _ _ _ _ _ _ description; do
@@ -479,6 +484,7 @@ for comment in raw:
   '
 }
 
+# TODO add parameter --comment to fetch comments
 _show_detail() {
   _gist_id "$1" || return 1
   record=$(sed -ne "/^$1 / p" $INDEX)
