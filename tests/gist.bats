@@ -96,5 +96,5 @@ setup() {
 @test "The user command should get the list of public gists from a user" {
   run "${TOOL_DIR}/${TOOL_NAME}" user defunkt
   [ "$status" -eq 0 ]
-  [[ "${lines[0]}" =~ (https://gist.github.com/[0-9a-z]+ [0-9]+ [0-9]+ defunkt) ]]
+  [[ "${lines[0]}" =~ (https://gist.github.com/[0-9a-z]+ defunkt) ]]
 }
