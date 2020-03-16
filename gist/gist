@@ -521,7 +521,7 @@ _new_file() {
   [[ -t 0 ]] && echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
   tmp_file=$(mktemp)
   cat > "$tmp_file"
-  echo -e '\n' > /dev/tty
+  echo > /dev/tty
   [[ -z $1 ]] && read -r -p 'Type file name: ' filename < /dev/tty
   mv "$tmp_file" /tmp/"$filename"
   echo /tmp/"$filename"
