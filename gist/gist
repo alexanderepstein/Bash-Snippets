@@ -646,13 +646,10 @@ case "$1" in
     shift
     _push_to_remote "$1" ;;
   version)
-    echo "Version $currentVersion"
-    exit 0 ;;
+    echo "Version $currentVersion" ;;
   update)
     checkInternet || exit 1
-    update
-    exit 0
-    ;;
+    update ;;
   help | h)
     usage ;;
   *)
