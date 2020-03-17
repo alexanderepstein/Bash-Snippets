@@ -268,14 +268,14 @@ _show_list() {
 
   local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
   sed -Ene "/^$prefix/ p" $INDEX \
-  | while read -r ${INDEX_FORMAT[@]}; do
-    [[ $index =~ ^s ]] && local name=$author
+  | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
     [[ -z $extra ]] && extra="$file_num $comment_num"
+    [[ $index =~ ^s ]] && extra=${author}${extra}
     description=$(echo $description | sed -E -e 's/\[(.+)\]/\\e[33m[\1]\\e[0m/')
 
-    echo -e "$(printf "% 3s" "$index") $url $name $extra $description" \
+    echo -e "$(printf "% 3s" "$index") $url $extra $description" \
     | cut -c -"$(tput cols)"
   done
 
@@ -324,11 +324,11 @@ for gist in raw:
 _parse_response() {
   _parse_gists \
   | tac | sed -e 's/, /,/g' | nl -s' ' \
-  | while read -r ${INDEX_FORMAT[@]:0:2} file_url_array public ${INDEX_FORMAT[@]:3:6}; do
+  | while read -r "${INDEX_FORMAT[@]:0:2}" file_url_array public "${INDEX_FORMAT[@]:3:6}"; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${prefix}${1} || local index=${prefix}${index}
-    eval "echo $(sed -Ee 's/([^ ]+)/$\1/g' <<<${INDEX_FORMAT[@]})"
+    eval echo $(sed -Ee 's/([^ ]+)/$\1/g' <<<"${INDEX_FORMAT[@]}")
   done
 }
 
@@ -364,7 +364,7 @@ _query_user() {
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
-  | while read -r ${INDEX_FORMAT[@]}; do
+  | while read -r "${INDEX_FORMAT[@]}"; do
     echo "$url $author $file_num $comment_num $description" | cut -c -"$(tput cols)"
   done
 }
