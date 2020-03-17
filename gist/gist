@@ -39,6 +39,7 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
+# TODO codebase statistics, like C++ or something
 # TODO subcommand tag for #TAG in description
 # TODO migrate to gh-page, with install.sh and check_md5 in README
 
@@ -283,7 +284,6 @@ _show_list() {
 }
 
 # Grep description, filename or file content with a given pattern
-# TODO support filenames, file contents
 # TODO add option to configure case-sensitive
 _grep_content() {
   if [[ -z $1 ]]; then echo 'Please give a pattern' && return 1; fi
