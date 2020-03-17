@@ -303,21 +303,6 @@ _grep_content() {
   done < $INDEX
 }
 
-# Open Github repository import page
-_import_to_github() {
-  _gist_id "$1" || return 1
-  echo put the folowing URL into web page:
-  echo -n "git@github.com:$GIST_ID.git"
-  python -mwebbrowser https://github.com/new/import
-}
-
-# Simply commit current changes and push to remote
-_push_to_remote() {
-  _gist_id "$1" || return 1
-  cd "$folder/$GIST_ID" && git add . \
-  && git commit --allow-empty-message -m '' && git push origin master
-}
-
 # Parse JSON object of the result of gist fetch
 _parse_gists() {
     _process_json '
@@ -512,6 +497,21 @@ _show_detail() {
     echo files:
     ls $repo | sed -e 's/^/    /'
   fi
+}
+
+# Open Github repository import page
+_import_to_github() {
+  _gist_id "$1" || return 1
+  echo put the folowing URL into web page:
+  echo -n "git@github.com:$GIST_ID.git"
+  python -mwebbrowser https://github.com/new/import
+}
+
+# Simply commit current changes and push to remote
+_push_to_remote() {
+  _gist_id "$1" || return 1
+  cd "$folder/$GIST_ID" && git add . \
+  && git commit --allow-empty-message -m '' && git push origin master
 }
 
 # Set filename/description/permission for a new gist
