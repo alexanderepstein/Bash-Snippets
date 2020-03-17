@@ -486,17 +486,18 @@ for comment in raw:
 # TODO add parameter --comment to fetch comments
 _show_detail() {
   _gist_id "$1" || return 1
-  record=$(sed -ne "/^$1 / p" $INDEX)
-  echo description: $(echo $record | cut -d' ' -f9-)
-  echo site: https://gist.github.com/$GIST_ID
-  echo API: https://api.github.com/gists/$GIST_ID
-  echo created_at: $(echo $record | cut -d' ' -f7)
-  echo updated_at: $(echo $record | cut -d' ' -f8)
-  repo=$folder/$GIST_ID
-  if [[ -d $repo ]]; then
-    echo files:
-    ls $repo | sed -e 's/^/    /'
-  fi
+  sed -n "/^$1 / p" $INDEX \
+  | while read -r ${INDEX_FORMAT[@]}; do
+    echo description: $description
+    echo site: https://gist.github.com/$GIST_ID
+    echo API: https://api.github.com/gists/$GIST_ID
+    echo created_at: $created_at
+    echo updated_at: $updated_at
+    repo=$folder/$GIST_ID
+    if [[ -d $repo ]]; then
+      echo files:; ls $repo | sed -e 's/^/    /'
+    fi
+  done
 }
 
 # Open Github repository import page
@@ -593,7 +594,7 @@ _create_gist() {
 _edit_gist() {
   _gist_id "$1" || return 1
 
-  local prefill=$(sed -ne "/^$1 / p" $INDEX | cut -d' ' -f9-)
+  local prefill=$(sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-)
   if [[ -z $2 ]]; then
     read -e -p 'Edit description: ' -i "$prefill" -r DESC < /dev/tty
   else
