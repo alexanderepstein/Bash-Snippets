@@ -514,7 +514,12 @@ _push_to_remote() {
     _gist_id "$1"
     cd "$folder/$GIST_ID" || return 1
   fi
-  git add . && git commit -m 'update' && git push origin master
+  if [[ -n $(git status --short) ]]; then
+    git add . && git commit -m 'update'
+  fi
+  if [[ -n $(git cherry) ]]; then
+    git push origin master
+  fi
 }
 
 # Set filename/description/permission for a new gist
