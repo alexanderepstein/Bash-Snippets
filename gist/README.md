@@ -134,8 +134,11 @@ valid values are:
 For example, use `gist config protocol ssh` to use SSH protocol instead.
 
 ## Tips
+### Git Branching
+Each gist is a git repository. Although there are some limits on `git push`, like sub-directory. But guess what? Push another branch to `github.com` is allowed. So why not use this feature for your gist workflow?
+
 ### Jump to gist repo
-Sometimes you want to switch to the specified gist repo as working directory.
+Sometimes you want to switch to the gist repo as working directory with given index.
 But since `gist` is a bash script which goes in subshell, if you want to achieve this, it is necessary to configure shell setting by yourself. 
 
 `gist <index-of-gist>` will return the path of repo, so you can put the following function into your `~/.bashrc` or `~/.zshrc` to apply it.
@@ -146,6 +149,26 @@ But since `gist` is a bash script which goes in subshell, if you want to achieve
  }
  ```
  And run `cdgist 3` to jump to the repo of your third gist.
+ 
+### Suppress hint
+If [action](#action) is not configured, there is always a hint to show how to configure it. The following command can suppress it with a simple action that does nothing.
+```
+gist config action 'true'
+```
+
+There are serveral environment variables can suppress hint or user confirm, like:
+```
+# show list without hint
+hint=false gist
+
+# just print the repo path with a given index
+gist 3 --no-action
+
+# delete your third gist without confirmation
+confirm=false gist delete 3
+```
+
+
  
 ### Useful action for gist repo
 I strongly recommend using [`tig`](https://github.com/jonas/tig) as [action](#action). It is the most powerful git CLI tool as far as I know, and also easy to get in most of the Linux distros or Homebrew for mac. Give it a try!
