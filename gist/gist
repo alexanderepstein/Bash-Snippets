@@ -327,7 +327,7 @@ _parse_response() {
   | while read -r "${INDEX_FORMAT[@]:0:2}" file_url_array public "${INDEX_FORMAT[@]:3:6}"; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
-    [[ -n $1 ]] && local index=${prefix}${1} || local index=${prefix}${index}
+    [[ -n $1 ]] && local index=${1} || local index=${prefix}${index}
     eval echo $(sed -Ee 's/([^ ]+)/$\1/g' <<<"${INDEX_FORMAT[@]}")
   done
 }
@@ -593,9 +593,9 @@ _create_gist() {
 _edit_gist() {
   _gist_id "$1" || return 1
 
+  local prefill=$(sed -ne "/^$1 / p" $INDEX | cut -d' ' -f9-)
   if [[ -z $2 ]]; then
-    echo 'Type new description:'
-    read -e -r DESC < /dev/tty
+    read -e -p 'Edit description: ' -i "$prefill" -r DESC < /dev/tty
   else
     DESC="$2"
   fi
@@ -606,7 +606,7 @@ _edit_gist() {
                 | sed -e '1 s/^/[/; $ s/$/]/' \
                 | _parse_response "$1" )
   [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
-  && hint=false _show_list | grep -E "^[ ]+$1" \
+  && hint=false mark="$1 " _show_list \
   || echo 'Fail to modify gist description'
 }
 
