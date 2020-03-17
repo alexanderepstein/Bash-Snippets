@@ -287,14 +287,14 @@ _show_list() {
 # TODO add option to configure case-sensitive
 _grep_content() {
   if [[ -z $1 ]]; then echo 'Please give a pattern' && return 1; fi
-  while read -r index url _ _ _ _ _ _ description; do
+  while read -r "${INDEX_FORMAT[@]}"; do
     if grep --color=always -iq "$1" <<<"$description"; then
       hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
     else
-      repo=$folder/$(echo $url | sed -E -e 's#.*/##')
+      local repo=$folder/$(echo $url | sed -E -e 's#.*/##')
       [[ -d $repo ]] && cd $repo || continue
-      file=$(ls $repo | grep --color=always -Ei "$1")
-      content=$(grep --color=always -EHi "$1" * | head -1)
+      local file=$(ls $repo | grep --color=always -Ei "$1")
+      local content=$(grep --color=always -EHi "$1" * | head -1)
 
       [[ -n $file && file="$file\n" || -n $content ]] \
       && hint=false mark="$index " _show_list \
@@ -509,7 +509,7 @@ _import_to_github() {
 
 # Simply commit current changes and push to remote
 _push_to_remote() {
-  if [[ ! `pwd` =~ ^$folder/[0-9a-z]+$ ]]; then
+  if [[ ! $(pwd) =~ ^$folder/[0-9a-z]+$ ]]; then
     _gist_id "$1"
     cd "$folder/$GIST_ID" || return 1
   fi
@@ -623,9 +623,9 @@ _check_protocol() {
     cd "$repo" || exit 1
     url=$(git remote get-url origin)
     if [[ $protocol == 'ssh' && $url =~ ^https ]]; then
-      git remote set-url origin "git@gist.github.com:$(basename `pwd`).git"
+      git remote set-url origin "git@gist.github.com:$(basename $(pwd)).git"
     elif [[ $protocol == 'https' && $url =~ ^git ]]; then
-      git remote set-url origin "https://gist.github.com/$(basename `pwd`).git"
+      git remote set-url origin "https://gist.github.com/$(basename $(pwd)).git"
     fi
   done
 }
