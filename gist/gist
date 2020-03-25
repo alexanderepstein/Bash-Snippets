@@ -8,33 +8,38 @@
 # Description: Manage your gists with git and Github API v3
 # Usage: gist [command] [<args>]
 #
-#   [star | s]                    List your gists, use argument 'star' for your starred gists. Format is like: 
-#                                 <index_of_gist> <url> <file_num> <comment_num> <description>
-#   fetch,  f [star | s]          Update the local list of your gists, 'star' for your starred gists
-#   <index_of_gist> [--no-action] Show the path of local gist repo and do custom actions
-#   new,    n [-d | --desc <description>] [-p] <file1> <file2>... create a new gist with files
-#   new,    n [-d | --desc <description>] [-p] [-f | --file <file_name>] create a new gist from STDIN
-#   detail, d <index_of_gist>     Show the detail of a gist
-#   edit,   e <index_of_gist>     Edit a gist's description
-#   delete, D <index_of_gist>... [--force]  Delete a gist
-#   clean,  C                     Clean removed gists in local
-#   config, c [token | user | folder | auto_sync | EDITOR | action | protocol [value] ] Do configuration
-#   user,   u <user>              Get gists from a given Github user
-#   grep,   g <pattern>           Grep gists by a given pattern
-#   push,   p <index_of_gist>     Push changes by git (well, better to make commit by youself)
-#   github, G <index_of_gist>     Import selected gist as a new Github repo
+#   [star|s|all|a]                List your gists, use 'star' or 's' for your starred gists,
+#                                 'all' or 'a' for both your and starred gists. Format for each line is:
+#                                 <INDEX> <URL> <FILE_NUM> <COMMENT_NUM> <DESCRIPTION>
+#   fetch,  f [star|s]            Update the local list of your gists, 'star' for your starred gists
+#   <INDEX> [--no-action]         Show the path of local gist repo and do custom actions
+#   new,    n [-d |--desc <description>] [-p] <FILE>...      create a new gist with files
+#   new,    n [-d |--desc <description>] [-p] [-f|--file <FILE_NAME>] create a new gist from STDIN
+#   grep,   g <PATTERN>           Grep gists by description, filename and content with a given pattern
+#   tag,    t <INDEX>             Modify tags for a gist
+#   tag,    t <TAG>...            Grep gists with tags
+#   tag,    t                     List gist with tags and pinned tags
+#   pin,    p <TAG>...            Pin/Unpin tags
+#   pin,    p                     Grep gists with pinned tags
+#   detail, d <INDEX>             Show the detail of a gist
+#   edit,   e <INDEX> ["NEW_DESCRIPTRION"]  Edit a gist's description
+#   delete, D <INDEX>... [--force]          Delete gists by given indices
+#   push,   P <INDEX>             Push changes by git (well, better to make commit by youself)
+#   clean,  C                     Clean local repos of removed gists
+#   config, c [token|user|folder|auto_sync|EDITOR|action|protocol [value]]  Do configuration
+#   user,   u <USER>              Get list of gists with a given Github user
+#   github, G <INDEX>             Import selected gist as a new Github repo
 #   help,   h                     Show this help message
 #   version                       Get the tool version
 #   update                        Update Bash-Snippet Tools
 # 
 # Example:
-#   gist (Show your gists)
-#   gist star (Show your starred gists)
-#   gist fetch (update the list of gists from github.com)
-#   gist fetch star (update the list of starred gists from github.com)
-#   gist 3 (show the repo path of your 3rd gist, and do custom actions)
-#   gist 3 --no-action (show the repo path of your 3rd gist, and do not perform actions)
-#   gist new --desc bar foo (create a new gist with file and description)
+#   gist                    (Show your gists)
+#   gist tag                (Show your gists with tags)
+#   gist fetch              (update the list of gists from github.com)
+#   gist 3                  (show the repo path of your 3rd gist, and do custom actions)
+#   gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)
+#   gist new --desc bar foo (create a new gist with files and description)
 # 
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
