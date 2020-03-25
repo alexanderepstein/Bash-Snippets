@@ -260,14 +260,18 @@ _check_repo_status() {
 # If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
 # TODO color private/starred mark
 _show_list() {
-  if [[ ! -e $INDEX ]]; then
+  if [[ -n $1 ]]; then
+    local input=$1
+  elif [[ ! -e $INDEX ]]; then
     echo 'No local file found for last update, please run command:'
     echo '    gist update'
     return 0
+  else
+    local input=$INDEX
   fi
 
   local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
-  sed -Ene "/^$prefix/ p" $INDEX \
+  sed -Ene "/^$prefix/ p" $input \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
@@ -352,7 +356,7 @@ _fetch_gists() {
   sed -i'' -Ee "/^$prefix/ d" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
 
-  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" > /dev/null 2>&1 &)
+  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" &> /dev/null &)
   true
 }
 
@@ -595,11 +599,16 @@ _create_gist() {
   fi
 }
 
+# get the gist description with a given index
+_get_desc() {
+  sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-
+}
+
 # Update description of a gist
 _edit_gist() {
   _gist_id "$1" || return 1
 
-  local prefill=$(sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-)
+  local prefill="$(_get_desc $1)"
   if [[ -z $2 ]]; then
     read -e -p 'Edit description: ' -i "$prefill" -r DESC < /dev/tty
   else
@@ -634,6 +643,28 @@ _check_protocol() {
       git remote set-url origin "https://gist.github.com/$(basename $(pwd)).git"
     fi
   done
+}
+
+_tag_gist() {
+  # if user want to change tags of a gist
+  if _gist_id $1 &>/dev/null; then
+    _show_detail $1 | sed 2,5d && echo
+    local desc="$(_get_desc $1)"
+    local hashtags=$(grep -Eo ' #[[:alnum:]\-\_ #]+$' <<<"$desc" | sed -Ee 's/.* [[:alnum:]\-\_]+//g' | xargs)
+    read -e -p 'Edit tags: ' -i "$(tr -d '#' <<<"$hashtags")" -r new_tags < /dev/tty
+    local new_hashtags=$(sed -Ee 's/^/#/; s/ / #/g' <<<"$new_tags")
+    local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
+    (_edit_gist $1 "$new_desc" &>/dev/null &)
+  # if user want to filter gists with given tags
+  elif [[ -n $1 ]]; then
+    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
+    sed -En "/$pattern/ p" $INDEX | hint=false _show_list -
+  else
+    while read -r "${INDEX_FORMAT[@]}"; do
+      _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
+    done < $INDEX \
+    | sort -u
+  fi
 }
 
 _apply_config "$@" || exit 1
@@ -677,6 +708,9 @@ case "$1" in
   push | p)
     shift
     _push_to_remote "$1" ;;
+  tag | t)
+    shift
+    _tag_gist "$@" ;;
   version)
     echo "Version $currentVersion" ;;
   update)
