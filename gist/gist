@@ -159,17 +159,18 @@ _configure() {
   [[ $# == 0 ]] && (${EDITOR:-vi} "$CONFIG") && return 0
 
   local valid_keys='user|token|folder|auto_sync|EDITOR|action|protocol'
-  if [[ $1 =~ ^($valid_keys)$ ]]; then
-    if [[ $1 == 'user' ]]; then
-      [[ -z $2 ]] && echo 'Must specify username' >&2 && return 1
-    elif [[ $1 == 'token' ]]; then
-      [[ ${#2} -ne 40 ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
-    elif [[ $1 == 'auto_sync' ]]; then
-      [[ ! $2 =~ ^(true|false)$ ]] && echo 'auto_sync must be either true or false' >&2 && return 1
-    elif [[ $1 == 'protocol' ]]; then
-      [[ ! $2 =~ ^(https|ssh)$ ]] && echo 'protocol must be either https or ssh' >&2 && return 1
+  local key=$1; local value="$2"
+  if [[ $key =~ ^($valid_keys)$ ]]; then
+    if [[ $key == 'user' ]]; then
+      [[ -z $value ]] && echo 'Must specify username' >&2 && return 1
+    elif [[ $key == 'token' ]]; then
+      [[ ${#value} -ne 40 ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
+    elif [[ $key == 'auto_sync' ]]; then
+      [[ ! $value =~ ^(true|false)$ ]] && echo 'auto_sync must be either true or false' >&2 && return 1
+    elif [[ $key == 'protocol' ]]; then
+      [[ ! $value =~ ^(https|ssh)$ ]] && echo 'protocol must be either https or ssh' >&2 && return 1
     fi
-    local key=$1 && shift && local target=$key="'$*'"
+    shift && local target=$key="'$*'"
   else
     echo "Not a valid key for configuration, use <$valid_keys> instead."
     return 1
@@ -216,15 +217,11 @@ _validate_config(){
     echo
     _ask_username && _ask_token && init=true
   elif [[ -z $token && $1 =~ ^(n|new|e|edit|D|delete)$ ]]; then
-    if ! (_ask_token); then
-        echo 'To create/edit/delete a gist, a token is needed'
-        return 1
-    fi
+    _ask_token && return 0
+    echo 'To create/edit/delete a gist, a token is needed' && return 1
   elif [[ -z $token && $1 =~ ^(f|fetch)$ && $2 =~ ^(s|star) ]]; then
-    if ! (_ask_token); then
-        echo 'To get user starred gists, a token is needed'
-        return 1
-    fi
+    _ask_token && return 0
+    echo 'To get user starred gists, a token is needed' && return 1
   fi
 }
 
@@ -295,7 +292,7 @@ _show_list() {
   if [[ $tag == 'true' && -n $pin ]]; then
     local pinned_tags=( $pin )
     echo
-    echo Pinned tags: ${pinned_tags[@]/#/#}
+    echo Pinned tags: "${pinned_tags[@]/#/#}"
   elif [[ $hint == 'true' ]]; then
     echo
     echo 'run "gist fetch" to update gists or "gist help" for more details' > /dev/tty
@@ -347,7 +344,7 @@ _parse_response() {
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
-    eval echo ${INDEX_FORMAT[@]/#/$}
+    eval echo "${INDEX_FORMAT[@]/#/$}"
   done
 }
 
