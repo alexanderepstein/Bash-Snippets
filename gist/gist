@@ -39,6 +39,7 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
+# TODO README/helper message about tag and default action ${SHELL:-bash}
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
 
