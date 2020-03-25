@@ -39,7 +39,6 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
-# TODO color pinned tags
 # TODO README/helper message about tag and default action ${SHELL:-bash}
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
@@ -239,6 +238,12 @@ _hashtags() {
   grep -Eo " #[$TAG_CHAR #]+$" <<<"$1" | sed -Ee "s/.* [$TAG_CHAR]+//g" | xargs
 }
 
+_color_pinned_tags() {
+  local pinned_tags=( $pin )
+  pattern='('$(sed -E 's/ /[[:space:]]|/g; s/$/[[:space:]]/' <<<"${pinned_tags[@]/#/#}")')'
+  sed -E -e "s/$pattern/\\\e[33m\1\\\e[0m/g" <<<"$1 "
+}
+
 # Return git status of a given repo
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
@@ -285,6 +290,7 @@ _show_list() {
     [[ $tag == 'true' ]] && url="$hashtags" && local width=45 && align=' '
 
     raw_output="$(printf "% 3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
+    [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
   done
@@ -670,7 +676,7 @@ _tag_gist() {
     (_edit_gist $1 "$new_desc" &>/dev/null &)
   # if user want to filter gists with given tags
   elif [[ -n $1 ]]; then
-    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
+    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/$/[[:space:]]/' <<<"$@"))"
     sed -En "/$pattern/ p" $INDEX | hint=false tag=true _show_list -
   else
     tag=true _show_list
@@ -689,8 +695,7 @@ _show_tags() {
     [[ -z $line ]] && continue
 
     # add color to pinned tags
-    pattern='('$(sed 's/ /|/g' <<<"${pinned_tags[@]/#/#}")')'
-    echo -e "$(sed -E -e "s/$pattern/\\\e[33m\1\\\e[0m/g" <<<"$line")"
+    echo -e "$(_color_pinned_tags "$line")"
   done
 
   echo
