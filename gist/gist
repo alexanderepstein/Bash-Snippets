@@ -50,6 +50,7 @@ GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
+TAG_CHAR='-_[:alnum:]'
 
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
 [[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
@@ -238,7 +239,7 @@ _apply_config() {
 
 # extract trailing hashtags from description
 _hashtags() {
-  grep -Eo ' #[[:alnum:]\-\_ #]+$' <<<"$1" | sed -Ee 's/.* [[:alnum:]\-\_]+//g' | xargs
+  grep -Eo " #[$TAG_CHAR #]+$" <<<"$1" | sed -Ee "s/.* [$TAG_CHAR]+//g" | xargs
 }
 
 # Return git status of a given repo
