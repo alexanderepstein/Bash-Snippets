@@ -39,6 +39,7 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
+# TODO color pinned tags
 # TODO README/helper message about tag and default action ${SHELL:-bash}
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
@@ -678,6 +679,26 @@ _show_tags() {
     _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
   done < $INDEX \
   | sort -u
+
+  tags=( $pin )
+  echo
+  echo Pinned tags: ${tags[@]/#/#}
+}
+
+# pin/unpin tags
+_pin_tags() {
+  local new_pinned=( $(echo $pin $* | tr ' ' '\n' | sort | uniq -u | xargs) )
+  for tag in ${new_pinned[@]}; do
+    if _gist_id $tag &> /dev/null; then 
+      echo Invalid tag: $tag
+      return 1
+    fi
+  done || exit 1
+
+  hint=false _tag_gist ${new_pinned[@]}
+  echo > /dev/tty
+  echo Pinned tags: ${new_pinned[@]/#/#} > /dev/tty
+  sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[@]}"\' >> "$CONFIG"
 }
 
 _apply_config "$@" || exit 1
@@ -718,14 +739,17 @@ case "$1" in
   github | G)
     shift
     _import_to_github "$1" ;;
-  push | p)
+  push | P)
     shift
     _push_to_remote "$1" ;;
   tag | t)
     shift
     _tag_gist "$@" ;;
-  tags)
+  tags | tt)
     _show_tags ;;
+  pin | p)
+    shift
+    _pin_tags "$@" ;;
   version)
     echo "Version $currentVersion" ;;
   update)
