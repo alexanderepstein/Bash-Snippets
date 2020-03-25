@@ -501,10 +501,10 @@ _show_detail() {
   sed -n "/^$1 / p" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local hashtags=$(_hashtags "$description")
-    echo description: ${description%% $hashtags}
+    echo desc: ${description%% $hashtags}
     echo tags: $hashtags
     echo site: https://gist.github.com/$GIST_ID
-    echo API: https://api.github.com/gists/$GIST_ID
+    echo API : https://api.github.com/gists/$GIST_ID
     echo created_at: $created_at
     echo updated_at: $updated_at
     repo=$folder/$GIST_ID
