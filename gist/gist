@@ -39,8 +39,6 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
-# TODO fix pattern of the last tag in description
-# TODO support pipe with tag filter, like 'gist tag <tag1> <tag2> | gist tag <tag3>'
 # TODO support file type from github API, like 'gist code'
 # TODO list dot file in 'gist detail'
 # TODO README/helper message about tag and default action ${SHELL:-bash}
@@ -55,6 +53,7 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
+[[ ! -t 0 ]] && INPUT=$(cat)
 
 hint=${hint:=true} # default to show hint with list of gist
 auto_sync=true # automatically clone the gist repo
@@ -268,22 +267,27 @@ _check_repo_status() {
     fi
 }
 
+# check given index is necessary to handle
+_index_pattern() {
+  if [[ -z "$INPUT" ]]; then 
+    echo .+
+  else
+    echo "($(echo "$INPUT" | sed -Ee '/^ {4,}/ d; s/^ *//; /^$/ q' | cut -d' ' -f1 | xargs | tr ' ' '|'))"
+  fi
+}
+
 # Display the list of gist, show username for starred gist
 # If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
 # If tag=true, print tags instead or url
 # TODO color private/starred mark
 _show_list() {
-  if [[ -n $1 ]]; then
-    local input=$1
-  elif [[ ! -e $INDEX ]]; then
+  if [[ ! -e $INDEX ]]; then
     echo 'No local file found for last update, please run command:'
     echo '    gist update'
     return 0
-  else
-    local input=$INDEX
   fi
 
-  sed -Ene "/^${mark:-[^s]}/ p" $input \
+  sed -Ee "/^${mark:-[^s]}/ !d; /^$(_index_pattern) / !d" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
@@ -302,7 +306,7 @@ _show_list() {
   if [[ $tag == 'true' && -n $pin ]]; then
     local pinned_tags=( $pin )
     echo
-    echo Pinned tags: "${pinned_tags[@]/#/#}"
+    echo Pinned tags: "${pinned_tags[@]/#/#} "
   elif [[ $hint == 'true' ]]; then
     echo
     echo 'run "gist fetch" to update gists or "gist help" for more details' > /dev/tty
@@ -313,20 +317,25 @@ _show_list() {
 # TODO add option to configure case-sensitive
 _grep_content() {
   if [[ -z $1 ]]; then echo 'Please give a pattern' && return 1; fi
-  while read -r "${INDEX_FORMAT[@]}"; do
+
+  sed -Ee "/^$(_index_pattern) / !d" $INDEX \
+  | while read -r "${INDEX_FORMAT[@]}"; do
+    # grep from description
     if grep --color=always -iq "$1" <<<"$description"; then
       hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
     else
       local repo=$folder/${url##*/}
       [[ -d $repo ]] && cd $repo || continue
+      # grep from filenames
       local file=$(ls $repo | grep --color=always -Ei "$1")
+      # grep from content of files
       local content=$(grep --color=always -EHi "$1" * | head -1)
 
       [[ -n $file && file="$file\n" || -n $content ]] \
       && hint=false mark="$index " _show_list \
-      && echo -e "    $file$content\n"
+      && echo -e "    $file$content"
     fi
-  done < $INDEX
+  done
 }
 
 # Parse JSON object of the result of gist fetch
@@ -573,9 +582,14 @@ _set_gist() {
 
 # Let user type the content of gist before setting filename
 _new_file() {
-  [[ -t 0 ]] && echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
   tmp_file=$(mktemp)
-  cat > "$tmp_file"
+  if [[ -z $INPUT ]]; then 
+    echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
+    cat > "$tmp_file"
+  else
+    echo "$INPUT" > "$tmp_file"
+  fi
+
   echo > /dev/tty
   [[ -z $1 ]] && read -r -p 'Type file name: ' filename < /dev/tty
   mv "$tmp_file" /tmp/"$filename"
@@ -616,7 +630,7 @@ _create_gist() {
   # shellcheck disable=2181
   if [[ $? -eq 0 ]]; then
     echo 'Gist is created'
-    hint=false _show_list | tail -1
+    INPUT=$(tail -1 $INDEX | cut -d' ' -f1) hint=false _show_list | tail -1
   else
     echo 'Failed to create gist'
   fi
@@ -680,10 +694,10 @@ _tag_gist() {
     (_edit_gist $1 "$new_desc" &>/dev/null &)
   # if user want to filter gists with given tags
   elif [[ -n $1 ]]; then
-    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/$/[[:space:]]/' <<<"$@"))"
-    sed -En "/$pattern/ p" $INDEX | hint=false tag=true _show_list -
+    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g' <<<"$@") )"
+    hint=false tag=true _show_list | grep --color=always -E "$pattern"
   else
-    tag=true _show_list
+    tag=true tag=true _show_list
   fi
 }
 
