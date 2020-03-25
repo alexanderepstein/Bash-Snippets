@@ -339,7 +339,7 @@ _parse_response() {
   | while read -r "${INDEX_FORMAT[@]:0:2}" file_url_array public "${INDEX_FORMAT[@]:3:6}"; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
-    [[ -n $1 ]] && local index=${1} || local index=${prefix}${index}
+    [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
     eval echo $(sed -Ee 's/([^ ]+)/$\1/g' <<<"${INDEX_FORMAT[@]}")
   done
 }
@@ -627,9 +627,9 @@ _edit_gist() {
 
   http_data=$(mktemp)
   echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
-  new_record=$( http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
-                | sed -e '1 s/^/[/; $ s/$/]/' \
-                | _parse_response "$1" )
+  new_record=$(http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
+               | sed -e '1 s/^/[/; $ s/$/]/' \
+               | _parse_response "${1#[[:alpha:]]}" )
   [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
   && hint=false mark="$1 " _show_list \
   || echo 'Fail to modify gist description'
