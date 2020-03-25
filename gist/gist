@@ -292,8 +292,14 @@ _show_list() {
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
   done
 
-  [[ $hint == 'true' ]] && echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty \
-  || return 0
+  if [[ $tag == 'true' && -n $pin ]]; then
+    local pinned_tags=( $pin )
+    echo
+    echo Pinned tags: ${pinned_tags[@]/#/#}
+  elif [[ $hint == 'true' ]]; then
+    echo
+    echo 'run "gist fetch" to update gists or "gist help" for more details' > /dev/tty
+  fi
 }
 
 # Grep description, filename or file content with a given pattern
@@ -674,31 +680,48 @@ _tag_gist() {
   fi
 }
 
+# show all tags and pinned tags
 _show_tags() {
-  while read -r "${INDEX_FORMAT[@]}"; do
-    _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
-  done < $INDEX \
-  | sort -u
+  local pinned_tags=( $pin )
+  local tags=$(while read -r "${INDEX_FORMAT[@]}"; do
+               _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
+              done < $INDEX | sort -u) 
 
-  tags=( $pin )
+  for prefix in {0..9} {a..z} {A-Z} [^0-9a-zA-Z]; do
+    local line=$(echo $tags | grep -Eo "#$prefix[^ ]+" | tr '\n' ' ')
+    [[ -z $line ]] && continue
+
+    # add color to pinned tags
+    pattern='('$(sed 's/ /|/g' <<<"${pinned_tags[@]/#/#}")')'
+    echo -e "$(sed -E -e "s/$pattern/\\\e[33m\1\\\e[0m/g" <<<"$line")"
+  done
+
   echo
-  echo Pinned tags: ${tags[@]/#/#}
+  if [[ ${#pinned_tags} == 0 ]]; then
+    echo 'Run "gist pin <tag1> <tag2>..." to pin tags'
+  else
+    echo Pinned tags: ${pinned_tags[@]/#/#}
+  fi
 }
 
 # pin/unpin tags
 _pin_tags() {
-  local new_pinned=( $(echo $pin $* | tr ' ' '\n' | sort | uniq -u | xargs) )
-  for tag in ${new_pinned[@]}; do
-    if _gist_id $tag &> /dev/null; then 
-      echo Invalid tag: $tag
-      return 1
-    fi
-  done || exit 1
+  # if no arguments, print gists with pinned tags
+  if [[ -z $* && -n $pin ]]; then
+    hint=false _tag_gist $pin
+  else
+    local new_pinned=( $(echo $pin $* | tr ' ' '\n' | sort | uniq -u | xargs) )
+    for tag in ${new_pinned[@]}; do
+      if [[ $tag =~ [p]*[0-9]+ ]]; then 
+        echo Invalid tag: $tag
+        return 1
+      fi
+    done || exit 1
 
-  hint=false _tag_gist ${new_pinned[@]}
-  echo > /dev/tty
-  echo Pinned tags: ${new_pinned[@]/#/#} > /dev/tty
-  sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[@]}"\' >> "$CONFIG"
+    pin="${new_pinned[@]}"
+    _show_tags
+    sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[@]}"\' >> "$CONFIG"
+  fi
 }
 
 _apply_config "$@" || exit 1
