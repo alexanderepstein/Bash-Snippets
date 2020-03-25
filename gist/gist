@@ -50,6 +50,7 @@ GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
+TAG_CHAR='-_[:alnum:]'
 
 [[ -z $hint ]] && hint=true # default to show hint with list of gist
 [[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
@@ -236,6 +237,11 @@ _apply_config() {
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
 
+# extract trailing hashtags from description
+_hashtags() {
+  grep -Eo " #[$TAG_CHAR #]+$" <<<"$1" | sed -Ee "s/.* [$TAG_CHAR]+//g" | xargs
+}
+
 # Return git status of a given repo
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
@@ -260,22 +266,28 @@ _check_repo_status() {
 # If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
 # TODO color private/starred mark
 _show_list() {
-  if [[ ! -e $INDEX ]]; then
+  if [[ -n $1 ]]; then
+    local input=$1
+  elif [[ ! -e $INDEX ]]; then
     echo 'No local file found for last update, please run command:'
     echo '    gist update'
     return 0
+  else
+    local input=$INDEX
   fi
 
   local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
-  sed -Ene "/^$prefix/ p" $INDEX \
+  sed -Ene "/^$prefix/ p" $input \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
     [[ -z $extra ]] && extra="$file_num $comment_num"
     [[ $index =~ ^s ]] && extra=$(printf "%-12s" $author)${extra}
-    description=$(echo $description | sed -E -e 's/\[(.+)\]/\\e[33m[\1]\\e[0m/')
+    hashtags=$(_hashtags "$description")
+    description=$(sed -E -e 's/\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
+    [[ $tag == 'true' ]] && url="$hashtags" && local width=45
 
-    echo -e "$(printf "% 3s" "$index") $(printf "%-56s" "$url") $extra $description" \
+    echo -e "$(printf "% 3s" "$index") $(printf "%-${width:-56}s" "$url") $extra $description" \
     | cut -c -"$(tput cols)"
   done
 
@@ -352,7 +364,7 @@ _fetch_gists() {
   sed -i'' -Ee "/^$prefix/ d" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
 
-  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" > /dev/null 2>&1 &)
+  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" &> /dev/null &)
   true
 }
 
@@ -487,8 +499,10 @@ for comment in raw:
 _show_detail() {
   _gist_id "$1" || return 1
   sed -n "/^$1 / p" $INDEX \
-  | while read -r ${INDEX_FORMAT[@]}; do
-    echo description: $description
+  | while read -r "${INDEX_FORMAT[@]}"; do
+    local hashtags=$(_hashtags "$description")
+    echo description: ${description%% $hashtags}
+    echo tags: $hashtags
     echo site: https://gist.github.com/$GIST_ID
     echo API: https://api.github.com/gists/$GIST_ID
     echo created_at: $created_at
@@ -595,11 +609,16 @@ _create_gist() {
   fi
 }
 
+# get the gist description with a given index
+_get_desc() {
+  sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-
+}
+
 # Update description of a gist
 _edit_gist() {
   _gist_id "$1" || return 1
 
-  local prefill=$(sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-)
+  local prefill="$(_get_desc $1)"
   if [[ -z $2 ]]; then
     read -e -p 'Edit description: ' -i "$prefill" -r DESC < /dev/tty
   else
@@ -634,6 +653,32 @@ _check_protocol() {
       git remote set-url origin "https://gist.github.com/$(basename $(pwd)).git"
     fi
   done
+}
+
+_tag_gist() {
+  # if user want to change tags of a gist
+  if _gist_id $1 &>/dev/null; then
+    _show_detail $1 | sed 3,6d && echo
+    local desc="$(_get_desc $1)"
+    local hashtags=$(_hashtags "$desc")
+    read -e -p 'Edit tags: ' -i "$(tr -d '#' <<<"$hashtags")" -r new_tags < /dev/tty
+    local new_hashtags=$(sed -Ee 's/^/#/; s/ / #/g' <<<"$new_tags")
+    local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
+    (_edit_gist $1 "$new_desc" &>/dev/null &)
+  # if user want to filter gists with given tags
+  elif [[ -n $1 ]]; then
+    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
+    sed -En "/$pattern/ p" $INDEX | hint=false _show_list -
+  else
+    tag=true _show_list
+  fi
+}
+
+_show_tags() {
+  while read -r "${INDEX_FORMAT[@]}"; do
+    _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
+  done < $INDEX \
+  | sort -u
 }
 
 _apply_config "$@" || exit 1
@@ -677,6 +722,11 @@ case "$1" in
   push | p)
     shift
     _push_to_remote "$1" ;;
+  tag | t)
+    shift
+    _tag_gist "$@" ;;
+  tags)
+    _show_tags ;;
   version)
     echo "Version $currentVersion" ;;
   update)
