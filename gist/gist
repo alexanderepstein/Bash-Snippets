@@ -40,7 +40,6 @@
 # It is your business to do git commit and git push
 
 # TODO codebase statistics, like C++ or something
-# TODO subcommand tag for #TAG in description
 # TODO migrate to gh-page, with install.sh and check_md5 in README
 
 currentVersion="1.23.0"
@@ -183,7 +182,7 @@ _configure() {
 # Prompt for username
 _ask_username() {
   while [[ ! $user =~ ^[[:alnum:]]+$ ]]; do
-    [[ -n $user ]] && echo "Not a valid username"
+    [[ -n $user ]] && echo "Invalid username"
     read -r -p "Github username: " user < /dev/tty
   done
   _configure user "$user"
@@ -199,7 +198,7 @@ _ask_token() {
   fi
 
   while [[ ! $token =~ ^[[:alnum:]]{40}$ ]]; do
-    [[ -n $token ]] && echo "Not a valid token"
+    [[ -n $token ]] && echo "Invalid token"
     read -r -p "Paste your token here (Ctrl-C to skip): " token < /dev/tty
   done
   _configure token "$token"
@@ -423,7 +422,7 @@ _gist_id() {
   if [[ -z $GIST_ID || ! $1 =~ [0-9a-z]+ ]]; then
     echo -e "$(hint=false _show_list | sed -Ee 's/^( *[0-9a-z]+)/\\e[5m\1\\e[0m/')"
     echo
-    echo -e "Not a valid index: \e[33m$1\e[0m"
+    echo -e "Invalid index: \e[33m$1\e[0m"
     echo 'Use the indices blinking instead (like 1 or s1)'
     return 1
   fi
