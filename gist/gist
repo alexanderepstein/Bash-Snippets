@@ -525,8 +525,8 @@ _import_to_github() {
 # Simply commit current changes and push to remote
 _push_to_remote() {
   if [[ ! $(pwd) =~ ^$folder/[0-9a-z]+$ ]]; then
-    _gist_id "$1"
-    cd "$folder/$GIST_ID" || return 1
+    _gist_id "$1" || return 1
+    cd "$folder/$GIST_ID"
   fi
   if [[ -n $(git status --short) ]]; then
     git add . && git commit -m 'update'
