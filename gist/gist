@@ -321,7 +321,7 @@ _parse_gists() {
 raw = json.load(sys.stdin)
 for gist in raw:
     print(gist["html_url"], end=" ")
-    print([file["raw_url"] for file in gist["files"].values()], end=" ")
+    print(",".join(file["raw_url"] for file in gist["files"].values()), end=" ")
     print(gist["public"], end=" ")
     print(len(gist["files"]), end=" ")
     print(gist["comments"], end=" ")
@@ -335,7 +335,7 @@ for gist in raw:
 # Parse response from 'gist fetch' to the format for index file
 _parse_response() {
   _parse_gists \
-  | tac | sed -e 's/, /,/g' | nl -s' ' \
+  | tac | nl -s' ' \
   | while read -r "${INDEX_FORMAT[@]:0:2}" file_url_array public "${INDEX_FORMAT[@]:3:6}"; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
