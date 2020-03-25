@@ -440,7 +440,7 @@ _repo_url() {
 
 # Get gist id from index files
 _gist_id() {
-  GIST_ID=$(sed -n -e "/^$1 / p" $INDEX | cut -d' ' -f2 | sed -E -e 's#.*/##')
+  GIST_ID=$(sed -En -e "/^$1 / {s#$1 [^ ]+/([[:alnum:]]+) .+#\1#; p; q}" $INDEX)
   if [[ -z $GIST_ID || ! $1 =~ [0-9a-z]+ ]]; then
     echo -e "$(hint=false _show_list | sed -Ee 's/^( *[0-9a-z]+)/\\e[5m\1\\e[0m/')"
     echo
