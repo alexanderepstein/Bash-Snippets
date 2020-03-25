@@ -19,7 +19,7 @@
 #   delete, D <index_of_gist>... [--force]  Delete a gist
 #   clean,  C                     Clean removed gists in local
 #   config, c [token | user | folder | auto_sync | EDITOR | action | protocol [value] ] Do configuration
-#   user,   U <user>              Get gists from a given Github user
+#   user,   u <user>              Get gists from a given Github user
 #   grep,   g <pattern>           Grep gists by a given pattern
 #   push,   p <index_of_gist>     Push changes by git (well, better to make commit by youself)
 #   github, G <index_of_gist>     Import selected gist as a new Github repo
@@ -730,7 +730,7 @@ case "$1" in
   config | c)
     shift
     _configure "$@" && (_apply_config config && _check_protocol) ;;
-  user | U)
+  user | u)
     shift
     _query_user "$@" ;;
   grep | g)
