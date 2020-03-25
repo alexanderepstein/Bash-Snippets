@@ -52,8 +52,7 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 
-[[ -z $hint ]] && hint=true # default to show hint with list of gist
-[[ -z $confirm ]] && confirm=true # default to confirm when deleting gists
+hint=${hint:=true} # default to show hint with list of gist
 auto_sync=true # automatically clone the gist repo
 protocol=https
 
@@ -232,7 +231,7 @@ _validate_config(){
 _apply_config() {
   _validate_config "$@" || return 1
 
-  [[ -z $folder || ! -w $(dirname $folder) ]] && folder=~/gist
+  [[ -z $folder || ! -w $(dirname "$folder") ]] && folder=~/gist
   mkdir -p $folder
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
@@ -251,19 +250,20 @@ _check_repo_status() {
         echo "\e[32m[Not cloned yet]\e[0m";
       fi
     else
-      cd "$1"
+      cd "$1" || exit 1
       if [[ -n $(git status --short) || $(git branch | sed -n '/\* / s///p') != 'master' ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
       else
         [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && local status="\e[31m[outdated]\e[0m"
         [[ -n $(git cherry) ]] 2>/dev/null && local status="\e[31m[ahead]\e[0m"
-        echo $status
+        echo "$status"
       fi
     fi
 }
 
 # Display the list of gist, show username for starred gist
 # If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
+# If tag=true, print tags instead or url
 # TODO color private/starred mark
 _show_list() {
   if [[ -n $1 ]]; then
@@ -276,20 +276,19 @@ _show_list() {
     local input=$INDEX
   fi
 
-  local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
-  sed -Ene "/^$prefix/ p" $input \
+  sed -Ene "/^${mark:-[^s]}/ p" $input \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
     [[ -z $extra ]] && extra="$file_num $comment_num"
     [[ $index =~ ^s ]] && extra=$(printf "%-12s" $author)${extra}
-    hashtags=$(_hashtags "$description")
-    description=$(sed -E -e 's/\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
+    local hashtags=$(_hashtags "$description")
+    local description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
     [[ $tag == 'true' ]] && url="$hashtags" && local width=45
 
     raw_output="$(printf "% 3s" "$index") $(printf "%-${width:-56}s" "$url") $extra $description"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
-    echo -e "$raw_output" | cut -c -$(( $(tput cols) +$decorator ))
+    echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
   done
 
   [[ $hint == 'true' ]] && echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty \
@@ -304,14 +303,14 @@ _grep_content() {
     if grep --color=always -iq "$1" <<<"$description"; then
       hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
     else
-      local repo=$folder/$(echo $url | sed -E -e 's#.*/##')
+      local repo=$folder/${url##*/}
       [[ -d $repo ]] && cd $repo || continue
       local file=$(ls $repo | grep --color=always -Ei "$1")
       local content=$(grep --color=always -EHi "$1" * | head -1)
 
       [[ -n $file && file="$file\n" || -n $content ]] \
       && hint=false mark="$index " _show_list \
-      && echo -e "$file$content\n" | sed -e 's/^/    /'
+      && echo -e "    $file$content\n"
     fi
   done < $INDEX
 }
@@ -341,7 +340,7 @@ _parse_response() {
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
-    eval echo $(sed -Ee 's/([^ ]+)/$\1/g' <<<"${INDEX_FORMAT[@]}")
+    eval echo ${INDEX_FORMAT[@]/#/$}
   done
 }
 
@@ -361,8 +360,7 @@ _fetch_gists() {
   result=$(http_method GET $GITHUB_API/$route?per_page=100 | mark=$mark _parse_response)
   [[ -z $result ]] && echo 'Not a single valid gist' && return 0
 
-  local prefix=$mark; [[ -z $prefix ]] && prefix=[^s]
-  sed -i'' -Ee "/^$prefix/ d" $INDEX && echo "$result" >> $INDEX
+  sed -i'' -Ee "/^${mark:-[^s]}/ d" $INDEX && echo "$result" >> $INDEX
   mark=$mark _show_list
 
   [[ $auto_sync == 'true' ]] && (_sync_repos "$1" &> /dev/null &)
@@ -373,7 +371,7 @@ _fetch_gists() {
 # TODO pagnation for more than 100 gists
 _query_user() {
   local route="users/$1/gists"
-  result=$(http_method GET $GITHUB_API/$route?per_page=100 | _parse_response)
+  result="$(http_method GET $GITHUB_API/$route?per_page=100 | _parse_response)"
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
@@ -662,8 +660,8 @@ _tag_gist() {
     _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
     local hashtags=$(_hashtags "$desc")
-    read -e -p 'Edit tags: ' -i "$(tr -d '#' <<<"$hashtags")" -r new_tags < /dev/tty
-    local new_hashtags=$(sed -Ee 's/^/#/; s/ / #/g' <<<"$new_tags")
+    read -e -p 'Edit tags: ' -i "${hashtags//'#'/}" -r -a new_tags < /dev/tty
+    local new_hashtags="${new_tags[@]/#/#}"
     local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
     (_edit_gist $1 "$new_desc" &>/dev/null &)
   # if user want to filter gists with given tags
