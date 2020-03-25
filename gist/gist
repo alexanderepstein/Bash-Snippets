@@ -684,7 +684,9 @@ _check_protocol() {
 
 _tag_gist() {
   # if user want to change tags of a gist
-  if _gist_id $1 &>/dev/null; then
+  if [[ -z $@ ]]; then
+    tag=true _show_list
+  elif _gist_id $1 &>/dev/null; then
     _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
     local hashtags=$(_hashtags "$desc")
@@ -693,11 +695,9 @@ _tag_gist() {
     local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
     (_edit_gist $1 "$new_desc" &>/dev/null &)
   # if user want to filter gists with given tags
-  elif [[ -n $1 ]]; then
+  else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g' <<<"$@") )"
     hint=false tag=true _show_list | grep --color=always -E "$pattern"
-  else
-    tag=true tag=true _show_list
   fi
 }
 
