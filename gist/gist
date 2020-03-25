@@ -287,8 +287,9 @@ _show_list() {
     description=$(sed -E -e 's/\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
     [[ $tag == 'true' ]] && url="$hashtags" && local width=45
 
-    echo -e "$(printf "% 3s" "$index") $(printf "%-${width:-56}s" "$url") $extra $description" \
-    | cut -c -"$(tput cols)"
+    raw_output="$(printf "% 3s" "$index") $(printf "%-${width:-56}s" "$url") $extra $description"
+    decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
+    echo -e "$raw_output" | cut -c -$(( $(tput cols) +$decorator ))
   done
 
   [[ $hint == 'true' ]] && echo -e '\nrun "gist fetch" to update gists or "gist help" for more details' > /dev/tty \
@@ -420,7 +421,7 @@ _repo_url() {
 _gist_id() {
   GIST_ID=$(sed -n -e "/^$1 / p" $INDEX | cut -d' ' -f2 | sed -E -e 's#.*/##')
   if [[ -z $GIST_ID || ! $1 =~ [0-9a-z]+ ]]; then
-    echo -e "$(hint=false _show_list | sed -Ee 's/^( *[0-9a-z]+)/\\033[5m\1\\033[0m/')"
+    echo -e "$(hint=false _show_list | sed -Ee 's/^( *[0-9a-z]+)/\\e[5m\1\\e[0m/')"
     echo
     echo -e "Not a valid index: \e[33m$1\e[0m"
     echo 'Use the indices blinking instead (like 1 or s1)'
