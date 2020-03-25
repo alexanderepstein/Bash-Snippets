@@ -752,6 +752,8 @@ case "$1" in
     _show_list ;;
   star | s)
     mark=s _show_list ;;
+  all | a)
+    mark=. _show_list ;;
   fetch | f)
     _fetch_gists "$2" ;;
   new | n)
