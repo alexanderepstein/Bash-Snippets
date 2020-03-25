@@ -16,7 +16,7 @@
 #   new,    n [-d | --desc <description>] [-p] [-f | --file <file_name>] create a new gist from STDIN
 #   detail, d <index_of_gist>     Show the detail of a gist
 #   edit,   e <index_of_gist>     Edit a gist's description
-#   delete, D <index_of_gist>...  Delete a gist
+#   delete, D <index_of_gist>... [--force]  Delete a gist
 #   clean,  C                     Clean removed gists in local
 #   config, c [token | user | folder | auto_sync | EDITOR | action | protocol [value] ] Do configuration
 #   user,   U <user>              Get gists from a given Github user
@@ -456,16 +456,16 @@ _goto_gist() {
 }
 
 # Delete gists with given indices
-# Specify confirm=false to suppress confirmation
+# Specify --force to suppress confirmation
 _delete_gist() {
-  if [[ $confirm != false ]]; then
+  if [[ ! $* =~ '--force' ]]; then
     read -r -p "Delete gists above? [y/N] " response
     response=${response,,}
     [[ ! $response =~ ^(yes|y)$ ]] && return 0
   fi
 
   for i in "$@"; do
-    _gist_id "$i" || continue
+    _gist_id "$i" &> /dev/null || continue
     http_method DELETE "$GITHUB_API/gists/$GIST_ID" \
     && echo "$i" deleted \
     && sed -E -i'' -e "/^$i / d" $INDEX

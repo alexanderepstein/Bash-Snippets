@@ -88,7 +88,7 @@ setup() {
 }
 
 @test "The delete command should delete specified gists" {
-  confirm=false run "${TOOL_DIR}/${TOOL_NAME}" delete 1
+  run "${TOOL_DIR}/${TOOL_NAME}" delete 1 --force
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = '1 deleted' ]
 }
