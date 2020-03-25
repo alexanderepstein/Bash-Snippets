@@ -236,6 +236,11 @@ _apply_config() {
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
 }
 
+# extract trailing hashtags from description
+_hashtags() {
+  grep -Eo ' #[[:alnum:]\-\_ #]+$' <<<"$1" | sed -Ee 's/.* [[:alnum:]\-\_]+//g' | xargs
+}
+
 # Return git status of a given repo
 _check_repo_status() {
     if [[ ! -d $1 ]]; then
@@ -491,8 +496,10 @@ for comment in raw:
 _show_detail() {
   _gist_id "$1" || return 1
   sed -n "/^$1 / p" $INDEX \
-  | while read -r ${INDEX_FORMAT[@]}; do
-    echo description: $description
+  | while read -r "${INDEX_FORMAT[@]}"; do
+    local hashtags=$(_hashtags "$description")
+    echo description: ${description%% $hashtags}
+    echo tags: $hashtags
     echo site: https://gist.github.com/$GIST_ID
     echo API: https://api.github.com/gists/$GIST_ID
     echo created_at: $created_at
@@ -648,9 +655,9 @@ _check_protocol() {
 _tag_gist() {
   # if user want to change tags of a gist
   if _gist_id $1 &>/dev/null; then
-    _show_detail $1 | sed 2,5d && echo
+    _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
-    local hashtags=$(grep -Eo ' #[[:alnum:]\-\_ #]+$' <<<"$desc" | sed -Ee 's/.* [[:alnum:]\-\_]+//g' | xargs)
+    local hashtags=$(_hashtags "$desc")
     read -e -p 'Edit tags: ' -i "$(tr -d '#' <<<"$hashtags")" -r new_tags < /dev/tty
     local new_hashtags=$(sed -Ee 's/^/#/; s/ / #/g' <<<"$new_tags")
     local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
