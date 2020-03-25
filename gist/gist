@@ -284,9 +284,9 @@ _show_list() {
     [[ $index =~ ^s ]] && extra=$(printf "%-12s" $author)${extra}
     local hashtags=$(_hashtags "$description")
     local description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
-    [[ $tag == 'true' ]] && url="$hashtags" && local width=45
+    [[ $tag == 'true' ]] && url="$hashtags" && local width=45 && align=' '
 
-    raw_output="$(printf "% 3s" "$index") $(printf "%-${width:-56}s" "$url") $extra $description"
+    raw_output="$(printf "% 3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
   done
@@ -667,7 +667,7 @@ _tag_gist() {
   # if user want to filter gists with given tags
   elif [[ -n $1 ]]; then
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
-    sed -En "/$pattern/ p" $INDEX | hint=false _show_list -
+    sed -En "/$pattern/ p" $INDEX | hint=false tag=true _show_list -
   else
     tag=true _show_list
   fi
