@@ -61,10 +61,11 @@ setup() {
 
   # order of ouput lines changed
   [[ "$status" -eq 0 ]]
+  expected='(G-Unit|The Game|Lloyd Banks): .+'
   [ "${lines[0]}" = "===================================" ]
-  [ "${lines[1]}" = "G-Unit: music" ]
-  [ "${lines[2]}" = "The Game: music" ]
-  [ "${lines[3]}" = "Lloyd Banks: music" ]
+  [[ "${lines[1]}" =~ ${expected} ]]
+  [[ "${lines[2]}" =~ ${expected} ]]
+  [[ "${lines[3]}" =~ ${expected} ]]
   [ "${lines[4]}" = "===================================" ]
 }
 
