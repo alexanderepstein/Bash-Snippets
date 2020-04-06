@@ -473,12 +473,11 @@ _goto_gist() {
   fi
 
   echo "$folder/$GIST_ID"
+  if [[ -z $action ]]; then
+    action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
+  fi
   if [[ $2 == '--no-action' ]]; then
     return 0
-  elif [[ -z $action ]]; then
-    echo > /dev/tty
-    echo 'hint: set action inside the repo, for example:' > /dev/tty
-    echo "  gist config action 'ls' # list files of the given gist" > /dev/tty
   else
     cd "$folder/$GIST_ID" && eval "$action"
   fi
