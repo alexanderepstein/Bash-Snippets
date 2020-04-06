@@ -19,6 +19,7 @@
 #   tag,    t <INDEX>             Modify tags for a gist
 #   tag,    t <TAG>...            Grep gists with tags
 #   tag,    t                     List gist with tags and pinned tags
+#   tags,   tt                    List all tags and pinned tags
 #   pin,    p <TAG>...            Pin/Unpin tags
 #   pin,    p                     Grep gists with pinned tags
 #   detail, d <INDEX>             Show the detail of a gist
