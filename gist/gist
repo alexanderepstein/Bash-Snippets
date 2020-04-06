@@ -325,7 +325,8 @@ _grep_content() {
   sed -Ee "/^$(_index_pattern) / !d" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     # grep from description
-    if grep --color=always -iq "$1" <<<"$description"; then
+    local hashtags="$(_hashtags "$description")"
+    if grep --color=always -iq "$1" <<<"${description%% $hashtags}"; then
       hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
     else
       local repo=$folder/${url##*/}
