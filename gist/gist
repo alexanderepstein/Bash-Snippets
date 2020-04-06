@@ -466,6 +466,15 @@ _gist_id() {
   fi
 }
 
+# set gist id either by given index or current directory
+_set_gist_id() {
+  if [[ -z $1 ]]; then
+    [[ $(dirname $(pwd)) == $folder ]] && GIST_ID=$(basename $(pwd)) || return 1
+  else
+    _gist_id "$1" || return 1
+  fi
+}
+
 # Show path of repo by gist ID, and perform action
 _goto_gist() {
   echo "$folder/$GIST_ID"
@@ -539,8 +548,9 @@ for comment in raw:
 # Show the detail of a gist
 # TODO add parameter --comment to fetch comments
 _show_detail() {
-  _gist_id "$1" || return 1
-  sed -n "/^$1 / p" $INDEX \
+  _set_gist_id $1 || return 1
+
+  sed -En -e "/[^ ]+ [^ ]+$GIST_ID / p" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local hashtags=$(_hashtags "$description")
     echo desc: ${description%% $hashtags}
