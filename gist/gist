@@ -286,9 +286,8 @@ _index_pattern() {
 # If tag=true, print tags instead or url
 # TODO color private/starred mark
 _show_list() {
-  if [[ ! -e $INDEX ]]; then
-    echo 'No local file found for last update, please run command:'
-    echo '    gist update'
+  if [[ ! -s $INDEX ]]; then
+    echo 'Index file is empty, please run commands "gist fetch" or "gist create"'
     return 0
   fi
 
