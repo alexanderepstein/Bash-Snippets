@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BASH\-SNIPPETS" "1" "December 2017" "ff" ""
+.TH "BASH\-SNIPPETS" "1" "April 2020" "" ""
 .
 .SH "NAME"
 \fBbash\-snippets\fR \- A collection of small bash scripts for heavy terminal users
@@ -271,6 +271,91 @@ Example: geo \-a 8\.8\.8\.8 \-o city,zip,isp
 .
 .IP "\(bu" 4
 \-u Updates Bash\-Snippets
+.
+.IP "" 0
+.
+.SS "Gist"
+Description: Manage your gists with git and Github API v3
+.
+.P
+Usage: gist [command] [args]
+.
+.IP "\(bu" 4
+[star|all] List your gists, use \'star\' as argument for your starred gists, \'all\' or \'a\' for both your and starred gists\. Format for each line is: \fIINDEX\fR \fIURL\fR \fIFILE_NUM\fR \fICOMMENT_NUM\fR \fIDESCRIPTION\fR
+.
+.IP "\(bu" 4
+fetch Update the local list of your gists, \'star\' as argument for your starred gists
+.
+.IP "\(bu" 4
+\fIINDEX\fR Show the path of local gist repo and do custom actions
+.
+.IP "\(bu" 4
+new Create a new gist with files or STDIN
+.
+.IP "\(bu" 4
+grep Grep gists by description, filename and content with a given pattern
+.
+.IP "\(bu" 4
+tag Modify/List tags for a gist
+.
+.IP "\(bu" 4
+tags List all tags and pinned tags
+.
+.IP "\(bu" 4
+pin, Pin/Unpin tags, or filter gists with pinned tags
+.
+.IP "\(bu" 4
+lan Filter gists or list gist with coding languages
+.
+.IP "\(bu" 4
+detail Show the detail of a gist
+.
+.IP "\(bu" 4
+edit Edit description for a gist
+.
+.IP "\(bu" 4
+delete Delete gists by given indices
+.
+.IP "\(bu" 4
+push Push changes by git
+.
+.IP "\(bu" 4
+clean Clean local repos of removed gists
+.
+.IP "\(bu" 4
+config Do configuration
+.
+.IP "\(bu" 4
+user Get list of gists with a given Github user
+.
+.IP "\(bu" 4
+github Import selected gist as a new Github repo
+.
+.IP "\(bu" 4
+help Show the helper message
+.
+.IP "" 0
+.
+.P
+Example:
+.
+.IP "\(bu" 4
+gist (Show your gists)
+.
+.IP "\(bu" 4
+gist tag (Show your gists with tags)
+.
+.IP "\(bu" 4
+gist fetch (update the list of gists from github\.com)
+.
+.IP "\(bu" 4
+gist 3 (show the repo path of your 3rd gist, and do custom actions)
+.
+.IP "\(bu" 4
+gist 3 \-\-no\-action (show the repo path of your 3rd gist, and do not perform actions)
+.
+.IP "\(bu" 4
+gist new \-\-desc bar foo (create a new gist with files and description)
 .
 .IP "" 0
 .
