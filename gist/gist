@@ -296,10 +296,10 @@ _show_list() {
   | while read -r "${INDEX_FORMAT[@]}"; do
     local repo; repo=$folder/${url##*/}
     local extra; extra=$(_check_repo_status "$repo" "$blob_code")
-    [[ -z $extra ]] && extra="$file_num $comment_num"
-    [[ $index =~ ^s ]] && extra=$(printf "%-10s " $author)${extra}
+    [[ -z $extra ]] && extra="$(printf "%-4s" "$file_num $comment_num")"
     local hashtags=$(_hashtags "$description")
-    local description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
+    [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
+    description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
     [[ $tag == 'true' ]] && url="$hashtags" && local width=45 && align=' '
 
     raw_output="$(printf "% 3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
