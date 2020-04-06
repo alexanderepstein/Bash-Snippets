@@ -465,8 +465,7 @@ _gist_id() {
 }
 
 # Return the path of local repo with a given index
-# If action is not empty, eval it!
-_goto_gist() {
+_goto_gist_by_index() {
   _gist_id "$1" || return 1
 
   if [[ ! -d $folder/$GIST_ID  ]]; then
@@ -479,7 +478,13 @@ _goto_gist() {
     fi
   fi
 
+  _goto_gist
+}
+
+_goto_gist() {
   echo "$folder/$GIST_ID"
+  touch "$folder/$GIST_ID"
+
   if [[ -z $action ]]; then
     action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
   fi
@@ -771,6 +776,11 @@ _gists_with_range() {
   hint=false _show_list
 }
 
+_access_last_index() {
+  GIST_ID=$(ls -tup $folder | grep / | head -1)
+  _goto_gist
+}
+
 _apply_config "$@" || exit 1
 getConfiguredClient || exit 1
 if [[ $init ]]; then _fetch_gists; exit 0; fi
@@ -827,6 +837,8 @@ case "$1" in
     _gists_with_languages "$@" ;;
   *-*)
     _gists_with_range "$@" ;;
+  last | L)
+    _access_last_index ;;
   version)
     echo "Version $currentVersion" ;;
   update)
@@ -835,5 +847,5 @@ case "$1" in
   help | h)
     usage ;;
   *)
-    _goto_gist "$@" ;;
+    _goto_gist_by_index "$@" ;;
 esac
