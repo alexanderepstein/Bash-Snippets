@@ -312,7 +312,7 @@ _show_list() {
     echo Pinned tags: "${pinned_tags[*]/#/#} "
   elif [[ $hint == 'true' ]]; then
     echo
-    echo 'run "gist fetch" to update gists or "gist help" for more details' > /dev/tty
+    echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
   fi
 }
 
