@@ -327,20 +327,20 @@ _grep_content() {
     # grep from description
     local hashtags="$(_hashtags "$description")"
     if grep --color=always -iq "$1" <<<"${description%% $hashtags}"; then
-      hint=false mark="$index " _show_list | grep --color=always -Ei "$1"
+      hint=false mark="$index " _show_list
     else
       local repo=$folder/${url##*/}
       [[ -d $repo ]] && cd $repo || continue
       # grep from filenames
       local file=$(ls $repo | grep --color=always -Ei "$1")
       # grep from content of files
-      local content=$(grep --color=always -EHi "$1" * | head -1)
+      local content=$(grep --color=always -EHi -m1 "$1" *)
 
       [[ -n $file && file="$file\n" || -n $content ]] \
       && hint=false mark="$index " _show_list \
       && echo -e "    $file$content"
     fi
-  done
+  done | grep --color=always -Ei -C1 "$1"
 }
 
 # Parse JSON object of the result of gist fetch
