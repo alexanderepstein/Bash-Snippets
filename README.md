@@ -130,6 +130,24 @@ Written by: [Jake Meyer](https://github.com/jakewmeyer)
 </details>
 
 <details>
+<summary>Gist</summary>
+
+Manage your gist like a pro
+
+Clone your owned gists and starred gists as git repos, and Fetch/Create/Edit/Delete them with Github API. It also supports quick search with hashtag and contents.
+
+For more information, please go through the [guide](gist/README.md)
+
+<div align="center">
+
+<img max-height="500px" max-width="500px" src="https://github.com/alexanderepstein/Bash-Snippets/blob/master/gist/gist.png?raw=true">
+
+</div>
+
+Written by: [typebrook](https://github.com/typebrook)
+</details>
+
+<details>
 <summary>Lyrics</summary>
 
 Grab lyrics for a given song quickly from the command line.
