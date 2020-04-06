@@ -369,6 +369,7 @@ _parse_response() {
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
+    file_array=${file_array//@None/@Text}
     eval echo "${INDEX_FORMAT[@]/#/$}"
   done
 }
