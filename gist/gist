@@ -60,8 +60,8 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
+[[ ! -t 1 && -z $hint ]] && hint=false || hint=true
 
-hint=${hint:=true} # default to show hint with list of gist
 auto_sync=true # automatically clone the gist repo
 protocol=https
 
@@ -316,10 +316,10 @@ _show_list() {
 
   if [[ $display == 'tag' && -n $pin ]]; then
     local pinned_tags=( $pin )
-    echo
-    echo Pinned tags: "${pinned_tags[*]/#/#} "
+    echo > /dev/tty
+    echo Pinned tags: "${pinned_tags[*]/#/#} " > /dev/tty
   elif [[ -z $INPUT && $hint == 'true' ]]; then
-    echo
+    echo > /dev/tty
     echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
   fi
 }
@@ -702,7 +702,7 @@ _check_protocol() {
 _tag_gist() {
   # if user want to change tags of a gist
   if [[ -z $@ ]]; then
-    display=tag _show_list
+    display=tag  mark=${INPUT:+.} _show_list
   elif _gist_id $1 &>/dev/null; then
     _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
