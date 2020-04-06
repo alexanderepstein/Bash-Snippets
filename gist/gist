@@ -318,7 +318,7 @@ _show_list() {
     local pinned_tags=( $pin )
     echo
     echo Pinned tags: "${pinned_tags[*]/#/#} "
-  elif [[ $hint == 'true' ]]; then
+  elif [[ -z $INPUT && $hint == 'true' ]]; then
     echo
     echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
   fi
