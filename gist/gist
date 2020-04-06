@@ -762,6 +762,15 @@ _gists_with_languages() {
   hint=false mark=${INPUT:+.} display=language _show_list | grep --color=always -Ei "$pattern"
 }
 
+_gists_with_range() {
+  [[ ! $@ =~ ^s*[0-9]*-s*[0-9]*$ ]] && echo 'Invalid range' && exit 1
+  local mark='' && [[ $@ =~ s ]] && mark=s
+
+  local range=$(sed -Ee "s/s//g; s/^-/1-/; s/-$/-$(wc -l <$INDEX)/; s/-/\n/" <<< "$*")
+  INPUT=$(seq $range | sed -e "s/^/p*$mark/")
+  hint=false _show_list
+}
+
 _apply_config "$@" || exit 1
 getConfiguredClient || exit 1
 if [[ $init ]]; then _fetch_gists; exit 0; fi
@@ -816,6 +825,8 @@ case "$1" in
   lan | l)
     shift
     _gists_with_languages "$@" ;;
+  *-*)
+    _gists_with_range "$@" ;;
   version)
     echo "Version $currentVersion" ;;
   update)
