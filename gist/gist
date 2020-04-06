@@ -700,9 +700,10 @@ _check_protocol() {
 }
 
 _tag_gist() {
-  # if user want to change tags of a gist
+  # if no tag is given, show gist list with tags
   if [[ -z $@ ]]; then
     display=tag  mark=${INPUT:+.} _show_list
+  # if user want to change tags of a gist
   elif _gist_id $1 &>/dev/null; then
     _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
