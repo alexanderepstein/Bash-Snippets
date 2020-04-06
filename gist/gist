@@ -22,6 +22,8 @@
 #   tags,   tt                    List all tags and pinned tags
 #   pin,    p <TAG>...            Pin/Unpin tags
 #   pin,    p                     Grep gists with pinned tags
+#   lan,    l <PATTERN>...        Grep gists with languages
+#   lan,    l                     List gist with languages of files
 #   detail, d <INDEX>             Show the detail of a gist
 #   edit,   e <INDEX> ["NEW_DESCRIPTRION"]  Edit a gist's description
 #   delete, D <INDEX>... [--force]          Delete gists by given indices
@@ -45,7 +47,6 @@
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
-# TODO support file type from github API, like 'gist code'
 # TODO README/helper message about tag and default action ${SHELL:-bash}
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
@@ -283,7 +284,7 @@ _index_pattern() {
 
 # Display the list of gist, show username for starred gist
 # If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
-# If tag=true, print tags instead or url
+# If display=tag, print tags instead or url
 # TODO color private/starred mark
 _show_list() {
   if [[ ! -s $INDEX ]]; then
@@ -298,15 +299,22 @@ _show_list() {
     local hashtags=$(_hashtags "$description")
     [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
     description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
-    [[ $tag == 'true' ]] && { url="$hashtags"; local width=45; align=' ';  extra=''; }
 
-    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
+    local message=$url
+    if [[ $display == 'tag' ]]; then
+      message="$hashtags"; local width=45; local align=' ';  extra='';
+    elif [[ $display == 'language' ]]; then
+      message="$(tr ',' '\n' <<< $file_array | sed -Ee 's/.+@/#/' | uniq | xargs)"
+      local width=45; local align=' ';  extra='';
+    fi
+
+    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $description"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
   done
 
-  if [[ $tag == 'true' && -n $pin ]]; then
+  if [[ $display == 'tag' && -n $pin ]]; then
     local pinned_tags=( $pin )
     echo
     echo Pinned tags: "${pinned_tags[*]/#/#} "
@@ -689,7 +697,7 @@ _check_protocol() {
 _tag_gist() {
   # if user want to change tags of a gist
   if [[ -z $@ ]]; then
-    tag=true _show_list
+    display=tag _show_list
   elif _gist_id $1 &>/dev/null; then
     _show_detail $1 | sed 3,6d && echo
     local desc="$(_get_desc $1)"
@@ -701,7 +709,7 @@ _tag_gist() {
   # if user want to filter gists with given tags
   else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g' <<<"$@") )"
-    hint=false tag=true _show_list | grep --color=always -E "$pattern"
+    hint=false mark=${INPUT:+.} display=tag _show_list | grep --color=always -E "$pattern"
   fi
 }
 
@@ -746,6 +754,12 @@ _pin_tags() {
     _show_tags
     sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[@]}"\' >> "$CONFIG"
   fi
+}
+
+# show languages of files in gists
+_gists_with_languages() {
+  local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
+  hint=false mark=${INPUT:+.} display=language _show_list | grep --color=always -Ei "$pattern"
 }
 
 _apply_config "$@" || exit 1
@@ -799,6 +813,9 @@ case "$1" in
   pin | p)
     shift
     _pin_tags "$@" ;;
+  lan | l)
+    shift
+    _gists_with_languages "$@" ;;
   version)
     echo "Version $currentVersion" ;;
   update)
