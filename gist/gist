@@ -61,7 +61,7 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 INDEX_FORMAT=('index' 'url' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
-[[ ! -t 1 && -z $hint ]] && hint=false || hint=true
+[[ ! -t 1 && -z $hint ]] && hint=false
 
 auto_sync=true # automatically clone the gist repo
 protocol=https
@@ -284,7 +284,7 @@ _index_pattern() {
 }
 
 # Display the list of gist, show username for starred gist
-# If hint=true, print hint to tty. If mark=<pattern>, filter index with regex
+# If hint=false, do not print hint to tty. If mark=<pattern>, filter index with regex
 # If display=tag, print tags instead or url
 # TODO color private/starred mark
 _show_list() {
@@ -319,7 +319,7 @@ _show_list() {
     local pinned_tags=( $pin )
     echo > /dev/tty
     echo Pinned tags: "${pinned_tags[*]/#/#} " > /dev/tty
-  elif [[ -z $INPUT && $hint == 'true' ]]; then
+  elif [[ -z $INPUT && $hint != 'false' ]]; then
     local mtime="$(stat -c %y $INDEX | cut -d'.' -f1)"
     echo > /dev/tty
     echo "Last updated at $mtime" > /dev/tty
@@ -402,7 +402,7 @@ _fetch_gists() {
   [[ -z $result ]] && echo 'Not a single valid gist' && return 0
 
   sed -i'' -Ee "/^${mark:-[^s]}/ d" $INDEX && echo "$result" >> $INDEX
-  mark=$mark _show_list
+  mark=$mark hint=$hint _show_list
 
   [[ $auto_sync == 'true' ]] && (_sync_repos "$1" &> /dev/null &)
   true
