@@ -319,7 +319,9 @@ _show_list() {
     echo > /dev/tty
     echo Pinned tags: "${pinned_tags[*]/#/#} " > /dev/tty
   elif [[ -z $INPUT && $hint == 'true' ]]; then
+    local mtime="$(stat -c %y $INDEX | cut -d'.' -f1)"
     echo > /dev/tty
+    echo "Last updated at $mtime" > /dev/tty
     echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
   fi
 }
@@ -571,7 +573,7 @@ _push_to_remote() {
     git add . && git commit -m 'update'
   fi
   if [[ -n $(git cherry) ]]; then
-    git push origin master && (_fetch_gists &> /dev/null &)
+    git push origin master && (hint=false _fetch_gists &> /dev/null &)
   fi
 }
 
