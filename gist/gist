@@ -302,7 +302,7 @@ _show_list() {
     description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
     [[ $tag == 'true' ]] && { url="$hashtags"; local width=45; align=' ';  extra=''; }
 
-    raw_output="$(printf "% 3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
+    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
