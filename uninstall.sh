@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Author: Alexander Epstein https://github.com/alexanderepstein
-declare -a tools=(bak2dvd bash-snippets cheat cloudup crypt cryptocurrency currency geo lyrics meme movies newton pwned qrify short siteciphers stocks taste todo transfer weather ytview)
+declare -a tools=(bak2dvd bash-snippets cheat cloudup crypt cryptocurrency currency geo gist lyrics meme movies newton pwned qrify short siteciphers stocks taste todo transfer weather ytview)
 all="1"
 
 askUninstall()
