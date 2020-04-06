@@ -56,7 +56,7 @@ configuredClient=""
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
-INDEX_FORMAT=('index' 'url' 'blob_code' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
+INDEX_FORMAT=('index' 'url' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
 
@@ -300,7 +300,7 @@ _show_list() {
     local hashtags=$(_hashtags "$description")
     [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
     description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
-    [[ $tag == 'true' ]] && url="$hashtags" && local width=45 && align=' '
+    [[ $tag == 'true' ]] && { url="$hashtags"; local width=45; align=' ';  extra=''; }
 
     raw_output="$(printf "% 3s" "$index") $(printf "%${align:--}${width:-56}s" "$url") $extra $description"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
@@ -349,8 +349,9 @@ _parse_gists() {
 raw = json.load(sys.stdin)
 for gist in raw:
     print(gist["html_url"], end=" ")
-    print(",".join(file["raw_url"] for file in gist["files"].values()), end=" ")
     print(gist["public"], end=" ")
+    print(",".join(file["raw_url"] for file in gist["files"].values()), end=" ")
+    print(",".join(file["filename"] + "@" + str(file["language"]) for file in gist["files"].values()), end=" ")
     print(len(gist["files"]), end=" ")
     print(gist["comments"], end=" ")
     print(gist["owner"]["login"], end=" ")
@@ -364,7 +365,7 @@ for gist in raw:
 _parse_response() {
   _parse_gists \
   | tac | nl -s' ' \
-  | while read -r "${INDEX_FORMAT[@]:0:2}" file_url_array public "${INDEX_FORMAT[@]:3:6}"; do
+  | while read -r "${INDEX_FORMAT[@]:0:2}" public file_url_array "${INDEX_FORMAT[@]:3:7}"; do
     local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
@@ -534,10 +535,9 @@ _show_detail() {
     echo API : https://api.github.com/gists/$GIST_ID
     echo created_at: $created_at
     echo updated_at: $updated_at
-    repo=$folder/$GIST_ID
-    if [[ -d $repo ]]; then
-      echo files:; ls -a $repo | sed -Ee 's/(\.|\.\.|\.git)//g; /^$/ d; s/^/    /'
-    fi
+    echo files:
+    echo $file_array | tr ',' '\n' | tr '@' ' ' \
+    | column -t | sed -e 's/^/    /'
   done
 }
 
