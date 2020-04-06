@@ -388,6 +388,7 @@ _parse_response() {
 # TODO pagnation for more than 100 gists
 # TODO add files of a gist
 _fetch_gists() {
+  checkInternet || exit 1
   echo "fetching $user's gists from $GITHUB_API..."
   echo
   local route="users/$user/gists"
@@ -410,6 +411,7 @@ _fetch_gists() {
 # Fetch gists for a given user
 # TODO pagnation for more than 100 gists
 _query_user() {
+  checkInternet || exit 1
   local route="users/$1/gists"
   result="$(http_method GET $GITHUB_API/$route?per_page=100 | _parse_response)"
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
@@ -516,6 +518,7 @@ _delete_gist() {
     [[ ! $response =~ ^(yes|y)$ ]] && return 0
   fi
 
+  checkInternet || exit 1
   for i in "$@"; do
     _gist_id "$i" &> /dev/null || continue
     http_method DELETE "$GITHUB_API/gists/$GIST_ID" \
@@ -643,6 +646,7 @@ print(json.dumps({'public': $public, 'files': files_json, 'description': descrip
 # Create a new gist with files. If success, also update index file and clone the repo
 _create_gist() {
   _set_gist "$@" || return 1
+  checkInternet || exit 1
   [[ -z ${files[*]} ]] && files+=($(_new_file "$filename"))
   [[ -z $description ]] && read -r -p 'Type description: ' description < /dev/tty
 
@@ -674,6 +678,7 @@ _get_desc() {
 # Update description of a gist
 _edit_gist() {
   _gist_id "$1" || return 1
+  checkInternet || exit 1
 
   local prefill="$(_get_desc $1)"
   if [[ -z $2 ]]; then
