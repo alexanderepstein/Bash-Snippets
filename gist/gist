@@ -559,7 +559,7 @@ _push_to_remote() {
     git add . && git commit -m 'update'
   fi
   if [[ -n $(git cherry) ]]; then
-    git push origin master
+    git push origin master && _fetch_gists
   fi
 }
 
