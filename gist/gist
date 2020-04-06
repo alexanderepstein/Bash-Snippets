@@ -4,6 +4,7 @@
 # License: MIT
 # https://gist.github.com/typebrook/b0d2e7e67aa50298fdf8111ae7466b56
 #
+# --
 # gist
 # Description: Manage your gists with git and Github API v3
 # Usage: gist [command] [<args>]
@@ -693,7 +694,7 @@ _edit_gist() {
 
 # Print helper message
 usage() {
-  sed -E -n -e ' /^$/ q; 7,$ s/^# //p' "$0"
+  sed -E -n -e ' /^$/ q; 1,/^# --/ d; s/^# //p' "$0"
 }
 
 # Check remote urls of all repos match current protocol in configuration file
