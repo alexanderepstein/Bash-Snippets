@@ -480,7 +480,7 @@ _goto_gist() {
   echo "$folder/$GIST_ID"
   touch "$folder/$GIST_ID"
 
-  if [[ $@ =~ --no-action ]]; then
+  if [[ $* =~ --no-action ]]; then
     return 0
   elif [[ -z $action ]]; then
     action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
