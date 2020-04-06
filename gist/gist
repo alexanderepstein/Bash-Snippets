@@ -713,7 +713,7 @@ _check_protocol() {
 
 _tag_gist() {
   # if no tag is given, show gist list with tags
-  if [[ -z $@ ]]; then
+  if [[ -z $* ]]; then
     display=tag  mark=${INPUT:+.} _show_list
   # if user want to change tags of a gist
   elif _gist_id $1 &>/dev/null; then
@@ -750,7 +750,7 @@ _show_tags() {
   if [[ ${#pinned_tags} == 0 ]]; then
     echo 'Run "gist pin <tag1> <tag2>..." to pin tags'
   else
-    echo Pinned tags: ${pinned_tags[@]/#/#}
+    echo Pinned tags: "${pinned_tags[@]/#/#}"
   fi
 }
 
@@ -761,7 +761,7 @@ _pin_tags() {
     hint=false _tag_gist $pin
   else
     local new_pinned=( $(echo $pin $* | tr ' ' '\n' | sort | uniq -u | xargs) )
-    for tag in ${new_pinned[@]}; do
+    for tag in "${new_pinned[@]}"; do
       if [[ $tag =~ [p]*[0-9]+ ]]; then 
         echo Invalid tag: $tag
         return 1
@@ -770,7 +770,7 @@ _pin_tags() {
 
     pin="${new_pinned[@]}"
     _show_tags
-    sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[@]}"\' >> "$CONFIG"
+    sed -i'' -e "/^pin=/ d" "$CONFIG" && echo pin=\'"${new_pinned[*]}"\' >> "$CONFIG"
   fi
 }
 
@@ -781,8 +781,8 @@ _gists_with_languages() {
 }
 
 _gists_with_range() {
-  [[ ! $@ =~ ^s*[0-9]*-s*[0-9]*$ ]] && echo 'Invalid range' && exit 1
-  local mark='' && [[ $@ =~ s ]] && mark=s
+  [[ ! $* =~ ^s*[0-9]*-s*[0-9]*$ ]] && echo 'Invalid range' && exit 1
+  local mark='' && [[ $* =~ s ]] && mark=s
 
   local range=$(sed -Ee "s/s//g; s/^-/1-/; s/-$/-$(wc -l <$INDEX)/; s/-/\n/" <<< "$*")
   INPUT=$(seq $range | sed -e "s/^/p*$mark/")
