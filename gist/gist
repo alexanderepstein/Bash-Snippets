@@ -464,6 +464,20 @@ _gist_id() {
   fi
 }
 
+# Show path of repo by gist ID, and perform action
+_goto_gist() {
+  echo "$folder/$GIST_ID"
+  touch "$folder/$GIST_ID"
+
+  if [[ $@ =~ --no-action ]]; then
+    return 0
+  elif [[ -z $action ]]; then
+    action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
+  fi
+
+  cd "$folder/$GIST_ID" && eval "$action"
+}
+
 # Return the path of local repo with a given index
 _goto_gist_by_index() {
   _gist_id "$1" || return 1
@@ -478,21 +492,7 @@ _goto_gist_by_index() {
     fi
   fi
 
-  _goto_gist
-}
-
-_goto_gist() {
-  echo "$folder/$GIST_ID"
-  touch "$folder/$GIST_ID"
-
-  if [[ -z $action ]]; then
-    action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
-  fi
-  if [[ $2 == '--no-action' ]]; then
-    return 0
-  else
-    cd "$folder/$GIST_ID" && eval "$action"
-  fi
+  _goto_gist "$@"
 }
 
 # Delete gists with given indices
@@ -778,7 +778,7 @@ _gists_with_range() {
 
 _access_last_index() {
   GIST_ID=$(ls -tup $folder | grep / | head -1)
-  _goto_gist
+  _goto_gist "$@"
 }
 
 _apply_config "$@" || exit 1
@@ -838,7 +838,7 @@ case "$1" in
   *-*)
     _gists_with_range "$@" ;;
   last | L)
-    _access_last_index ;;
+    _access_last_index "$@" ;;
   version)
     echo "Version $currentVersion" ;;
   update)
