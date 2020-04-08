@@ -472,10 +472,9 @@ _gist_id() {
 # set gist id either by given index or current directory
 _set_gist_id() {
   if [[ -z $1 ]]; then
-    [[ $(dirname $(pwd)) == $folder ]] && GIST_ID=$(basename $(pwd)) || return 1
-  else
-    _gist_id "$1" || return 1
+    [[ $(dirname $(pwd)) == $folder ]] && GIST_ID=$(basename $(pwd))
   fi
+  _gist_id "$1" || return 1
 }
 
 # Show path of repo by gist ID, and perform action
