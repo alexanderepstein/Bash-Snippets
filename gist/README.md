@@ -222,7 +222,7 @@ gist grep string
 gist grep '^string'
 ```
 
-## Filter by file languages
+### Filter by file languages
 #### Display list with languages
 You can use sub-command `lan` to show the list of gists with file languages instead of URLs.
 ```bash
