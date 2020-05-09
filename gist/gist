@@ -623,7 +623,7 @@ _new_file() {
   fi
 
   echo > /dev/tty
-  [[ -z $1 ]] && read -r -p 'Type file name: ' filename < /dev/tty
+  [[ -z $1 ]] && read -e -r -p 'Type file name: ' filename < /dev/tty
   mv "$tmp_file" /tmp/"$filename"
   echo /tmp/"$filename"
 }
@@ -647,7 +647,7 @@ _create_gist() {
   _set_gist "$@" || return 1
   checkInternet || exit 1
   [[ -z ${files[*]} ]] && files+=($(_new_file "$filename"))
-  [[ -z $description ]] && read -r -p 'Type description: ' description < /dev/tty
+  [[ -z $description ]] && read -e -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
   http_data=$(mktemp)
