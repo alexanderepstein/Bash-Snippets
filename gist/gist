@@ -248,14 +248,18 @@ _apply_config() {
 }
 
 # extract trailing hashtags from description
-_hashtags() {
-  grep -Eo " #[$TAG_CHAR #]+$" <<<"$1" | sed -Ee "s/.* [$TAG_CHAR]+//g" | xargs
+_trailing_hashtags() {
+  grep -Eo " #[$TAG_CHAR #]+$" <<<"$1" | sed -Ee "s/.* [$TAG_CHAR]+//g"
 }
 
 _color_pinned_tags() {
   local pinned_tags=( $pin )
   pattern='('$(sed -E 's/ /[[:space:]]|/g; s/\./[^ ]/g; s/$/[[:space:]]/' <<<"${pinned_tags[@]/#/#}")')'
   sed -E -e "s/$pattern/\\\e[33m\1\\\e[0m/g" <<<"$1 "
+}
+
+_color_description_title() {
+  sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$1"
 }
 
 # Return git status of a given repo
@@ -317,7 +321,7 @@ _show_list() {
 
     [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
 
-    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $description"
+    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $(_color_description_title "$description")"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
@@ -368,7 +372,7 @@ for gist in raw:
     print(gist["html_url"], end=" ")
     print(gist["public"], end=" ")
     print(",".join(file["raw_url"] for file in gist["files"].values()), end=" ")
-    print(",".join(file["filename"].replace(" ", "-") + "@" + str(file["language"]).replace(" ", "-") for file in gist["files"].values()), end=" ")
+    print(",".join(file["filename"] + "@" + str(file["language"]).replace(" ", "-") for file in gist["files"].values()), end=" ")
     print(len(gist["files"]), end=" ")
     print(gist["comments"], end=" ")
     print(gist["owner"]["login"], end=" ")
@@ -389,9 +393,10 @@ _parse_response() {
     local blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     file_array=${file_array//@None/@Text}
 
-    local hashtags="$(_hashtags "$description")"
-    local tags_string=${hashtags// /,}; [[ -z $tags_string ]] && tags_string=','
-    description="$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"${description%$hashtags}")"
+    local hashtags_suffix="$(_trailing_hashtags "$description")"
+    description="${description%"$hashtags_suffix"}"
+    local hashtags="$(echo $hashtags_suffix | xargs)"
+    local tags_string="${hashtags// /,}"; [[ -z $tags_string ]] && tags_string=','
 
     eval echo "${INDEX_FORMAT[@]/#/$}"
   done
@@ -567,14 +572,14 @@ _show_detail() {
 
   sed -En -e "/[^ ]+ [^ ]+$GIST_ID / p" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
-    echo -e desc: $description
+    echo -e desc: $(_color_description_title "$description")
     echo -e tags: ${tags_string//,/ }
     echo -e site: https://gist.github.com/$GIST_ID
     echo -e API : https://api.github.com/gists/$GIST_ID
     echo -e created_at: $created_at
     echo -e updated_at: $updated_at
     echo -e files:
-    echo -e $file_array | tr ',' '\n' | tr '@' ' ' \
+    echo $file_array | tr ',' '\n' | tr '@' ' ' \
     | column -t | sed -e 's/^/    /'
   done
 }
@@ -680,19 +685,16 @@ _create_gist() {
   fi
 }
 
-# get the gist description with a given index (color is removed)
-_get_desc() {
-  sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}- | sed 's/\\e\[[0-9;]\+[A-Za-z]//g'
-}
-
 # Update description of a gist
 _edit_gist() {
   _gist_id "$1" || return 1
   checkInternet || exit 1
 
-  local prefill="$(_get_desc $1)"
   if [[ -z $2 ]]; then
-    read -e -p 'Edit description: ' -i "$prefill" -r DESC < /dev/tty
+    read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$1 / p" $INDEX)"
+    read -e -p 'Edit description: ' -i "$description" -r DESC < /dev/tty
+    tags=( ${tags_string//,/ } )
+    DESC="$DESC ${tags[*]}"
   else
     DESC="$2"
   fi
@@ -733,13 +735,12 @@ _tag_gist() {
     display=tag  mark=${INPUT:+.} _show_list
   # if user want to change tags of a gist
   elif _gist_id $1 &>/dev/null; then
-    detail="$(_show_detail $1 | sed 3,6d | tee /dev/tty)"; echo
-    local desc="$(echo "$detail" | sed -ne 1p | cut -d' ' -f2-)"
-    local tags="$(echo "$detail" | sed -ne '2 s/#//gp' | cut -d' ' -f2-)"
+    _show_detail $1 | sed 3,6d && echo
+    read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$1 / p" $INDEX)"
+    local tags="$(sed -e 's/,//g; s/#/ /g; s/^ //g' <<<"$tags_string")"
     read -e -p 'Edit tags: ' -i "$tags" -r -a new_tags < /dev/tty
-    local new_hashtags="${new_tags[@]/#/#}"
-    local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
-    (_edit_gist $1 "$new_desc" &>/dev/null &)
+    local hashtags="${new_tags[@]/#/#}" 
+    (_edit_gist $1 "${description}${hashtags:+ }${hashtags}" &>/dev/null &)
   # if user want to filter gists with given tags
   else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/\./[^ ]/g' <<<"$@") )"
