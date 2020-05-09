@@ -759,7 +759,7 @@ _show_tags() {
 
   echo
   if [[ ${#pinned_tags} == 0 ]]; then
-    echo 'Run "gist pin <tag1> <tag2>..." to pin tags'
+    echo 'Run "gist pin <tag1> <tag2>..." to pin/unpin tags'
   else
     echo Pinned tags: "${pinned_tags[@]/#/#}"
   fi
