@@ -193,7 +193,7 @@ _configure() {
     if [[ $key == 'user' ]]; then
       [[ -z $value ]] && echo 'Must specify username' >&2 && return 1
     elif [[ $key == 'token' ]]; then
-      [[ ${#value} -ne 40 && ! $value =~ ^(\$|\`) ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
+      [[ -n $value && ${#value} -ne 40 && ! $value =~ ^(\$|\`) ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
     elif [[ $key =~ ^(auto_sync|show_untagged)$ ]]; then
       [[ ! $value =~ ^(true|false)$ ]] && echo "$key must be either true or false" >&2 && return 1
     elif [[ $key == 'protocol' ]]; then
