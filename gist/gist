@@ -51,6 +51,7 @@
 # It is your business to do git commit and git push
 
 # TODO improve the speed of showing list
+# TODO feature to exclude tag-value or grep-string
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
 
