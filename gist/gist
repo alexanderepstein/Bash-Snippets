@@ -73,8 +73,23 @@ protocol=https
 # Shell configuration
 set -o pipefail
 [[ $TRACE == 'true' ]] && set -x
-[[ $(uname) == 'Darwin' ]] && alias tac='tail -r'
 trap 'rm -f "$http_data" "$tmp_file"' EXIT
+
+# Mac compatibility
+tac() {
+  if [[ $(uname) == Darwin ]]; then 
+    tail -r
+  else
+    $(which tac)
+  fi
+}
+mtime() {
+  if [[ $(uname) == Darwin ]]; then 
+    stat -x $1 | grep Modify | cut -d' ' -f2- 
+  else
+    stat -c %y $1
+  fi
+}
 
 # This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient() {
@@ -331,7 +346,7 @@ _show_list() {
     echo > /dev/tty
     echo Pinned tags: "${pinned_tags[*]/#/#} " > /dev/tty
   elif [[ -z $INPUT && $hint != 'false' ]]; then
-    local mtime="$(stat -c %y $INDEX | cut -d'.' -f1)"
+    local mtime="$(mtime $INDEX | cut -d'.' -f1)"
     echo > /dev/tty
     echo "Last updated at $mtime" > /dev/tty
     echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
