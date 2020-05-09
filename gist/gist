@@ -30,7 +30,7 @@
 #   delete, D <INDEX>... [--force]          Delete gists by given indices
 #   push,   P <INDEX>             Push changes by git (well, better to make commit by youself)
 #   clean,  C                     Clean local repos of removed gists
-#   config, c [token|user|folder|auto_sync|EDITOR|action|protocol [value]]  Do configuration
+#   config, c [token|user|folder|auto_sync|EDITOR|action|protocol|show_untagged [value]]  Do configuration
 #   user,   u <USER>              Get list of gists with a given Github user
 #   github, G <INDEX>             Import selected gist as a new Github repo
 #   help,   h                     Show this help message
@@ -170,15 +170,15 @@ update() {
 _configure() {
   [[ $# == 0 ]] && (${EDITOR:-vi} "$CONFIG") && return 0
 
-  local valid_keys='user|token|folder|auto_sync|EDITOR|action|protocol'
+  local valid_keys='user|token|folder|auto_sync|EDITOR|action|protocol|show_untagged'
   local key=$1; local value="$2"
   if [[ $key =~ ^($valid_keys)$ ]]; then
     if [[ $key == 'user' ]]; then
       [[ -z $value ]] && echo 'Must specify username' >&2 && return 1
     elif [[ $key == 'token' ]]; then
       [[ ${#value} -ne 40 ]] && echo 'Invalid token format, it is not 40 chars' >&2 && return 1
-    elif [[ $key == 'auto_sync' ]]; then
-      [[ ! $value =~ ^(true|false)$ ]] && echo 'auto_sync must be either true or false' >&2 && return 1
+    elif [[ $key =~ ^(auto_sync|show_untagged)$ ]]; then
+      [[ ! $value =~ ^(true|false)$ ]] && echo "$key must be either true or false" >&2 && return 1
     elif [[ $key == 'protocol' ]]; then
       [[ ! $value =~ ^(https|ssh)$ ]] && echo 'protocol must be either https or ssh' >&2 && return 1
     fi
@@ -309,6 +309,7 @@ _show_list() {
 
     local message=$url
     if [[ $display == 'tag' ]]; then
+      [[ $show_untagged == 'false' && -z $hashtags ]] && continue
       message="$hashtags"; local width=45; local align=' ';  extra='';
     elif [[ $display == 'language' ]]; then
       message="$(tr ',' '\n' <<< $file_array | sed -Ee 's/.+@/#/' | uniq | xargs)"
