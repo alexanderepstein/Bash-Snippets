@@ -472,7 +472,7 @@ _gist_id() {
 # set gist id either by given index or current directory
 _set_gist_id() {
   if [[ -z $1 ]]; then
-    [[ $(dirname $(pwd)) == $folder ]] && GIST_ID=$(basename $(pwd))
+    [[ $(dirname $(pwd)) == $folder ]] && GIST_ID=$(basename $(pwd)) && return 0
   fi
   _gist_id "$1" || return 1
 }
