@@ -64,8 +64,9 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 INDEX_FORMAT=('index' 'url' 'tags_string' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
-[[ ! -t 1 && -z $hint ]] && hint=false
 
+# Default configuration
+[[ ! -t 1 && -z $hint ]] && hint=false
 auto_sync=true # automatically clone the gist repo
 protocol=https
 
