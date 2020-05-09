@@ -13,7 +13,7 @@
 #                                 'all' or 'a' for both your and starred gists. Format for each line is:
 #                                 <INDEX> <URL> <FILE_NUM> <COMMENT_NUM> <DESCRIPTION>
 #   fetch,  f [star|s]            Update the local list of your gists, 'star' for your starred gists
-#   <INDEX> [--no-action]         Show the path of local gist repo and do custom actions
+#   <INDEX> [--no-action]         Show the path of local gist repo and do custom actions(enter sub-shell by default)
 #   new,    n [-d |--desc <description>] [-p] <FILE>...      create a new gist with files
 #   new,    n [-d |--desc <description>] [-p] [-f|--file <FILE_NAME>] create a new gist from STDIN
 #   grep,   g <PATTERN>           Grep gists by description, filename and content with a given pattern
@@ -44,12 +44,13 @@
 #   gist 3                  (show the repo path of your 3rd gist, and do custom actions)
 #   gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)
 #   gist new --desc bar foo (create a new gist with files and description)
+#   gist tag 3              (Add tags to your 3rd gist)
 #   gist tag .+             (show tagged gists)
 # 
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
-# TODO README/helper message about tag and default action ${SHELL:-bash}
+# TODO improve the speed of showing list
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
 
