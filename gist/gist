@@ -654,8 +654,8 @@ _new_file() {
 
   echo > /dev/tty
   [[ -z $1 ]] && read -e -r -p 'Type file name: ' filename < /dev/tty
-  mv "$tmp_file" /tmp/"$filename"
-  echo /tmp/"$filename"
+  mv "$tmp_file" $tmp_dir/"$filename"
+  echo $tmp_dir/"$filename"
 }
 
 # Parse JSON object of a single gist 
