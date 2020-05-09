@@ -76,7 +76,7 @@ set -o pipefail
 
 # clean temporary files
 tmp_dir=$(mktemp -d)
-trap "rm -r $tmp_dir" EXIT
+trap "[[ '$DEBUG' == 'true' ]] && find  $tmp_dir -type f | xargs tail -n +1 > log; rm -r $tmp_dir" EXIT
 
 # Mac compatibility
 tac() {
@@ -124,6 +124,7 @@ http_method() {
       [[ $METHOD =~ (POST|PATCH) ]] && data_opt="@$http_data"
       http -b "$METHOD" "$@" "$header" "$data_opt" ;;
   esac 2>&1 \
+  | tee $(mktemp -p $tmp_dir) \
   || { echo "Error: no active internet connection" >&2; return 1; }
 }
 
