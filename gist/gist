@@ -13,7 +13,7 @@
 #                                 'all' or 'a' for both your and starred gists. Format for each line is:
 #                                 <INDEX> <URL> <FILE_NUM> <COMMENT_NUM> <DESCRIPTION>
 #   fetch,  f [star|s]            Update the local list of your gists, 'star' for your starred gists
-#   <INDEX> [--no-action]         Show the path of local gist repo and do custom actions(enter sub-shell by default)
+#   <INDEX> [-n|--no-action]         Show the path of local gist repo and do custom actions(enter sub-shell by default)
 #   new,    n [-d |--desc <description>] [-p] <FILE>...      create a new gist with files
 #   new,    n [-d |--desc <description>] [-p] [-f|--file <FILE_NAME>] create a new gist from STDIN
 #   grep,   g <PATTERN>           Grep gists by description, filename and content with a given pattern
@@ -494,7 +494,7 @@ _goto_gist() {
   echo "$folder/$GIST_ID"
   touch "$folder/$GIST_ID"
 
-  if [[ $* =~ --no-action ]]; then
+  if [[ $* =~ (-n|--no-action) ]]; then
     return 0
   elif [[ -z $action ]]; then
     action='echo Inside subshell, press \<CTRL-D\> to exit; ${SHELL:-bash}'
