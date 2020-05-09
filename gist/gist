@@ -44,6 +44,7 @@
 #   gist 3                  (show the repo path of your 3rd gist, and do custom actions)
 #   gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)
 #   gist new --desc bar foo (create a new gist with files and description)
+#   gist tag .+             (show tagged gists)
 # 
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
@@ -731,7 +732,7 @@ _tag_gist() {
     (_edit_gist $1 "$new_desc" &>/dev/null &)
   # if user want to filter gists with given tags
   else
-    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g' <<<"$@") )"
+    local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/\./[^ ]/g' <<<"$@") )"
     hint=false mark=${INPUT:+.} display=tag _show_list | grep --color=always -E "$pattern"
   fi
 }
