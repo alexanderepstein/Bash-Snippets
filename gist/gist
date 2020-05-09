@@ -267,10 +267,13 @@ _check_repo_status() {
       fi
     else
       cd "$1" || exit 1
-      if [[ -n $(git status --short) || $(git branch | sed -n '/\* / s///p') != 'master' ]] &>/dev/null; then
+      # git status is not clean or working on non-master branch
+      if [[ -n $(git status --short) || $(cat .git/HEAD) != 'ref: refs/heads/master' ]] &>/dev/null; then
         echo "\e[36m[working]\e[0m"
       else
+        # files contents are not the same with the last time called GIST API, so warn user to call 'gist fetch'
         [[ $(_blob_code "$1") != "$2" ]] 2>/dev/null && local status="\e[31m[outdated]\e[0m"
+        # current HEAD is newer than remote, warn user to call 'git push'
         [[ -n $(git cherry) ]] 2>/dev/null && local status="\e[31m[ahead]\e[0m"
         echo "$status"
       fi
