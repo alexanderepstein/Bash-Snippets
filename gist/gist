@@ -79,6 +79,13 @@ tmp_dir=$(mktemp -d)
 trap "[[ '$DEBUG' == 'true' ]] && find  $tmp_dir -type f | xargs tail -n +1 > log; rm -r $tmp_dir" EXIT
 
 # Mac compatibility
+tmp_file() {
+  if [[ $(uname) == Darwin ]]; then 
+    file=$(mktemp) && mv $(mktemp) $tmp_dir && echo $tmp_dir/$(basename $file)
+  else
+    mktemp -p $tmp_dir
+  fi
+}
 tac() {
   if [[ $(uname) == Darwin ]]; then 
     tail -r
@@ -124,7 +131,7 @@ http_method() {
       [[ $METHOD =~ (POST|PATCH) ]] && data_opt="@$http_data"
       http -b "$METHOD" "$@" "$header" "$data_opt" ;;
   esac 2>&1 \
-  | tee $(mktemp -p $tmp_dir) \
+  | tee $(tmp_file) \
   || { echo "Error: no active internet connection" >&2; return 1; }
 }
 
@@ -645,7 +652,7 @@ _set_gist() {
 
 # Let user type the content of gist before setting filename
 _new_file() {
-  tmp_file=$(mktemp -p $tmp_dir)
+  tmp_file=$(tmp_file)
   if [[ -z $INPUT ]]; then 
     echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
     cat > "$tmp_file"
@@ -680,7 +687,7 @@ _create_gist() {
   [[ -z $description ]] && read -e -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
-  http_data=$(mktemp -p $tmp_dir)
+  http_data=$(tmp_file)
   echo -e "${files[*]}\n$description" \
   | _gist_body > "$http_data" \
   && http_method POST $GITHUB_API/gists \
@@ -712,7 +719,7 @@ _edit_gist() {
     DESC="$2"
   fi
 
-  http_data=$(mktemp -p $tmp_dir)
+  http_data=$(tmp_file)
   echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
   new_record=$(http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
                | sed -e '1 s/^/[/; $ s/$/]/' \
