@@ -73,7 +73,10 @@ protocol=https
 # Shell configuration
 set -o pipefail
 [[ $TRACE == 'true' ]] && set -x
-trap 'rm -f "$http_data" "$tmp_file"' EXIT
+
+# clean temporary files
+tmp_dir=$(mktemp -d)
+trap "rm -r $tmp_dir" EXIT
 
 # Mac compatibility
 tac() {
@@ -641,7 +644,7 @@ _set_gist() {
 
 # Let user type the content of gist before setting filename
 _new_file() {
-  tmp_file=$(mktemp)
+  tmp_file=$(mktemp -p $tmp_dir)
   if [[ -z $INPUT ]]; then 
     echo "Type a gist. <Ctrl-C> to cancel, <Ctrl-D> when done" > /dev/tty
     cat > "$tmp_file"
@@ -676,7 +679,7 @@ _create_gist() {
   [[ -z $description ]] && read -e -r -p 'Type description: ' description < /dev/tty
 
   echo 'Creating a new gist...'
-  http_data=$(mktemp)
+  http_data=$(mktemp -p $tmp_dir)
   echo -e "${files[*]}\n$description" \
   | _gist_body > "$http_data" \
   && http_method POST $GITHUB_API/gists \
@@ -708,7 +711,7 @@ _edit_gist() {
     DESC="$2"
   fi
 
-  http_data=$(mktemp)
+  http_data=$(mktemp -p $tmp_dir)
   echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
   new_record=$(http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
                | sed -e '1 s/^/[/; $ s/$/]/' \
@@ -749,7 +752,7 @@ _tag_gist() {
     local tags="$(sed -e 's/,//g; s/#/ /g; s/^ //g' <<<"$tags_string")"
     read -e -p 'Edit tags: ' -i "$tags" -r -a new_tags < /dev/tty
     local hashtags="${new_tags[@]/#/#}" 
-    (_edit_gist $1 "${description}${hashtags:+ }${hashtags}" &>/dev/null &)
+    ($0 edit $1 "${description}${hashtags:+ }${hashtags}" &>/dev/null &)
   # if user want to filter gists with given tags
   else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/\./[^ ]/g' <<<"$@") )"
