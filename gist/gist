@@ -252,7 +252,7 @@ _hashtags() {
 
 _color_pinned_tags() {
   local pinned_tags=( $pin )
-  pattern='('$(sed -E 's/ /[[:space:]]|/g; s/$/[[:space:]]/' <<<"${pinned_tags[@]/#/#}")')'
+  pattern='('$(sed -E 's/ /[[:space:]]|/g; s/\./[^ ]/g; s/$/[[:space:]]/' <<<"${pinned_tags[@]/#/#}")')'
   sed -E -e "s/$pattern/\\\e[33m\1\\\e[0m/g" <<<"$1 "
 }
 
