@@ -14,10 +14,10 @@ setup() {
   echo "${TOOL_NAME}"
 }
 
-@test "Get the tools version with version" {
+@test "Get the tools version with command version" {
   run "${TOOL_DIR}/${TOOL_NAME}" version
   [ "$status" -eq 0 ]
-  result=$( echo $(todo -v) | grep -Eo "Version")
+  result=$( echo $(${TOOL_DIR}/${TOOL_NAME} version) | grep -Eo "Version")
   [ "$result" = "Version" ]
 }
 
@@ -40,13 +40,13 @@ setup() {
 @test "Use config command to add configuarion for user" {
   run "${TOOL_DIR}/${TOOL_NAME}" config user ${GIST_USER}
   [ "$status" -eq 0 ]
-  [ "${lines[-1]}" = "user='${GIST_USER}'" ]
+  [ "${lines[-1]}" = "user=${GIST_USER}" ]
 }
 
 @test "Use config command to add configuarion for token" {
   run "${TOOL_DIR}/${TOOL_NAME}" config token ${GIST_API_TOKEN}
   [ "$status" -eq 0 ]
-  [ "${lines[-1]}" = "token='${GIST_API_TOKEN}'" ]
+  [ "${lines[-1]}" = "token=${GIST_API_TOKEN}" ]
 }
 
 @test "The new command should create a new public gist with gist command" {
@@ -76,13 +76,13 @@ setup() {
 
 @test "Specify an index to return the path of cloned repo" {
   run "${TOOL_DIR}/${TOOL_NAME}" 1 --no-action
-  echo ${lines[0]}
   [ "$status" -eq 0 ]
-  [[ "${lines[0]}" =~ (${HOME}/gist/[0-9a-z]+) ]]
+  [[ "${lines[-1]}" =~ (${HOME}/gist/[0-9a-z]+) ]]
 }
 
 @test "The edit command should modify the description of a gist" {
-  run "${TOOL_DIR}/${TOOL_NAME}" edit 1 "Modified description"
+  "${TOOL_DIR}/${TOOL_NAME}" edit 1 "Modified description"
+  run "${TOOL_DIR}/${TOOL_NAME}" detail 1
   [ "$status" -eq 0 ]
   [[ "${lines[0]}" =~ (Modified description$) ]]
 }
