@@ -698,7 +698,7 @@ _edit_gist() {
 
 # Print helper message
 usage() {
-  sed -E -n -e ' /^$/ q; 1,/^# --/ d; s/^# //p' "$0"
+  sed -E -n -e '/^#/ !q; 1,/^# --/ d; s/^# //p' "$0"
 }
 
 # Check remote urls of all repos match current protocol in configuration file
