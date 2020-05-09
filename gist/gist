@@ -350,7 +350,7 @@ _grep_content() {
       && hint=false mark="$index " _show_list \
       && echo -e "    $file$content"
     fi
-  done | grep --color=always -Ei -C1 "$1"
+  done
 }
 
 # Parse JSON object of the result of gist fetch
