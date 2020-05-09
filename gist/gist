@@ -61,7 +61,7 @@ configuredClient=""
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
-INDEX_FORMAT=('index' 'url' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
+INDEX_FORMAT=('index' 'url' 'tags_string' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
 [[ ! -t 1 && -z $hint ]] && hint=false
@@ -303,20 +303,20 @@ _show_list() {
 
   sed -Ee "/^${mark:-[^s]}/ !d; /^$(_index_pattern) / !d" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
-    local extra=$(_check_repo_status "$folder/${url##*/}" "$blob_code")
-    [[ -z $extra ]] && extra="$(printf "%-4s" "$file_num $comment_num")"
-    local hashtags=$(_hashtags "$description")
-    [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
-    description=$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"$description" | sed "s/ $hashtags$//")
-
     local message=$url
     if [[ $display == 'tag' ]]; then
-      [[ $show_untagged == 'false' && -z $hashtags ]] && continue
-      message="$hashtags"; local width=45; local align=' ';  extra='';
+      local tags=( ${tags_string//,/ } ); message="${tags[@]}"
+      [[ $show_untagged == 'false' && ${#tags[@]} == '0' ]] && continue
+      local width=45; local align=' ';  extra='';
     elif [[ $display == 'language' ]]; then
       message="$(tr ',' '\n' <<< $file_array | sed -Ee 's/.+@/#/' | uniq | xargs)"
       local width=45; local align=' ';  extra='';
     fi
+
+    local extra=$(_check_repo_status "$folder/${url##*/}" "$blob_code")
+    [[ -z $extra ]] && extra="$(printf "%-4s" "$file_num $comment_num")"
+
+    [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
 
     raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $description"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
@@ -344,8 +344,7 @@ _grep_content() {
   sed -Ee "/^$(_index_pattern) / !d" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     # grep from description
-    local hashtags="$(_hashtags "$description")"
-    if grep --color=always -iq "$1" <<<"${description%% $hashtags}"; then
+    if grep --color=always -iq "$1" <<<"$description"; then
       hint=false mark="$index " _show_list
     else
       local repo=$folder/${url##*/}
@@ -384,11 +383,17 @@ for gist in raw:
 _parse_response() {
   _parse_gists \
   | tac | nl -s' ' \
-  | while read -r "${INDEX_FORMAT[@]:0:2}" public file_url_array "${INDEX_FORMAT[@]:3:7}"; do
-    local blob_code; blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
+  | while read -r "${INDEX_FORMAT[@]:0:2}" public file_url_array "${INDEX_FORMAT[@]:4:7}"; do
     local prefix=$mark; [[ $public == 'False' ]] && prefix=p
     [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
+
+    local blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     file_array=${file_array//@None/@Text}
+
+    local hashtags="$(_hashtags "$description")"
+    local tags_string=${hashtags// /,}; [[ -z $tags_string ]] && tags_string=','
+    description="$(sed -E -e 's/^\[(.+)\]/\\e[33m[\1]\\e[0m/' <<<"${description%$hashtags}")"
+
     eval echo "${INDEX_FORMAT[@]/#/$}"
   done
 }
@@ -564,15 +569,14 @@ _show_detail() {
 
   sed -En -e "/[^ ]+ [^ ]+$GIST_ID / p" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
-    local hashtags=$(_hashtags "$description")
-    echo desc: ${description%% $hashtags}
-    echo tags: $hashtags
-    echo site: https://gist.github.com/$GIST_ID
-    echo API : https://api.github.com/gists/$GIST_ID
-    echo created_at: $created_at
-    echo updated_at: $updated_at
-    echo files:
-    echo $file_array | tr ',' '\n' | tr '@' ' ' \
+    echo -e desc: $description
+    echo -e tags: ${tags_string//,/ }
+    echo -e site: https://gist.github.com/$GIST_ID
+    echo -e API : https://api.github.com/gists/$GIST_ID
+    echo -e created_at: $created_at
+    echo -e updated_at: $updated_at
+    echo -e files:
+    echo -e $file_array | tr ',' '\n' | tr '@' ' ' \
     | column -t | sed -e 's/^/    /'
   done
 }
@@ -678,9 +682,9 @@ _create_gist() {
   fi
 }
 
-# get the gist description with a given index
+# get the gist description with a given index (color is removed)
 _get_desc() {
-  sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}-
+  sed -ne "/^$1 / p" $INDEX | cut -d' ' -f${#INDEX_FORMAT[@]}- | sed 's/\\e\[[0-9;]\+[A-Za-z]//g'
 }
 
 # Update description of a gist
@@ -731,10 +735,10 @@ _tag_gist() {
     display=tag  mark=${INPUT:+.} _show_list
   # if user want to change tags of a gist
   elif _gist_id $1 &>/dev/null; then
-    _show_detail $1 | sed 3,6d && echo
-    local desc="$(_get_desc $1)"
-    local hashtags=$(_hashtags "$desc")
-    read -e -p 'Edit tags: ' -i "${hashtags//'#'/}" -r -a new_tags < /dev/tty
+    detail="$(_show_detail $1 | sed 3,6d | tee /dev/tty)"; echo
+    local desc="$(echo "$detail" | sed -ne 1p | cut -d' ' -f2-)"
+    local tags="$(echo "$detail" | sed -ne '2 s/#//gp' | cut -d' ' -f2-)"
+    read -e -p 'Edit tags: ' -i "$tags" -r -a new_tags < /dev/tty
     local new_hashtags="${new_tags[@]/#/#}"
     local new_desc=$(sed "s/$hashtags$//; s/ *$/ /" <<<"$desc")${new_hashtags}
     (_edit_gist $1 "$new_desc" &>/dev/null &)
@@ -749,8 +753,8 @@ _tag_gist() {
 _show_tags() {
   local pinned_tags=( $pin )
   local tags=$(while read -r "${INDEX_FORMAT[@]}"; do
-               _hashtags "$description" | tr ' ' '\n' | sed -e '/^$/d'
-              done < $INDEX | sort -u) 
+                 echo ${tags_string//,/ }
+               done < $INDEX  | tr ' ' '\n' | sed -e '/^$/d' | sort -u) 
 
   for prefix in {0..9} {a..z} {A-Z} [^0-9a-zA-Z]; do
     local line=$(echo $tags | grep -Eo "#$prefix[^ ]+" | tr '\n' ' ')
