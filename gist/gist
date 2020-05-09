@@ -372,7 +372,7 @@ for gist in raw:
     print(gist["html_url"], end=" ")
     print(gist["public"], end=" ")
     print(",".join(file["raw_url"] for file in gist["files"].values()), end=" ")
-    print(",".join(file["filename"] + "@" + str(file["language"]).replace(" ", "-") for file in gist["files"].values()), end=" ")
+    print(",".join(file["filename"].replace(" ", "-") + "@" + str(file["language"]).replace(" ", "-") for file in gist["files"].values()), end=" ")
     print(len(gist["files"]), end=" ")
     print(gist["comments"], end=" ")
     print(gist["owner"]["login"], end=" ")
