@@ -135,11 +135,11 @@ http_method() {
   || { echo "Error: no active internet connection" >&2; return 1; }
 }
 
-httpGet(){
+httpGet() {
   http_method GET "$@"
 }
 
-# Parse JSON from STDIN with string of commands
+# Parse JSON from STDIN with string of python commands
 _process_json() {
     PYTHONIOENCODING=utf-8 \
     python -c "from __future__ import print_function; import sys, json; $1"
@@ -676,7 +676,7 @@ _new_file() {
 }
 
 # Parse JSON object of a single gist 
-_gist_body(){
+_gist_body() {
   _process_json "
 import os.path
 files_json = {}
