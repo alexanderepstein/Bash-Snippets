@@ -1,11 +1,16 @@
 # gist - Manage your gist like a pro
-- [Getting started](#Getting-started)
+
+All your notes, scripts, config files and snippets deserve version control and tagging!  
+`gist` is a simple bash script for gist management, lite and dependency-free!  
+Use it to boost your coding workflow.
+
+- [Getting Started](#Getting-Started)
 - [Basic Commands](#Basic-Commands)
     - [Update and clone gists from Github](#Update-and-clone-gists-from-Github)
     - [List your gists](#List-your-gists)
     - [Create a new gist](#Create-a-new-gist)
     - [Modify a gist](#Modify-a-gist)
-    - [Clean unnecessary local repos](Clean-unnecessary-local-repos)
+    - [Clean unnecessary local repos](#Clean-unnecessary-local-repos)
 - [Configuration](#Configuration)
 - [Filter gists](#Filter-gists)
     - [Filter by tags](#Filter-by-tags)
@@ -13,13 +18,15 @@
     - [Filter by pattern](#Filter-by-pattern)
 - [Tips](#Tips)
     - [Filter gists with pipe](#Filter-gists-with-pipe)
-    - [Git Branching](#Git-Branching)
+    - [Git Workflow](#Git-Workflow)
     - [Useful action for gist repo](#Useful-action-for-gist-repo)
     - [Suppress action](#Suppress-action)
     - [Suppress hint](#Suppress-hint)
 
-## Getting started
+## Getting Started
 ```bash
+# Install script
+curl -fsSL https://raw.githubusercontent.com/typebrook/gist/master/install.sh | bash
 # Fetch your gists and clone them into ~/gist as git repos
 gist fetch
 # List your gists
@@ -28,21 +35,23 @@ gist
 gist new
 # Create private gist with files 'foo' and 'bar'
 gist new -p foo bar
+# Check information of your third gist
+gist detail 3
 # Get the path and cd to cloned repo with subshell
 gist 3
-# Push changes in your third gist to the remote repo
-gist push 3
-# Update the description of your third gist
-gist edit 3
-# Add tags to your third gist
-gist tag 3
 # List your gists with tags instead of URL
 gist tag
+# Add tags to your third gist
+gist tag 3
+# Update the description of your third gist
+gist edit 3
+# Push changes in your third gist to the remote repo
+gist push 3
 # Delete gists with indices 3, 4 and 5
 gist delete 3 4 5
 # Or use Brace Expansion
 gist delete {3..5}
-# Import your third gist as a new Github repo with web page
+# Export your third gist as a new Github repo with web page
 gist github 3
 # For more detail, read the helper message
 gist help
@@ -96,10 +105,11 @@ Say you delete gists with command `gist delete <index-of-gist>...`, the local gi
 ## Configuration
 `gist` stores your configuraion inside `~/.config/gist.conf`, with `<key>=<value>` format for each line. And just do `source ~/.config/gist.conf` at runtime. 
 
-This file is created automatically when you use `gist` at the first time, it only allows current user to read and write (permission 600).
+`~/.config/gist.conf` is created automatically when you run `gist` at the first time, it only allows current user to read and write (permission 600).
 
-Valid keys are [`user`](#user), [`token`](#token), [`folder`](#folder), [`auto_sync`](#auto_sync), [`action`](#action), [`EDITOR`](#EDITOR) and [`protocol`](#protocol). Use the following commands to set value:
+Valid keys are [`user`](#user), [`token`](#token), [`folder`](#folder), [`auto_sync`](#auto_sync), [`action`](#action), [`EDITOR`](#EDITOR), [`protocol`](#protocol) and [`show_untagged`](#show_untagged). Use the following commands to set value:
 ``` bash
+# Set key with a given value
 gist config <key> <value>
 
 # Remove current value from a key
@@ -149,7 +159,7 @@ If action is not being set, then a default action will be performed:
 ${SHELL:-bash}
 ```
 
-Also, if you run `gist <INDEX>` with `--no-action`, then action would be ignored.
+Also, if you run `gist <INDEX>` with `--no-action`(or `-n`), then action would be ignored.
 
 ### EDITOR
 **[Optional]** Editor to open `~/.config/gist.conf`. Default to be `vi` . 
@@ -157,8 +167,9 @@ Also, if you run `gist <INDEX>` with `--no-action`, then action would be ignored
 For example, use `gist config EDITOR code` to use VSCode instead.
 
 ### protocol
-**[Optional]** Protocol to clone git repo. Default to HTTPS
-valid values are:
+**[Optional]** Protocol to clone git repo. Default to be `HTTPS`
+
+Valid values are:
 - https
 - ssh
 
@@ -166,7 +177,7 @@ For example, use `gist config protocol ssh` to use SSH protocol instead.
 
 ## Filter gists
 ### Filter by tags
-`gist` treats **trailing hashtags** inside gist description as tags. For example, if a description s:
+`gist` treats **trailing hashtags** inside gist description as tags. For example, if a description is:
 ```
 [Title] this is description #tag1 #tag2
 ```
@@ -196,6 +207,19 @@ gist tag tag1 tag2
 ```
 ![](https://i.imgur.com/rchqMN1.png)
 
+You can also use regex pattern as tag value:
+```bash
+# only show tagged gists
+gist tag .+
+```
+
+#### Show existing tags
+Use sub-command `tags` to show existing tags and pinned tags. They are sorted alphabetically.
+```bash
+gist tags
+```
+![](https://i.imgur.com/PuwmaK4.png)
+
 #### Pin/Unpin tags
 Say you are working with gists with some meaningful tags. You can use sub-command `pin` to pin them, and filter your gists with pinned tags
 ```bash
@@ -205,13 +229,6 @@ gist pin tag1 tag2
 gist pin
 ```
 ![](https://i.imgur.com/LuEjNry.png)
-
-#### Show existing tags
-Use sub-command `tags` to show existing tags and pinned tags. They are sorted alphabetically.
-```bash
-gist tags
-```
-![](https://i.imgur.com/PuwmaK4.png)
 
 ### Filter by pattern
 You can search gists with pattern in description, filename or file contents with sub-command `grep`
@@ -234,7 +251,7 @@ gist lan
 #### Filter gists with languages
 ```bash
 # Filter gists with files in Shell and Yaml format
-gist lan
+gist lan LANGUAGE1 LANGUAGE2...
 ```
 ![](https://i.imgur.com/tKI5KND.png)
 
@@ -260,12 +277,18 @@ If `STDIN` is from a pipe, then `gist` will only process gists with **indices in
 seq 20 | gist
 # List starred gist with Yaml file
 gist star | gist lan Yaml
-# Only List gists with tag1, pattern1 in description/filenames/contents and markdown file
+# Only List gists with tag1, pattern1 in description/filenames/contents and contains shell script
 gist tag tag1 | gist grep pattern1 | gist lan SHELL
 ```
 
-### Git Branching
-Each gist is a git repository. Although there are some limits on `git push`, like sub-directory. But guess what? Push another branch to `github.com` is allowed. So why not use this feature for your gist workflow?
+### Git Workflow
+Each gist is a git repository.  
+Although there are some limits on `git push`, like sub-directory is prohibited. But guess what?
+1. Push another branch to `github.com` is allowed.
+2. Push tags is also allowed. And like repos in  `github.com`,  you can get source file by tag with URL:
+   ```
+   https://codeload.github.com/gist/<gist_id>/tar.gz/<tag_name>
+   ```
  
 ### Useful action for gist repo
 I strongly recommend using [`tig`](https://github.com/jonas/tig) as your custom [action](#action). It is the most powerful git CLI tool as far as I know, and also easy to get in most of the Linux distros or Homebrew for mac. Give it a try!
@@ -291,9 +314,11 @@ There are several environment variables or arguments can suppress hint or user c
 # List gists without hint
 hint=false gist
 
-# just print the repo path with a given index
+# Just print the repo path with a given index
 gist 3 --no-action
+# Or shorter argument
+gist 3 -n
 
-# delete your third gist without confirmation
+# Delete your third gist without confirmation
 gist delete 3 --force
 ```
