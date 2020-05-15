@@ -488,11 +488,11 @@ _sync_repos() {
     result=$(cat)
 
     # clone repos which are not in the local
-    sed -n '/^\t/ !p' <<<$result \
+    sed -ne '/^\t/ !p' <<<$result \
     | xargs -I{} --max-procs 8 git clone "$(_repo_url {})" $folder/{} &
 
     # if repo is cloned, do 'git pull' if remote repo has different blob objects
-    sed -n '/^\t/ p' <<<$result \
+    sed -ne '/^\t/ s/\t//p' <<<$result \
     | xargs -I{} --max-procs 8 bash -c '_pull_if_needed {}'
   }
 }
