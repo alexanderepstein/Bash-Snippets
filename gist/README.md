@@ -175,6 +175,11 @@ Valid values are:
 
 For example, use `gist config protocol ssh` to use SSH protocol instead.
 
+### show_untagged
+**[Optional]** Whether to show untagged gists when using [`gist tag`](#List-gists-with-tags). Default to be `true`
+
+Use `gist config show_untagged false` to disable this feature.
+
 ## Filter gists
 ### Filter by tags
 `gist` treats **trailing hashtags** inside gist description as tags. For example, if a description is:
