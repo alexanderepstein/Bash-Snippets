@@ -38,18 +38,19 @@
 #   update                        Update Bash-Snippet Tools
 # 
 # Example:
-#   gist                    (Show your gists)
-#   gist tag                (Show your gists with tags)
 #   gist fetch              (update the list of gists from github.com)
+#   gist                    (Show your gists)
 #   gist 3                  (show the repo path of your 3rd gist, and do custom actions)
 #   gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)
-#   gist new --desc bar foo (create a new gist with files and description)
+#   gist new foo bari       (create a new gist with files foo and bar)
+#   gist tag                (Show your gists with tags)
 #   gist tag 3              (Add tags to your 3rd gist)
 #   gist tag .+             (show tagged gists)
 # 
 # Since now a gist is a local cloned repo
 # It is your business to do git commit and git push
 
+# TODO Named temp file
 # TODO feature to exclude tag-value or grep-string
 # TODO codebase statistics, like C++ or something
 # TODO migrate to gh-page, with install.sh and check_md5 in README
@@ -57,7 +58,7 @@
 currentVersion="1.23.0"
 configuredClient=""
 
-NAME=${GISTSCRIPT:-$(basename $0)}
+NAME=${GISTSCRIPT:-$(basename $0)} #show hint and helper message with current script name
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
@@ -326,7 +327,7 @@ _index_pattern() {
 
 # Display the list of gist, show username for starred gist
 # If hint=false, do not print hint to tty. If mark=<pattern>, filter index with regex
-# If display=tag, print tags instead or url
+# If display=tag/language, print tags/languages instead or url
 _show_list() {
   if [[ ! -s $INDEX ]]; then
     echo "Index file is empty, please run commands "$NAME fetch" or "$NAME create""
