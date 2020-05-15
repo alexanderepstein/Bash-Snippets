@@ -743,7 +743,7 @@ _edit_gist() {
   http_data=$(tmp_file)
   echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
   new_record=$(http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
-               | xargs -I{} -0 echo "[{}]" \
+               | sed -e '1 s/^/[/; $ s/$/]/' \
                | _parse_response "${index#[[:alpha:]]}" )
   [[ -n $new_record ]] && sed -i'' -E -e "/^$index / s^.+^$new_record^" $INDEX \
   && hint=false mark="$index " _show_list \
