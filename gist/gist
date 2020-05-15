@@ -475,10 +475,9 @@ _pull_if_needed() {
     cd "$repo" \
     && [[ $blob_code_local != "$blob_code" ]] \
     && [[ $(git rev-parse origin/master) == $(git rev-parse master) ]] \
-    && git pull
+    && git pull &
   done
 }
-export -f _pull_if_needed
 
 # Update local git repos
 _sync_repos() {
@@ -493,7 +492,9 @@ _sync_repos() {
 
     # if repo is cloned, do 'git pull' if remote repo has different blob objects
     sed -ne '/^\t/ s/\t//p' <<<$result \
-    | xargs -I{} --max-procs 8 bash -c '_pull_if_needed {}'
+    | while read GIST_ID; do
+      _pull_if_needed $GIST_ID
+    done
   }
 }
 
