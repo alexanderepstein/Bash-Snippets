@@ -62,8 +62,12 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
 INDEX_FORMAT=('index' 'url' 'tags_string' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
-[[ ! -t 0 ]] && INPUT=$(cat)
-export mark=[^s] # By defaut, only process user's gists, not starred gist
+if [[ ! -t 0 ]]; then
+  INPUT=$(cat)
+  export mark=.
+else
+  export mark=[^s] # By defaut, only process user's gists, not starred gist
+fi
 
 # Default configuration
 [[ ! -t 1 && -z $hint ]] && hint=false
@@ -827,7 +831,7 @@ _pin_tags() {
 # show languages of files in gists
 _gists_with_languages() {
   local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /|/g' <<<"$@"))"
-  hint=false mark=${INPUT:+.} display=language _show_list | grep --color=always -Ei "$pattern"
+  hint=false display=language _show_list | grep --color=always -Ei "$pattern"
 }
 
 _gists_with_range() {
