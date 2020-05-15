@@ -334,18 +334,20 @@ _show_list() {
     if [[ $display == 'tag' ]]; then
       local tags=( ${tags_string//,/ } ); message="${tags[@]}"
       [[ $show_untagged == 'false' && ${#tags[@]} == '0' ]] && continue
-      local width=45; local align=' ';  extra='';
+      local width=45; local align=' ';
     elif [[ $display == 'language' ]]; then
       message="$(tr ',' '\n' <<< $file_array | sed -Ee 's/.+@/#/' | uniq | xargs)"
-      local width=45; local align=' ';  extra='';
+      local width=45; local align=' ';
     fi
 
-    local extra=$(_check_repo_status "$folder/${url##*/}" "$blob_code")
-    [[ -z $extra ]] && extra="$(printf "%-4s" "$file_num $comment_num")"
+    local status=''
+    status=$(_check_repo_status "$folder/${url##*/}" "$blob_code")
+    status="${status:+${status} }"
+    local extra="$(printf "%-4s" "$file_num $comment_num")"
 
     [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
 
-    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $(_color_description_title "$description")"
+    raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra $status$(_color_description_title "$description")"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
     decorator=$(( $(grep -o '\\e\[0m' <<<"$raw_output" | wc -l) *9 ))
     echo -e "$raw_output" | cut -c -$(( $(tput cols) +decorator ))
