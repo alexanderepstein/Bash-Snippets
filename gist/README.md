@@ -14,33 +14,33 @@
 - [Tips](#Tips)
     - [Filter gists with pipe](#Filter-gists-with-pipe)
     - [Git Branching](#Git-Branching)
-    - [Suppress action](#Suppress-action)
     - [Useful action for gist repo](#Useful-action-for-gist-repo)
+    - [Suppress action](#Suppress-action)
     - [Suppress hint](#Suppress-hint)
 
 ## Getting started
 ```bash
-# fetch your gists and clone them into ~/gist as git repos
+# Fetch your gists and clone them into ~/gist as git repos
 gist fetch
-# show the list of your gists
+# List your gists
 gist
-# create a new gist
+# Create a new gist
 gist new
-# create private gist with files 'foo' and 'bar'
+# Create private gist with files 'foo' and 'bar'
 gist new -p foo bar
-# get the path and cd to cloned repo with subshell
+# Get the path and cd to cloned repo with subshell
 gist 3
-# push changes in your third gist to the remote repo
+# Push changes in your third gist to the remote repo
 gist push 3
-# update the description of your third gist
+# Update the description of your third gist
 gist edit 3
-# add tags to your third gist
+# Add tags to your third gist
 gist tag 3
-# list your gists with tags instead of URL
+# List your gists with tags instead of URL
 gist tag
-# delete gists with indices 3, 4 and 5
+# Delete gists with indices 3, 4 and 5
 gist delete 3 4 5
-# or use Brace Expansion
+# Or use Brace Expansion
 gist delete {3..5}
 # Import your third gist as a new Github repo with web page
 gist github 3
@@ -180,8 +180,8 @@ gist tag 3
 ```
 After it is finished, `gist` just calls Github API to apply new description onto the given gist.
 
-#### Display list with tags
-Use sub-command `tag` to show the list of gists with tags instead of URLs.
+#### List gists with tags
+Use sub-command `tag` to list gists with tags instead of URLs.
 ```bash
 # show tags for your gists
 gist tag
@@ -223,8 +223,8 @@ gist grep '^string'
 ```
 
 ### Filter by file languages
-#### Display list with languages
-You can use sub-command `lan` to show the list of gists with file languages instead of URLs.
+#### List gists with languages
+You can use sub-command `lan` to List gists with file languages instead of URLs.
 ```bash
 # show languages for your gists
 gist lan
@@ -258,9 +258,9 @@ If `STDIN` is from a pipe, then `gist` will only process gists with **indices in
 ```bash
 # only show gists with index 1 to 20
 seq 20 | gist
-# Show the list of starred gist with Yaml file
+# List starred gist with Yaml file
 gist star | gist lan Yaml
-# Only show the list of gists with tag1, pattern1 in description/filenames/contents and markdown file
+# Only List gists with tag1, pattern1 in description/filenames/contents and markdown file
 gist tag tag1 | gist grep pattern1 | gist lan SHELL
 ```
 
@@ -288,7 +288,7 @@ gist config action 'true'
 ### Suppress hint
 There are several environment variables or arguments can suppress hint or user confirm, like:
 ```bash
-# show list without hint
+# List gists without hint
 hint=false gist
 
 # just print the repo path with a given index
