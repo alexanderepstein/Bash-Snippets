@@ -57,7 +57,7 @@
 currentVersion="1.23.0"
 configuredClient=""
 
-NAME=$(basename $0)
+NAME=${GISTSCRIPT:-$(basename $0)}
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
