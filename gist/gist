@@ -641,7 +641,7 @@ _push_to_remote() {
 # Set filename/description/permission for a new gist
 _set_gist() {
   files=()
-  public=True
+  description=''; filename=''; public=True
   while [[ -n "$*" ]]; do case $1 in
     -d | --desc)
       description="$2"
