@@ -700,7 +700,7 @@ _create_gist() {
   echo -e "${files[*]}\n$description" \
   | _gist_body > "$http_data" \
   && http_method POST $GITHUB_API/gists \
-  | sed -e '1 s/^/[/; $ s/$/]/' \
+  | xargs -I{} -0 echo "[{}]" \
   | _parse_response $(( $(sed -e '/^s/ d' $INDEX | wc -l) +1 )) \
   | tee -a $INDEX \
   | cut -d' ' -f2 | sed -E -e 's#.*/##' \
@@ -717,24 +717,25 @@ _create_gist() {
 
 # Update description of a gist
 _edit_gist() {
-  _gist_id "$1" || return 1
+  local index=$1; shift
+  _gist_id "$index" || return 1
 
-  if [[ -z $2 ]]; then
-    read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$1 / p" $INDEX)"
+  if [[ -z "$@" ]]; then
+    read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$index / p" $INDEX)"
     read -e -p 'Edit description: ' -i "$description" -r DESC < /dev/tty
     tags=( ${tags_string//,/ } )
     DESC="$DESC ${tags[*]}"
   else
-    DESC="$2"
+    DESC="$@"
   fi
 
   http_data=$(tmp_file)
   echo '{' \"description\": \""${DESC//\"/\\\"}"\" '}' > "$http_data"
   new_record=$(http_method PATCH "$GITHUB_API/gists/$GIST_ID" \
-               | sed -e '1 s/^/[/; $ s/$/]/' \
-               | _parse_response "${1#[[:alpha:]]}" )
-  [[ -n $new_record ]] && sed -i'' -E -e "/^$1 / s^.+^$new_record^" $INDEX \
-  && hint=false mark="$1 " _show_list \
+               | xargs -I{} -0 echo "[{}]" \
+               | _parse_response "${index#[[:alpha:]]}" )
+  [[ -n $new_record ]] && sed -i'' -E -e "/^$index / s^.+^$new_record^" $INDEX \
+  && hint=false mark="$index " _show_list \
   || echo 'Fail to modify gist description'
 }
 
@@ -761,15 +762,15 @@ _check_protocol() {
 _tag_gist() {
   # if no tag is given, show gist list with tags
   if [[ -z $* ]]; then
-    display=tag  mark=${INPUT:+.} _show_list
+    display=tag _show_list
   # if user want to change tags of a gist
   elif _gist_id $1 &>/dev/null; then
     _show_detail $1 | sed 3,6d && echo
     read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$1 / p" $INDEX)"
     local tags="$(sed -e 's/,//g; s/#/ /g; s/^ //g' <<<"$tags_string")"
     read -e -p 'Edit tags: ' -i "$tags" -r -a new_tags < /dev/tty
-    local hashtags="${new_tags[@]/#/#}" 
-    ($0 edit $1 "${description}${hashtags:+ }${hashtags}" &>/dev/null &)
+    local hashtags=( $(sed -Ee 's/#+/#/g' <<<${new_tags[@]/#/#}) ) 
+    ($0 edit $1 "${description}${hashtags:+ }${hashtags[@]}" &>/dev/null &)
   # if user want to filter gists with given tags
   else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/\./[^ ]/g' <<<"$@") )"
