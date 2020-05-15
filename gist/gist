@@ -751,7 +751,7 @@ _edit_gist() {
 # Print helper message
 usage() {
   sed -E -n -e '/^#/ !q; 1,/^# --/ d; s/^# //p' "$0" \
-  | sed -Ee "s/^( ?|Usage: )gist/\1$NAME/"
+  | sed -Ee "s/^( *|Usage: )gist/\1$NAME/"
 }
 
 # Check remote urls of all repos match current protocol in configuration file
