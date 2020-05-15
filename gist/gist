@@ -57,6 +57,7 @@
 currentVersion="1.23.0"
 configuredClient=""
 
+NAME=$(basename $0)
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
@@ -328,7 +329,7 @@ _index_pattern() {
 # If display=tag, print tags instead or url
 _show_list() {
   if [[ ! -s $INDEX ]]; then
-    echo 'Index file is empty, please run commands "gist fetch" or "gist create"'
+    echo "Index file is empty, please run commands "$NAME fetch" or "$NAME create""
     return 0
   fi
 
@@ -365,7 +366,7 @@ _show_list() {
     local mtime="$(mtime $INDEX | cut -d'.' -f1)"
     echo > /dev/tty
     echo "Last updated at $mtime" > /dev/tty
-    echo 'Run "gist fetch" to keep gists up to date, or "gist help" for more details' > /dev/tty
+    echo "Run \"$NAME fetch\" to keep gists up to date, or \"$NAME help\" for more details" > /dev/tty
   fi
 }
 
@@ -749,7 +750,8 @@ _edit_gist() {
 
 # Print helper message
 usage() {
-  sed -E -n -e '/^#/ !q; 1,/^# --/ d; s/^# //p' "$0"
+  sed -E -n -e '/^#/ !q; 1,/^# --/ d; s/^# //p' "$0" \
+  | sed -Ee "s/^( ?|Usage: )gist/\1$NAME/"
 }
 
 # Check remote urls of all repos match current protocol in configuration file
@@ -803,7 +805,7 @@ _show_tags() {
 
   echo
   if [[ ${#pinned_tags} == 0 ]]; then
-    echo 'Run "gist pin <tag1> <tag2>..." to pin/unpin tags'
+    echo "Run \"$NAME pin <tag1> <tag2>...\" to pin/unpin tags"
   else
     echo Pinned tags: "${pinned_tags[@]/#/#}"
   fi
