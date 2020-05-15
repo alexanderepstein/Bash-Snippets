@@ -32,7 +32,7 @@
 #   clean,  C                     Clean local repos of removed gists
 #   config, c [token|user|folder|auto_sync|EDITOR|action|protocol|show_untagged [value]]  Do configuration
 #   user,   u <USER>              Get list of gists with a given Github user
-#   github, G <INDEX>             Import selected gist as a new Github repo
+#   github, G <INDEX>             Export selected gist as a new Github repo
 #   help,   h                     Show this help message
 #   version                       Get the tool version
 #   update                        Update Bash-Snippet Tools
@@ -616,10 +616,10 @@ _show_detail() {
 }
 
 # Open Github repository import page
-_import_to_github() {
+_export_to_github() {
   _gist_id "$1" || return 1
-  echo put the folowing URL into web page:
-  echo -n "git@github.com:$GIST_ID.git"
+  echo Put the folowing URL into web page:
+  echo -n "https://gist.github.com/$GIST_ID.git"
   python -mwebbrowser https://github.com/new/import
 }
 
@@ -881,7 +881,7 @@ case "$1" in
     _grep_content "$@" ;;
   github | G)
     shift
-    _import_to_github "$1" ;;
+    _export_to_github "$1" ;;
   push | P)
     shift
     _push_to_remote "$1" ;;
