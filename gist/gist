@@ -385,7 +385,8 @@ _grep_content() {
       # grep from filenames
       local file=$(ls $repo | grep --color=always -Ei "$1")
       # grep from content of files
-      local content=$(grep --color=always -EHi -m1 "$1" * | head -1)
+      # Abort error message to prevent weird file name, for example: https://gist.github.com/6057f4a3a533f7992c60
+      local content=$(grep --color=always -EHi -m1 "$1" * 2>/dev/null | head -1)
 
       [[ -n $file && file="$file\n" || -n $content ]] \
       && hint=false mark="$index " _show_list \
