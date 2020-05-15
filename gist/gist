@@ -245,7 +245,7 @@ _ask_token() {
 }
 
 # Check configuration is fine with user setting
-_validate_config(){
+_validate_config() {
   # shellcheck source=/dev/null
   source "$CONFIG" 2> /dev/null
   [[ $1 =~ ^(c|config|h|help|u|user|update|version) ]] && return 0
@@ -257,7 +257,7 @@ _validate_config(){
   elif [[ -z $token && $1 =~ ^(n|new|e|edit|D|delete)$ ]]; then
     _ask_token && return 0
     echo 'To create/edit/delete a gist, a token is needed' && return 1
-  elif [[ -z $token && $1 =~ ^(f|fetch)$ && $2 =~ ^(s|star) ]]; then
+  elif [[ -z $token && $1 =~ ^(f|fetch)$ && $2 =~ ^(s|star)$ ]]; then
     _ask_token && return 0
     echo 'To get user starred gists, a token is needed' && return 1
   fi
@@ -852,7 +852,7 @@ case "$1" in
   all | a)
     mark=.; _show_list ;;
   fetch | f)
-    [[ $2 =~ ^[s|star]$ ]] && mark=s || mark=[^s]
+    [[ $2 =~ ^(s|star)$ ]] && mark=s || mark=[^s]
     _fetch_gists ;;
   new | n)
     shift
