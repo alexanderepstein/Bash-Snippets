@@ -63,6 +63,7 @@ CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 INDEX_FORMAT=('index' 'url' 'tags_string' 'blob_code' 'file_array' 'file_num' 'comment_num' 'author' 'created_at' 'updated_at' 'description')
 TAG_CHAR='-_[:alnum:]'
 [[ ! -t 0 ]] && INPUT=$(cat)
+export mark=[^s] # By defaut, only process user's gists, not starred gist
 
 # Default configuration
 [[ ! -t 1 && -z $hint ]] && hint=false
@@ -321,14 +322,13 @@ _index_pattern() {
 # Display the list of gist, show username for starred gist
 # If hint=false, do not print hint to tty. If mark=<pattern>, filter index with regex
 # If display=tag, print tags instead or url
-# TODO color private/starred mark
 _show_list() {
   if [[ ! -s $INDEX ]]; then
     echo 'Index file is empty, please run commands "gist fetch" or "gist create"'
     return 0
   fi
 
-  sed -Ee "/^${mark:-[^s]}/ !d; /^$(_index_pattern) / !d" $INDEX \
+  sed -Ee "/^$mark/ !d; /^$(_index_pattern) / !d" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     local message=$url
     if [[ $display == 'tag' ]]; then
@@ -411,8 +411,8 @@ _parse_response() {
   _parse_gists \
   | tac | nl -s' ' \
   | while read -r "${INDEX_FORMAT[@]:0:2}" public file_url_array "${INDEX_FORMAT[@]:4:7}"; do
-    local prefix=$mark; [[ $public == 'False' ]] && prefix=p
-    [[ -n $1 ]] && local index=${1}; index=${prefix}${index}
+    local private_prefix=''; [[ $public == 'False' ]] && private_prefix=p
+    [[ -n $1 ]] && local index=${1}; index=${private_prefix}${prefix}${index}
 
     local blob_code=$(echo "$file_url_array" | tr ',' '\n' | sed -E -e 's#.*raw/(.*)/.*#\1#' | sort | cut -c -7 | paste -s -d '-' -)
     file_array=${file_array//@None/@Text}
@@ -432,19 +432,19 @@ _fetch_gists() {
   echo "fetching $user's gists from $GITHUB_API..."
   echo
   local route="users/$user/gists"
-  local mark=''
-  if [[ $1 =~ ^(star|s)$ ]];then
+  local prifix=''
+  if [[ $mark == s ]]; then
     route='gists/starred'
-    local mark=s
+    prefix=s
   fi
 
-  result=$(http_method GET $GITHUB_API/$route?per_page=100 | mark=$mark _parse_response)
+  result=$(http_method GET $GITHUB_API/$route?per_page=100 | prefix=$prefix _parse_response)
   [[ -z $result ]] && echo 'Not a single valid gist' && return 0
 
-  sed -i'' -Ee "/^${mark:-[^s]}/ d" $INDEX && echo "$result" >> $INDEX
-  mark=$mark hint=$hint _show_list
+  sed -i'' -Ee "/^$mark/ d" $INDEX && echo "$result" >> $INDEX
+  hint=$hint _show_list
 
-  [[ $auto_sync == 'true' ]] && (_sync_repos "$1" &> /dev/null &)
+  [[ $auto_sync == 'true' ]] && (_sync_repos &> /dev/null &)
   true
 }
 
@@ -467,24 +467,34 @@ _blob_code() {
   cd "$1" && git ls-tree master | cut -d' ' -f3 | cut -c-7 | sort | paste -sd '-'
 }
 
-# Update local git repos
-_sync_repos() {
-  # clone repos which are not in the local
-  comm -13 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
-           <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort) \
-  | xargs -I{} --max-procs 8 git clone "$(_repo_url {})" $folder/{}
-
-  # pull if remote repo has different blob objects
-  cut -d' ' -f2,3 < "$INDEX" \
-  | while read -r url blob_code_remote; do
-    local repo; repo=$folder/${url##*/}
+_pull_if_needed() {
+  sed -ne "/$1 / p" "$INDEX" \
+  | while read -r "${INDEX_FORMAT[@]}"; do
+    local repo; repo=$folder/$1
     local blob_code_local; blob_code_local=$(_blob_code "$repo")
     cd "$repo" \
-    && [[ $blob_code_local != "$blob_code_remote" ]] \
+    && [[ $blob_code_local != "$blob_code" ]] \
     && [[ $(git rev-parse origin/master) == $(git rev-parse master) ]] \
     && git pull
   done
-  echo Everything is fine!
+}
+export -f _pull_if_needed
+
+# Update local git repos
+_sync_repos() {
+  comm -1 <(ls -A "$folder" | sort) \
+          <(cut -d' ' -f1-2 < "$INDEX" | sed -ne "/^$mark/ s#.*/##p" | sort) \
+  | {
+    result=$(cat)
+
+    # clone repos which are not in the local
+    sed -n '/^\t/ !p' <<<$result \
+    | xargs -I{} --max-procs 8 git clone "$(_repo_url {})" $folder/{} &
+
+    # if repo is cloned, do 'git pull' if remote repo has different blob objects
+    sed -n '/^\t/ p' <<<$result \
+    | xargs -I{} --max-procs 8 bash -c '_pull_if_needed {}'
+  }
 }
 
 # Get the url where to clone repo, take user and repo name as parameters
@@ -817,11 +827,12 @@ _gists_with_languages() {
 }
 
 _gists_with_range() {
-  [[ ! $* =~ ^s*[0-9]*-s*[0-9]*$ ]] && echo 'Invalid range' && exit 1
-  local mark='' && [[ $* =~ s ]] && mark=s
+  [[ ! $* =~ ^s?[0-9]*-s?[0-9]*$ ]] && echo 'Invalid range' && exit 1
+  local prefix=''; [[ $* =~ s ]] && prefix=s
 
-  local range=$(sed -Ee "s/s//g; s/^-/1-/; s/-$/-$(wc -l <$INDEX)/; s/-/\n/" <<< "$*")
-  INPUT=$(seq $range | sed -e "s/^/p*$mark/")
+  local maximum=$(sed -Ene "/^${prefix:-[^s]}/ p" $INDEX | wc -l)
+  local range=$(sed -Ee "s/s//g; s/^-/1-/; s/-$/-$maximum/; s/-/ /" <<< "$*")
+  INPUT=$(seq $range | sed -e "s/^/p?$prefix/")
   hint=false _show_list
 }
 
@@ -837,11 +848,12 @@ case "$1" in
   "")
     _show_list ;;
   star | s)
-    mark=s _show_list ;;
+    mark=s; _show_list ;;
   all | a)
-    mark=. _show_list ;;
+    mark=.; _show_list ;;
   fetch | f)
-    _fetch_gists "$2" ;;
+    [[ $2 =~ ^[s|star]$ ]] && mark=s || mark=[^s]
+    _fetch_gists ;;
   new | n)
     shift
     _create_gist "$@" ;;
@@ -885,7 +897,7 @@ case "$1" in
     shift
     _gists_with_languages "$@" ;;
   *-*)
-    _gists_with_range "$@" ;;
+    mark=.; _gists_with_range "$@" ;;
   last | L)
     _access_last_index "$@" ;;
   version)
