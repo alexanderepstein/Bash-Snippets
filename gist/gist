@@ -274,9 +274,9 @@ _validate_config() {
 _apply_config() {
   _validate_config "$@" || return 1
 
-  [[ -z $folder || ! -w $(dirname "$folder") ]] && folder=~/gist
-  mkdir -p $folder
+  [[ -z $folder || ! -w $(dirname "$folder") ]] && folder=~/gist; mkdir -p $folder
   INDEX=$folder/index; [[ -e $INDEX ]] || touch $INDEX
+  getConfiguredClient
 }
 
 # extract trailing hashtags from description
@@ -621,8 +621,7 @@ _show_detail() {
     echo -e created_at: $created_at
     echo -e updated_at: $updated_at
     echo -e files:
-    echo $file_array | tr ',' '\n' | tr '@' ' ' \
-    | column -t | sed -e 's/^/    /'
+    tr ',' '\n' <<<${file_array//@/ } | column -t | sed -e 's/^/    /'
   done
 }
 
@@ -752,8 +751,7 @@ _edit_gist() {
 
 # Print helper message
 usage() {
-  sed -E -n -e '/^#/ !q; 1,/^# --/ d; s/^# //p' "$0" \
-  | sed -Ee "s/^( *|Usage: )gist/\1$NAME/"
+  sed -Ene "/^#/ !q; 1,/^# --/ d; s/^# //p; s/^( *|Usage: )gist/\1$NAME/" "$0"
 }
 
 # Check remote urls of all repos match current protocol in configuration file
@@ -855,7 +853,6 @@ _access_last_index() {
 }
 
 _apply_config "$@" || exit 1
-getConfiguredClient || exit 1
 if [[ $init ]]; then _fetch_gists; exit 0; fi
 case "$1" in
   "")
