@@ -580,7 +580,7 @@ _clean_repos() {
   comm -23 <(find $folder -maxdepth 1 -type d | sed -e '1d; s#.*/##' | sort) \
            <(cut -d' ' -f2 < "$INDEX" | sed -e 's#.*/##' | sort 2> /dev/null ) \
   | while read -r dir; do
-    mv $folder/"$dir" /tmp && echo move $folder/"$dir" to /tmp
+    mv $folder/"$dir" /tmp && echo $folder/"$dir" is moved to /tmp
   done
 }
 
