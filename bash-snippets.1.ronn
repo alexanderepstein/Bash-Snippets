@@ -185,6 +185,63 @@ Example: geo -a 8.8.8.8 -o city,zip,isp
 
   * -u  Updates Bash-Snippets
 
+### Gist
+Description: Manage your gists with git and Github API v3
+
+Usage: gist [command] [args]
+
+  * [star|all]  List your gists, use 'star' as argument for your starred gists,
+                'all' or 'a' for both your and starred gists. Format for each line is:
+                <INDEX> <URL> <FILE_NUM> <COMMENT_NUM> <DESCRIPTION>
+
+  * fetch       Update the local list of your gists, 'star' as argument for your starred gists
+   
+  * <INDEX>     Show the path of local gist repo and do custom actions
+
+  * new         Create a new gist with files or STDIN
+
+  * grep        Grep gists by description, filename and content with a given pattern
+
+  * tag         Modify/List tags for a gist
+
+  * tags        List all tags and pinned tags
+
+  * pin,        Pin/Unpin tags, or filter gists with pinned tags
+
+  * lan         Filter gists or list gist with coding languages
+
+  * detail      Show the detail of a gist
+
+  * edit        Edit description for a gist
+
+  * delete      Delete gists by given indices
+
+  * push        Push changes by git
+
+  * clean       Clean local repos of removed gists
+
+  * config      Do configuration
+
+  * user        Get list of gists with a given Github user
+
+  * github      Import selected gist as a new Github repo
+
+  * help        Show the helper message
+
+Example:
+
+  * gist                    (Show your gists)
+
+  * gist tag                (Show your gists with tags)
+
+  * gist fetch              (update the list of gists from github.com)
+
+  * gist 3                  (show the repo path of your 3rd gist, and do custom actions)
+
+  * gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)
+
+  * gist new --desc bar foo (create a new gist with files and description)
+
 ### Lyrics
 Description: Fetch lyrics for a certain song.
 

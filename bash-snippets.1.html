@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>bash-snippets(1) - A collection of small bash scripts for heavy terminal users</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#Tools">Tools</a>
+    <a href="#Updating">Updating</a>
+    <a href="#Uninstalling">Uninstalling</a>
+    <a href="#AUTHOR">AUTHOR</a>
+    <a href="#Contributors">Contributors</a>
+    <a href="#License">License</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>bash-snippets(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>bash-snippets(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>bash-snippets</code> - <span class="man-whatis">A collection of small bash scripts for heavy terminal users</span>
+</p>
+
+<h2 id="Tools">Tools</h2>
+
+<h3 id="Cheat">Cheat</h3>
+
+<p>Description: Cheatsheets for quick information about multiple programming languages along with terminal commands</p>
+
+<p>Usage: cheat [flags] [command] or cheat [flags] [programming language] [subject]</p>
+
+<ul>
+<li><p>-s Does a search for last argument rather than looking for exact match</p></li>
+<li><p>-i Case insensitive search</p></li>
+<li><p>-b Word boundaries in search</p></li>
+<li><p>-r Recursive search</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Special Pages:</p>
+
+<ul>
+<li><p>hello Describes building the hello world program written in the language</p></li>
+<li><p>list This lists all cheatsheets related to previous arg if none it lists all cheatsheets</p></li>
+<li><p>learn Shows a learn-x-in-minutes language cheat sheet perfect for getting started with the language</p></li>
+<li><p>1line A collection of one-liners in this language</p></li>
+<li><p>weirdness A collection of examples of weird things in this language</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>cheat rust hello</p></li>
+<li><p>cheat -r -b -i go</p></li>
+<li><p>cheat julia Functions</p></li>
+<li><p>cheat -i go operators</p></li>
+</ul>
+
+
+<h3 id="Cloudup">Cloudup</h3>
+
+<p>Description: Backs up a users github repositories to your bitbucket account.
+  With no flags cloudup will guide you through backing up a single repository</p>
+
+<p>Usage: cloudup [flags] or cloudup [flags] [listOfGHRepoNamesSplitBySpaces]</p>
+
+<ul>
+<li><p>-p Upload the repositor(y)(ies) as private to bitbucket (must have private repo ability on bitbucket)</p></li>
+<li><p>-a Backup all github repositories</p></li>
+<li><p>-s Only backup repositories that you have created (no forks) (only works in conjunction with the -a flag)</p></li>
+<li><p>-t Backup the repository with a timestamp added to the repostiory name (will always create a new unique bitbucket repo)</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p> cloudup</p></li>
+<li><p> cloudup -p -a</p></li>
+<li><p> cloudup -p nameOfRepo1 nameOf Repo2</p></li>
+<li><p> cloudup nameOfRep</p></li>
+</ul>
+
+
+<h3 id="Crypt">Crypt</h3>
+
+<p>Description: A wrapper around openssl that facilitates encrypting and decrypting files.</p>
+
+<p>Usage: crypt [flag] [inputFile] [outputFile]</p>
+
+<ul>
+<li><p>-e Encrypt the inputFile and store it in the outputFil</p></li>
+<li><p>-d Decrypt the inputFile and store it in the outputFil</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>crypt -e mySecretFile.txt myEncryptedFile.jpg (change filetype so default program is incorrect)</p></li>
+<li><p>crypt -d myEncryptedFile.jpg thisIsNowDecrypted.txt (change filetype back so now default program is correct)</p></li>
+</ul>
+
+
+<h3 id="CryptoCurrency">CryptoCurrency</h3>
+
+<p>Description: A realtime cryptocurrency converter.
+With no flags it will pull down the latest stats of the top 10 cryptos</p>
+
+<p>Usage: cryptocurrency or cryptocurrency [flag] or cryptocurrency [flag] [arg]</p>
+
+<ul>
+<li><p>-o Utilize the old functionality of the tool</p></li>
+<li><p>-f Fiat currency for conversions</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:
+  cryptocurrency -o
+  cryptocurrency -f eur</p>
+
+<h3 id="Currency">Currency</h3>
+
+<p>Description: A realtime currency converter.
+   With no flags it will guide you through the currency exchange</p>
+
+<p>Usage: currency or currency [flag] or currency [base] [exchangeTo] [amount]</p>
+
+<ul>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Supported Currencies:</p>
+
+<hr />
+
+<p>| AUD | BGN | BRL | CAD |
+| CHF | CNY | CZK | DKK |
+| EUR | GBP | HKD | HRK |
+| HUF | IDR | ILS | INR |
+| JPY | KRW | MXN | MYR |
+| NOK | NZD | PHP | PLN |
+| RON | RUB | SEK | SGD |
+| THB | TRY | USD | ZAR |</p>
+
+<hr />
+
+<p>Examples:</p>
+
+<ul>
+<li><p>currency EUR USD 12.35</p></li>
+<li><p>currency</p></li>
+</ul>
+
+
+<h3 id="Geo">Geo</h3>
+
+<p>Description: Provides quick access for wan, lan, router, dns, mac, and ip geolocation data</p>
+
+<p>Usage: geo [flag]</p>
+
+<ul>
+<li><p>-w  Returns WAN IP</p></li>
+<li><p>-l  Returns LAN IP(s)</p></li>
+<li><p>-r  Returns Router IP</p></li>
+<li><p>-d  Returns DNS Nameserver</p></li>
+<li><p>-m  Returns MAC address for interface. Ex. eth0</p></li>
+<li><p>-g  Returns Current IP Geodata</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>geo -g</p></li>
+<li><p>geo -wlrdgm eth0</p></li>
+</ul>
+
+
+<p>Custom Geo Output =>
+[all] [query] [city] [region] [country] [zip] [isp]</p>
+
+<p>Example: geo -a 8.8.8.8 -o city,zip,isp</p>
+
+<ul>
+<li><p>-o  [options] Returns Specific Geodata</p></li>
+<li><p>-a  [address] For specific ip in -s</p></li>
+<li><p>-v  Returns Version</p></li>
+<li><p>-h  Returns Help Screen</p></li>
+<li><p>-u  Updates Bash-Snippets</p></li>
+</ul>
+
+
+<h3 id="Gist">Gist</h3>
+
+<p>Description: Manage your gists with git and Github API v3</p>
+
+<p>Usage: gist [command] [args]</p>
+
+<ul>
+<li><p>[star|all]  List your gists, use 'star' as argument for your starred gists,
+            'all' or 'a' for both your and starred gists. Format for each line is:
+            <var>INDEX</var> <var>URL</var> <var>FILE_NUM</var> <var>COMMENT_NUM</var> <var>DESCRIPTION</var></p></li>
+<li><p>fetch       Update the local list of your gists, 'star' as argument for your starred gists</p></li>
+<li><p><var>INDEX</var>     Show the path of local gist repo and do custom actions</p></li>
+<li><p>new         Create a new gist with files or STDIN</p></li>
+<li><p>grep        Grep gists by description, filename and content with a given pattern</p></li>
+<li><p>tag         Modify/List tags for a gist</p></li>
+<li><p>tags        List all tags and pinned tags</p></li>
+<li><p>pin,        Pin/Unpin tags, or filter gists with pinned tags</p></li>
+<li><p>lan         Filter gists or list gist with coding languages</p></li>
+<li><p>detail      Show the detail of a gist</p></li>
+<li><p>edit        Edit description for a gist</p></li>
+<li><p>delete      Delete gists by given indices</p></li>
+<li><p>push        Push changes by git</p></li>
+<li><p>clean       Clean local repos of removed gists</p></li>
+<li><p>config      Do configuration</p></li>
+<li><p>user        Get list of gists with a given Github user</p></li>
+<li><p>github      Import selected gist as a new Github repo</p></li>
+<li><p>help        Show the helper message</p></li>
+</ul>
+
+
+<p>Example:</p>
+
+<ul>
+<li><p>gist                    (Show your gists)</p></li>
+<li><p>gist tag                (Show your gists with tags)</p></li>
+<li><p>gist fetch              (update the list of gists from github.com)</p></li>
+<li><p>gist 3                  (show the repo path of your 3rd gist, and do custom actions)</p></li>
+<li><p>gist 3 --no-action      (show the repo path of your 3rd gist, and do not perform actions)</p></li>
+<li><p>gist new --desc bar foo (create a new gist with files and description)</p></li>
+</ul>
+
+
+<h3 id="Lyrics">Lyrics</h3>
+
+<p>Description: Fetch lyrics for a certain song.</p>
+
+<p>Usage: lyrics [flags] or tool [-a] [arg] [-s] [arg]</p>
+
+<ul>
+<li><p>-a  Artist of the song to fetch lyrics for</p></li>
+<li><p>-s  Song of the artist to fetch lyrics for</p></li>
+<li><p>-f  Export the lyrics to file rather than outputting to stdout</p></li>
+<li><p>-u  Update Bash-Snippet Tools</p></li>
+<li><p>-h  Show the help</p></li>
+<li><p>-v  Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>lyrics -a logic -s run it</p></li>
+<li><p>lyrics -a logic -s run it -f ~/runItLyrics.txt</p></li>
+</ul>
+
+
+<h3 id="Meme">Meme</h3>
+
+<p>Description: A lightning fast meme generator</p>
+
+<p>Usage: tool [flags] or tool [flags] [arguments]</p>
+
+<ul>
+<li><p>-u  Update Bash-Snippet Tools</p></li>
+<li><p>-h  Show the help</p></li>
+<li><p>-f  Choose the output filename</p></li>
+<li><p>-v  Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li>meme -f dogeMeme</li>
+</ul>
+
+
+<h3 id="Movies">Movies</h3>
+
+<p>Description: Provides relevant information about a certain movie.</p>
+
+<p>Usage: movies [flag] or movies [movieToSearch]</p>
+
+<ul>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+<li><p>-d Show detailed information</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>movies Argo</p></li>
+<li><p>movies Inception</p></li>
+</ul>
+
+
+<h3 id="Newton">Newton</h3>
+
+<p>Description: Performs numerical calculations all the way up to symbolic math parsing.</p>
+
+<p>Usage: newton [operation] [expression] or newton [flag]</p>
+
+<ul>
+<li><p>-u  Update Bash-Snippet Tools</p></li>
+<li><p>-h  Show the help</p></li>
+<li><p>-v  Get the tool version</p></li>
+</ul>
+
+
+<table>
+<thead>
+<tr>
+<th>Operations     Sample Expression      Sample Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simplify       [[2x<sup>2</sup>]+7]*[4x<sup>2</sup>]    8 x<sup>4</sup> + 28 x<sup>2</sup> </td>
+</tr>
+<tr>
+<td>Factor             x<sup>2</sup> + 2x             x (x + 2)  </td>
+</tr>
+<tr>
+<td>Derive              x<sup>2</sup>+2x               2 x + 2   </td>
+</tr>
+<tr>
+<td>Integrate           x<sup>2</sup>+2x         1/3 x<sup>3</sup> + x<sup>2</sup> +C</td>
+</tr>
+<tr>
+<td>Roots/Zeroes        x<sup>2</sup>+2x                2, 0     </td>
+</tr>
+<tr>
+<td>Tangent             2~x<sup>3</sup>              12 x + -16  | (Finding tangent line when x=2 for expression x<sup>3</sup>)</td>
+</tr>
+<tr>
+<td>Area               2:4~x<sup>3</sup>                 60      | (Finding area under curve from 2 to 4 for expression x<sup>3</sup>)</td>
+</tr>
+<tr>
+<td>Cos                   pi                   -1      </td>
+</tr>
+<tr>
+<td>Sin                   pi                    0      </td>
+</tr>
+<tr>
+<td>Tan                  pi/4                   1      </td>
+</tr>
+<tr>
+<td>ArcCos                 1                    0      </td>
+</tr>
+<tr>
+<td>ArcSin                 0                    0      </td>
+</tr>
+<tr>
+<td>ArcTan                pi                arcsin(pi) </td>
+</tr>
+<tr>
+<td>Abs                   -2                    2      </td>
+</tr>
+<tr>
+<td>Log                   2~8                   3      | (Log base 2 of eight)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>  Valid Symbols:
+    + add
+    - subtract
+    [ left parenthesis (you must use brackets bash has a bultin for parenthesis)
+    ] right parenthesis (you must use brackets bash has a bultin for parenthesis)
+    * multiply
+    / divide
+    ^ power
+    : between the range of left and right side (only for area under curve)
+    ~ parameter on right side (only for area, tangent line and log)</p>
+
+<p>Examples:</p>
+
+<ul>
+<li><p>newton simplify [[2x<sup>2</sup>]+7]*[4x<sup>2</sup>]</p></li>
+<li><p>movies derive x<sup>2</sup>+2x</p></li>
+</ul>
+
+
+<h3 id="Pwned">Pwned</h3>
+
+<p>Usage: pwned [email]</p>
+
+<p>Description: Checks where an email account has been breached</p>
+
+<pre><code>* -u Update Bash-Snippet Tools
+
+* -h Show the help
+
+* -v Get the tool version
+</code></pre>
+
+<p>Examples:</p>
+
+<pre><code>* pwned emailtocheck@email.com
+</code></pre>
+
+<h3 id="Qrify">Qrify</h3>
+
+<p>Usage: qrify [stringtoturnintoqrcode]</p>
+
+<p>Description: Converts strings or urls into a qr code.</p>
+
+<pre><code>* -u Update Bash-Snippet Tools
+
+* -m Enable multiline support
+
+* -f Save the QRCode to a file
+
+* -d Decode the QR code from a PNG/GIF/JP(E)G file
+
+* -h Show the help
+
+* -v Get the tool version
+</code></pre>
+
+<p>Examples:</p>
+
+<pre><code>* qrify this is a test string
+
+* qrify -m two \n lines
+
+* qrify -f fileNameHere Insert what you want to encode here
+
+* qrify github.com # notice no http:// or https:// this will fail
+
+* qrify -d fileName.png
+</code></pre>
+
+<h3 id="Short">Short</h3>
+
+<p>Description: Unmasks shortended urls.</p>
+
+<p>Usage: short [shortURL] or short [flag]</p>
+
+<ul>
+<li><p>-e Expand the following URL</p></li>
+<li><p>-s Shorten the following URL</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Example:</p>
+
+<ul>
+<li><p> Input: short -e tinyurl.com/jhkj</p></li>
+<li><p> Output: http://possiblemaliciouswebsiteornot.com</p></li>
+<li><p> Input: short -s google.com</p></li>
+<li><p> Output: http://ki.tc/23sd1d</p></li>
+</ul>
+
+
+<h3 id="Siteciphers">Siteciphers</h3>
+
+<p>Description: Checks the available ciphers for the SSL of an https site.</p>
+
+<p>Usage: siteciphers [flag] or siteciphers [optionalDFlag] [website]</p>
+
+<ul>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+<li><p>-d Set the delay between requests sent to the site (default is 1 sec)</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>siteciphers github.com</p></li>
+<li><p>siteciphers -d 0.75 google.com</p></li>
+</ul>
+
+
+<h3 id="Stocks">Stocks</h3>
+
+<p>Description: Finds the latest information on a certain stock.</p>
+
+<p>Usage: stocks [flag] or stocks [company/ticker]</p>
+
+<ul>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>stocks AAPL</p></li>
+<li><p>stocks Tesla</p></li>
+</ul>
+
+
+<h3 id="Taste">Taste</h3>
+
+<p>Description: A recommendation engine that provides 3 similar items based on some input topic.
+  Taste also has the ability to provide information on the item of interest.
+  Supports: shows, books, music, artists, movies, authors, games</p>
+
+<p>Usage: taste [flag] [item]</p>
+
+<ul>
+<li><p>-i Get more information on similar items</p></li>
+<li><p>-s Get information on the item itself</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>taste -i Kendrick Lamar</p></li>
+<li><p>taste Catcher in the Ry</p></li>
+<li><p>taste -s Red Hot Chili Peppers</p></li>
+</ul>
+
+
+<h3 id="Todo">Todo</h3>
+
+<p>Description: A simplistic commandline todo list.</p>
+
+<p>Usage: todo [flags] or todo [flags] [arguments]</p>
+
+<ul>
+<li><p>-c Clear all the current tasks</p></li>
+<li><p>-r Remove the following task number</p></li>
+<li><p>-g Get the current tasks</p></li>
+<li><p>-a Add the following task</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>todo -a My very first task</p></li>
+<li><p>todo -r 1</p></li>
+<li><p>todo -g</p></li>
+<li><p>todo -c</p></li>
+</ul>
+
+
+<h3 id="Transfer">Transfer</h3>
+
+<p>Description: Quickly transfer files from the command line.</p>
+
+<p>Usage: transfer [flags] or transfer [flag] [args] or transfer [filePathToUpload]</p>
+
+<ul>
+<li><p>-d  Download a single file</p>
+
+<pre><code>* First arg: Output file directory
+* Second arg: File url id
+* Third arg: File name
+</code></pre></li>
+<li><p>-o  Onetime file upload</p></li>
+<li><p>-u  Update Bash-Snippet Tools</p></li>
+<li><p>-h  Show the help</p></li>
+<li><p>-v  Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>transfer ~/fileToTransfer.txt</p></li>
+<li><p>transfer ~/firstFileToTransfer.txt ~/secondFileToTransfer.txt # upload multiple files at once</p></li>
+<li><p>transfer -d ~/outputDirectory fileID fileName</p></li>
+<li><p>transfer -o ~/fileToTransfer.txt</p></li>
+</ul>
+
+
+<h3 id="Weather">Weather</h3>
+
+<p>Description: Provides a 3 day forecast on your current location or a specified location.
+  With no flags Weather will default to your current location.</p>
+
+<p>Usage: weather or weather [flag] or weather [country] or weather [city] [state]</p>
+
+<ul>
+<li><p>weather [optionalLocation] [i][M] get weather in imperial units, optional M means windspeed in m/s</p></li>
+<li><p>weather [optionalLocation] [m][M] lowercase m gets weather in metric units, optional M means windspeed in m/s</p></li>
+<li><p>weather [Moon] grabs the phase of the moon</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>weather</p></li>
+<li><p>weather Paris m</p></li>
+<li><p>weather Tokyo</p></li>
+<li><p>weather Moon</p></li>
+<li><p>weather mM</p></li>
+</ul>
+
+
+<h3 id="Ytview">Ytview</h3>
+
+<p>Description: Search and play youtube videos right from the terminal.</p>
+
+<p>Usage: ytview [flag] [string] or ytview [videoToSearch]</p>
+
+<ul>
+<li><p>-s Searches youtube</p></li>
+<li><p>-c Shows the latest videos of a channel</p></li>
+<li><p>-u Update Bash-Snippet Tools</p></li>
+<li><p>-h Show the help</p></li>
+<li><p>-v Get the tool version</p></li>
+</ul>
+
+
+<p>Examples:</p>
+
+<ul>
+<li><p>ytview -s Family Guy Chicken Fight</p></li>
+<li><p>ytview -c Numberphile</p></li>
+</ul>
+
+
+<h2 id="Updating">Updating</h2>
+
+<p>  With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments</p>
+
+<ul>
+<li>stocks update</li>
+</ul>
+
+
+<p>  or</p>
+
+<ul>
+<li>stocks -u</li>
+</ul>
+
+
+<p>  This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.</p>
+
+<h2 id="Uninstalling">Uninstalling</h2>
+
+<p>  If you don't have the Bash-Snippets folder anymore clone the repository:  git clone https://github.com/alexanderepstein/Bash-Snippets`</p>
+
+<p>  cd into the Bash-Snippets directory: <code>cd Bash-Snippets</code></p>
+
+<pre><code>To go through a guided uninstall
+</code></pre>
+
+<ul>
+<li> ./uninstall.sh</li>
+</ul>
+
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>Alexander Epstein
+Github: https://github.com/alexanderepstein</p>
+
+<h2 id="Contributors">Contributors</h2>
+
+<p>Jake Meyer
+Github: https://github.com/jakewmeyer</p>
+
+<p>Linyos Torovoltos
+Github: https://gitbub.com/linyostorovovoltos</p>
+
+<h2 id="License">License</h2>
+
+<p>MIT License</p>
+
+<p>Copyright (c) 2017 Alex Epstein</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>April 2020</li>
+    <li class='tr'>bash-snippets(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
