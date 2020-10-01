@@ -135,21 +135,21 @@ EOF
 getMovieInfo()
 {
   title=$1
-  encodedTitle=$( echo $title | sed 's/ /%20/g' );
+  encodedTitle=$( echo "$title" | sed 's/ /%20/g' );
   movieSearchInfo=$( httpGet "https://api.themoviedb.org/3/search/movie?query=$encodedTitle&language=en-US&api_key=$APIKEY")
-  movieID=$(echo $movieSearchInfo | python -c "import sys, json; print json.load(sys.stdin)['results'][0]['id']" 2> /dev/null)
+  movieID=$(echo "$movieSearchInfo" | python -c "import sys, json; print json.load(sys.stdin)['results'][0]['id']" 2> /dev/null)
   if [[ $movieID == "" ]];then { echo "Error: could not find a movie matching the title $title"; return 1; }; fi
   movieInfo=$(httpGet "https://api.themoviedb.org/3/movie/$movieID?api_key=$APIKEY")
-  name=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['original_title']" 2> /dev/null )
-  plot=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['overview']" 2> /dev/null )
-  language=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['original_language']" 2> /dev/null )
-  runtime=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['runtime']" 2> /dev/null )
-  voteCount=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['vote_count']" 2> /dev/null )
-  genreOne=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][0]['name']" 2> /dev/null )
-  genreTwo=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][1]['name']" 2> /dev/null )
-  genreThree=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['genres'][2]['name']" 2> /dev/null )
+  name=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['original_title']" 2> /dev/null )
+  plot=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['overview']" 2> /dev/null )
+  language=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['original_language']" 2> /dev/null )
+  runtime=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['runtime']" 2> /dev/null )
+  voteCount=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['vote_count']" 2> /dev/null )
+  genreOne=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['genres'][0]['name']" 2> /dev/null )
+  genreTwo=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['genres'][1]['name']" 2> /dev/null )
+  genreThree=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['genres'][2]['name']" 2> /dev/null )
   genres=$(echo "$genreOne $genreTwo $genreThree" | tr " " ",")
-  voteAverage=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['vote_average']" 2> /dev/null )
+  voteAverage=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['vote_average']" 2> /dev/null )
 }
 
 getConfiguredClient || exit 1

@@ -64,7 +64,7 @@ toolMenu()
     for command in "${validTools[@]}"; do
       if [[ $count -gt 9 ]];then c=$count
       else c="0$count"; fi
-      spaces=$((40 - $(echo $command | wc -c)))
+      spaces=$((40 - $(echo "$command" | wc -c)))
       echo -n -e "\t\t\t$c."
       for (( i = 0 ; i < $spaces; i++)) ;do
         printf " "
@@ -78,8 +78,8 @@ toolMenu()
     echo -e -n "\t\tEnter any arguments you want to use with the tool: "
     read args
     clear
-    if [[ $choice =~ [0-9] ]]; then ${validTools[$(($choice-1))]} $args
-    else $choice $args; fi
+    if [[ $choice =~ [0-9] ]]; then ${validTools[$(($choice-1))]} "$args"
+    else $choice "$args"; fi
     exit 0
   done
 }
@@ -139,7 +139,7 @@ installationcheck()
     else state="absent"; start=52; fi
       if $1; then
         echo -n -e "\t\t$tool"
-        spaces=$(($start - $( echo $tool | wc -c)))
+        spaces=$(($start - $( echo "$tool" | wc -c)))
         for (( i = 0 ; i < $spaces; i++)) ;do
           printf " "
         done

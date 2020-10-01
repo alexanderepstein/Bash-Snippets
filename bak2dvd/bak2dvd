@@ -15,48 +15,48 @@ tarwrite() {
 		then
             if [[ -z "$tops" && -n "$dir" && -n "$excludes" ]]
             then
-                gtar -cvpML $tl -f $pn "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
             elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
             then
-                gtar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "$tops" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    elif [[ -n "$tops" && -n "$dir" && -z "$excludes" ]]
 	    then
-                gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "$tops" "${dir[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
 	    then
-                gtar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "$tops" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    elif [[ -n "$tops" && -z "$dir" && -z "$excludes" ]]
 	    then
-                gtar -cvpML $tl -f $pn $tops "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "$tops" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    elif [[ -z "$tops" && -z "$dir" && -n "$excludes" ]]
 	    then
-                gtar -cvpML $tl -f $pn "${excludes[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    elif [[ -z "$tops" && -z "$dir" && -z "$excludes" ]]
 	    then
-                gtar -cvpML $tl -f $pn "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 	    else
-                gtar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                gtar -cvpML "$tl" -f "$pn" "$tops" "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
@@ -67,48 +67,48 @@ tarwrite() {
         then
             if [[ -z "$tops" && -n "$dir" && -n "$excludes" ]]
             then
-                tar -cvpML $tl -f $pn "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
             elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
             then
-                tar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "$tops" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    elif [[ -n "$tops" && -n "$dir" && -z "$excludes" ]]
 	    then
-                tar -cvpML $tl -f $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "$tops" "${dir[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    elif [[ -n "$tops" && -z "$dir" && -n "$excludes" ]]
 	    then
-                tar -cvpML $tl -f $pn $tops "${excludes[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "$tops" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    elif [[ -n "$tops" && -z "$dir" && -z "$excludes" ]]
 	    then
-                tar -cvpML $tl -f $pn $tops "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "$tops" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    elif [[ -z "$tops" && -z "$dir" && -n "$excludes" ]]
 	    then
-                tar -cvpML $tl -f $pn "${excludes[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    elif [[ -z "$tops" && -z "$dir" && -z "$excludes" ]]
 	    then
-                tar -cvpML $tl -f $pn "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	   else
-                tar -cvpML $tl -f $pn $tops "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
+                tar -cvpML "$tl" -f "$pn" "$tops" "${dir[@]}" "${excludes[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
         fi
@@ -126,48 +126,48 @@ tarread() {
 	then
             if [[ -n "$tops" && -n "$dir" && -z "$filenames" ]]
             then
-                gtar -xvpMf $pn $tops "${dir[@]}" <&7 &
+                gtar -xvpMf "$pn" "$tops" "${dir[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
             elif [[ -n "$tops" && -z "$dir" && -n "$filenames" ]]
             then
-                gtar -xvpMf $pn $tops "${filenames[@]}" <&7 &
+                gtar -xvpMf "$pn" "$tops" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 			elif [[ -n "$tops" && -z "$dir" && -z "$filenames" ]]
             then
-                gtar -xvpMf $pn $tops <&7 &
+                gtar -xvpMf "$pn" "$tops" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 			elif [[ -z "$tops" && -n "$dir" && -n "$filenames" ]]
             then
-                gtar -xvpMf $pn "${dir[@]}" "${filenames[@]}" <&7 &
+                gtar -xvpMf "$pn" "${dir[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 			elif [[ -z "$tops" && -n "$dir" && -z "$filenames" ]]
             then
-                gtar -xvpMf $pn "${dir[@]}" <&7 &
+                gtar -xvpMf "$pn" "${dir[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 			elif [[ -z "$tops" && -z "$dir" && -n "$filenames" ]]
             then
-                gtar -xvpMf $pn "${filenames[@]}" <&7 &
+                gtar -xvpMf "$pn" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
 			return
 			elif [[ -z "$tops" && -z "$dir" && -z "$filenames" ]]
             then
-                gtar -xvpMf $pn <&7 &
+                gtar -xvpMf "$pn" <&7 &
                 tarpid=$!
                 countlimit=2
                 return
 			else
-                gtar -xvpMf $pn $tops "${dir[@]}" "${filenames[@]}" <&7 &
+                gtar -xvpMf "$pn" "$tops" "${dir[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=2
 			return
@@ -178,48 +178,48 @@ tarread() {
 		then
 		if [[ -n "$tops" && -n "$dir" && -z "$filenames" ]]
             then
-                tar -xvpMf $pn $tops "${dir[@]}" <&7 &
+                tar -xvpMf "$pn" "$tops" "${dir[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
             elif [[ -n "$tops" && -z "$dir" && -n "$filenames" ]]
             then
-                tar -xvpMf $pn $tops "${filenames[@]}" <&7 &
+                tar -xvpMf "$pn" "$tops" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 			elif [[ -n "$tops" && -z "$dir" && -z "$filenames" ]]
             then
-                tar -xvpMf $pn $tops <&7 &
+                tar -xvpMf "$pn" "$tops" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 			elif [[ -z "$tops" && -n "$dir" && -n "$filenames" ]]
             then
-                tar -xvpMf $pn "${dir[@]}" "${filenames[@]}" <&7 &
+                tar -xvpMf "$pn" "${dir[@]}" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 			elif [[ -z "$tops" && -n "$dir" && -z "$filenames" ]]
             then
-                tar -xvpMf $pn "${dir[@]}" <&7 &
+                tar -xvpMf "$pn" "${dir[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 			elif [[ -z "$tops" && -z "$dir" && -n "$filenames" ]]
             then
-                tar -xvpMf $pn "${filenames[@]}" <&7 &
+                tar -xvpMf "$pn" "${filenames[@]}" <&7 &
                 tarpid=$!
                 countlimit=1
 			return
 			elif [[ -z "$tops" && -z "$dir" && -z "$filenames" ]]
             then
-                tar -xvpMf $pn <&7 &
+                tar -xvpMf "$pn" <&7 &
                 tarpid=$!
                 countlimit=1
                 return
 	    else
-		 tar -xvpMf $pn $tops "${dir[@]}" "{$filenames[@]}" <&7 &
+		 tar -xvpMf "$pn" "$tops" "${dir[@]}" "{$filenames[@]}" <&7 &
              	tarpid=$!
              	countlimit=1
 	    fi
@@ -237,10 +237,10 @@ discread() {
     # making a task or operation as difficult as possible.
     if [[ $(uname | grep "FreeBSD" | wc -l) -gt 0 ]]
     then
-        while [ "$counter" -eq $countlim ]
+        while [ "$counter" -eq "$countlim" ]
         do
-            dd if=$dev of=$pn bs=2048
-            eject $dev
+            dd if="$dev" of="$pn" bs=2048
+            eject "$dev"
             counter=0
             counter=$(ps -A | grep $tarpid | wc -l)
             if [[ $counter -eq $countlim ]]
@@ -251,10 +251,10 @@ discread() {
             fi
         done
     else
-        while [ "$counter" -eq $countlim ]
+        while [ "$counter" -eq "$countlim" ]
         do
-            dd if=$dev of=$pn bs=1k count=$rl
-            eject $dev
+            dd if="$dev" of="$pn" bs=1k count="$rl"
+            eject "$dev"
             counter=0
             counter=$(ps -A | grep $tarpid | wc -l)
             if [[ $counter -eq $countlim ]]
@@ -270,7 +270,7 @@ dvdburn() {
 	counter=$4
 	countlim=$5
 	altburn=$6
-	while [ "$counter" -eq $countlim ]
+	while [ "$counter" -eq "$countlim" ]
 	do
 		if [[ $(echo "$1" | grep "dev" | wc -l) -eq 0 ]]
 		then
@@ -289,10 +289,10 @@ dvdburn() {
 					xorrecord dev="$1" blank=as_needed stream_recording=on driveropts=burnfree -tao -multi -eject -data "$2"
 					;;
 				*)
-					growisofs -Z "$1"=$2
+					growisofs -Z "$1"="$2"
 			esac
         	counter=0
-        	counter=$(ps -A | grep $3 | wc -l)
+        	counter=$(ps -A | grep "$3" | wc -l)
         	if [[ $counter -eq $countlim ]]
         	then
                 	read -p "Insert next disc and press Enter:" response
@@ -307,7 +307,7 @@ cdburn() {
 	counter=$4
 	countlim=$5
 	cdb=$6
-	while [ "$counter" -eq $countlim ]
+	while [ "$counter" -eq "$countlim" ]
 	do
 		if [[ $(uname | grep "FreeBSD" | wc -l) -gt 0 ]]
 		then
@@ -329,21 +329,21 @@ cdburn() {
 		fi
 		case "$cdb" in
 			cdrecord)
-				cdrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2 #Turned burnfree on just in case. Restore needs tracklen + 8
+				cdrecord dev="$1" driveropts=burnfree -tao -multi -eject -data "$2" #Turned burnfree on just in case. Restore needs tracklen + 8
 				;;
 			wodim)
-				wodim dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				wodim dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
 				;;
 			cdrskin)
-				cdrskin dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				cdrskin dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
 				;;
 			xorrecord)
-				xorrecord dev=$1 driveropts=burnfree -tao -multi -eject -data $2
+				xorrecord dev="$1" driveropts=burnfree -tao -multi -eject -data "$2"
 				;;
 		esac
 
 		counter=0
-		counter=$(ps -A | grep $3 | wc -l)
+		counter=$(ps -A | grep "$3" | wc -l)
 		if [[ $counter -eq $countlim ]]
 		then
 			read -p "Insert next disc and press Enter:" response
@@ -354,10 +354,10 @@ cdburn() {
 
 cleanup() {
 	kill $tarpid &>/dev/null
-	rm $pipename
-	rm $fifoname
+	rm "$pipename"
+	rm "$fifoname"
 
-	exit $1
+	exit "$1"
 }
 
 getCDburner() {
@@ -725,7 +725,7 @@ then
 	tarread $pipename "$taropts"
 fi
 
-count=$(ps -A | grep $tarpid | wc -l)
+count=$(ps -A | grep "$tarpid" | wc -l)
 # Check that tar is alive and prompt for media
 if [[ $count -eq $countlimit ]]
 then
@@ -735,13 +735,13 @@ then
 		#call appropriate burning function here. Want to add support for mini CD's and mini DVD's at some point.
 		if [[ $tracklen -le 712702 ]]
 		then
-			cdburn $device $pipename $tarpid $count $countlimit $cdburner
+			cdburn "$device" $pipename "$tarpid" "$count" "$countlimit" "$cdburner"
 		else
-			dvdburn $device $pipename $tarpid $count $countlimit $altdvdburner
+			dvdburn "$device" $pipename "$tarpid" "$count" "$countlimit" "$altdvdburner"
 		fi
 	elif [[ $rw -eq 2 ]]
 	then
-		discread $device $pipename $tarpid $count $countlimit $readlen
+		discread "$device" $pipename "$tarpid" "$count" "$countlimit" $readlen
     else
         echo "You need to specify option -w for writing a backup or -r for restoring from backup."
         exitcode=1

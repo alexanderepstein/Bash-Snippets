@@ -66,8 +66,8 @@ getBase()
 {
   echo -n "What is the base currency: "
   read -r base
-  base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1" ]]; then
+  base=$(echo "$base" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$base") == "1" ]]; then
     unset base
     echo "Invalid base currency"
     getBase
@@ -79,8 +79,8 @@ getBase()
 checkBase()
 {
   base=$1
-  base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1" ]]; then
+  base=$(echo "$base" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$base") == "1" ]]; then
     unset base
     echo "Invalid base currency"
     exit 1
@@ -93,8 +93,8 @@ getExchangeTo()
 {
   echo -n "What currency to exchange to: "
   read -r exchangeTo
-  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
+  exchangeTo=$(echo "$exchangeTo" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$exchangeTo") == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     getExchangeTo
@@ -106,8 +106,8 @@ getExchangeTo()
 checkExchangeTo()
 {
   exchangeTo=$1
-  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $exchangeTo) == "1" ]]; then
+  exchangeTo=$(echo "$exchangeTo" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$exchangeTo") == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     exit 1
@@ -310,9 +310,9 @@ elif [[ $# == "2" ]]; then
   exit 1
 elif [[ $# == "3" ]]; then
   checkInternet || exit 1 # check if we have a valid internet connection if this isnt true the rest of the script will not work so stop here
-  checkBase $1
-  checkExchangeTo $2
-  checkAmount $3
+  checkBase "$1"
+  checkExchangeTo "$2"
+  checkAmount "$3"
   convertCurrency
   exit 0
 else

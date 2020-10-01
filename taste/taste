@@ -132,17 +132,17 @@ getSimilar()
   media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
   ## Extrapolate the information by parsing the JSON
-  nameOne=$(echo $response |python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Name'])" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
-  typeOne=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Type'])" 2>  /dev/null)
-  nameTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Name'])" 2>  /dev/null)
-  typeTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Type'])" 2>  /dev/null)
-  nameThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Name'])" 2>  /dev/null)
-  typeThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Type'])" 2>  /dev/null)
+  nameOne=$(echo "$response" |python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Name'])" 2>  /dev/null || { echo "Error: Did you search a valid item?"; return 1; } )
+  typeOne=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['Type'])" 2>  /dev/null)
+  nameTwo=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Name'])" 2>  /dev/null)
+  typeTwo=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['Type'])" 2>  /dev/null)
+  nameThree=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Name'])" 2>  /dev/null)
+  typeThree=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['Type'])" 2>  /dev/null)
   if [[ $info == "1" ]];then ## if we want more detailed info we have to grab a few more fields
-    wikiOne=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['wTeaser'])" 2>  /dev/null)
-    wikiTwo=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['wTeaser'])" 2>  /dev/null)
-    wikiThree=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['wTeaser'])" 2>  /dev/null)
-    youtube=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['yUrl'])" 2>  /dev/null)
+    wikiOne=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['wTeaser'])" 2>  /dev/null)
+    wikiTwo=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][1]['wTeaser'])" 2>  /dev/null)
+    wikiThree=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][2]['wTeaser'])" 2>  /dev/null)
+    youtube=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Results'][0]['yUrl'])" 2>  /dev/null)
   fi
 }
 
@@ -152,11 +152,11 @@ getInfo()
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   media=$( echo "$@" | tr " " + )
   response=$(httpGet "https://tastedive.com/api/similar?q=$media&k=$apiKey&info=$info")
-  name=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Name'])")
-  type=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Type'])")
+  name=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Name'])")
+  type=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['Type'])")
   if [[ $info == "1" ]]; then
-    wiki=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['wTeaser'])")
-    youtube=$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['yUrl'])")
+    wiki=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['wTeaser'])")
+    youtube=$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Similar']['Info'][0]['yUrl'])")
   else
     wiki="None"
     youtube="None"
@@ -168,25 +168,25 @@ printResults()
   if [[ $info == "1" ]];then
     echo "==================================="
     echo
-    echo $nameOne: $typeOne
-    echo $wikiOne
+    echo "$nameOne": "$typeOne"
+    echo "$wikiOne"
     echo
     echo
-    echo $nameTwo: $typeTwo
-    echo $wikiTwo
+    echo "$nameTwo": "$typeTwo"
+    echo "$wikiTwo"
     echo
     echo
-    echo $nameThree: $typeThree
-    echo $wikiThree
+    echo "$nameThree": "$typeThree"
+    echo "$wikiThree"
     echo
     if [[ $youtube != "None" ]]; then echo $youtube; fi
     echo
     echo "==================================="
   else
     echo "==================================="
-    echo $nameOne: $typeOne
-    echo $nameTwo: $typeTwo
-    echo $nameThree: $typeThree
+    echo "$nameOne": "$typeOne"
+    echo "$nameTwo": "$typeTwo"
+    echo "$nameThree": "$typeThree"
     echo "==================================="
   fi
 }
@@ -195,7 +195,7 @@ printInfo()
 {
   echo "==================================="
   echo
-  echo $name: $type
+  echo "$name": "$type"
   echo $wiki
   echo
   if [[ $youtube != "None" ]]; then echo $youtube; fi

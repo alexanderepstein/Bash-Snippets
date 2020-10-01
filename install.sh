@@ -13,10 +13,10 @@ askInstall()
   answer=${answer:-Y}
 
   if [[ "$answer" == [Yy] ]]; then
-    cd $1 || return 1
+    cd "$1" || return 1
     echo -n "Installing $1: "
-    chmod a+x $1
-    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    chmod a+x "$1"
+    cp "$1" /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
     echo "Success"
     cd .. || return 1
   fi
@@ -26,10 +26,10 @@ updateTool()
 {
   if [[ -f  /usr/local/bin/$1 ]]; then
     usedGithubInstallMethod="1"
-    cd $1 || return 1
+    cd "$1" || return 1
     echo -n "Installing $1: "
-    chmod a+x $1
-    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    chmod a+x "$1"
+    cp "$1" /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
     echo "Success"
     cd .. || return 1
   fi
@@ -40,11 +40,11 @@ extraUpdateTool()
   if [[ -f  /usr/local/bin/$1 ]]; then
     usedGithubInstallMethod="1"
     cd extras || return 1
-    cd $2 || return 1
-    cd $1 || return 1
+    cd "$2" || return 1
+    cd "$1" || return 1
     echo -n "Installing $1: "
-    chmod a+x $1
-    cp $1 /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+    chmod a+x "$1"
+    cp "$1" /usr/local/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
     echo "Success"
     cd .. || return 1
     cd .. || return 1
@@ -54,10 +54,10 @@ extraUpdateTool()
 
 singleInstall()
 {
-  cd $1 || exit 1
+  cd "$1" || exit 1
   echo -n "Installing $1: "
-  chmod a+x $1
-  cp $1 $prefix/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
+  chmod a+x "$1"
+  cp "$1" $prefix/bin > /dev/null 2>&1 || { echo "Failure"; echo "Error copying file, try running install script as sudo"; exit 1; }
   echo "Success"
   cd .. || exit 1
 }
@@ -73,35 +73,35 @@ response=$( echo "$@" | grep -Eo "\-\-prefix")
 
 if [[ $response == "--prefix" ]]; then
   prefix=$(echo -n "$@" | sed -e 's/--prefix=\(.*\) .*/\1/' | cut -d " " -f 1)
-  mkdir -p $prefix/bin $prefix/share/man/man1
+  mkdir -p "$prefix"/bin "$prefix"/share/man/man1
   if [[ $2 == "all" ]];then
     for tool in "${tools[@]}"; do
-      singleInstall $tool || exit 1
+      singleInstall "$tool" || exit 1
     done
   else
     for tool in "${@:2}"; do
-      singleInstall $tool || exit 1
+      singleInstall "$tool" || exit 1
     done
   fi
   copyManpage || exit 1
 elif [[ $# == 0 ]]; then
   for tool in "${tools[@]}"; do
-    askInstall $tool || exit 1
+    askInstall "$tool" || exit 1
   done
   copyManpage || exit 1
 elif [[ $1 == "update" ]]; then
   echo "Updating scripts..."
   for tool in "${tools[@]}"; do
-    updateTool $tool || exit 1
+    updateTool "$tool" || exit 1
   done
   if [[ $(uname -s) == "Linux" ]]; then
     for tool in "${extraLinuxTools[@]}"; do
-      extraUpdateTool $tool Linux || exit 1
+      extraUpdateTool "$tool" Linux || exit 1
     done
   fi
   if [[ $(uname) == "Darwin" ]];then
     for tool in "${extraDarwinTools[@]}"; do
-      extraUpdateTool $tool Darwin || exit 1
+      extraUpdateTool "$tool" Darwin || exit 1
     done
   fi
   if [[ $usedGithubInstallMethod == "1" ]]; then
@@ -112,11 +112,11 @@ elif [[ $1 == "update" ]]; then
   fi
 elif [[ $1 == "all" ]]; then
   for tool in "${tools[@]}"; do
-    singleInstall $tool || exit 1
+    singleInstall "$tool" || exit 1
   done
   copyManpage || exit 1
 else
-  singleInstall $1 || exit 1
+  singleInstall "$1" || exit 1
   copyManpage || exit 1
 fi
 

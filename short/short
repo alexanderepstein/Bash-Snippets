@@ -101,9 +101,9 @@ EOF
 
 expandURL()
 {
-  testURL=$( echo $1 | cut -c1-8 )
+  testURL=$( echo "$1" | cut -c1-8 )
   if [[ $testURL != "https://" ]]; then
-    testURL=$( echo $1 | cut -c1-7 )
+    testURL=$( echo "$1" | cut -c1-7 )
     if [[ $testURL != "http://" ]]; then
       url="http://$1"
     else
@@ -112,21 +112,21 @@ expandURL()
   else
     url=$1
   fi
-  response=$(httpGet https://unshorten.me/s/$url)
-  errorCheck=$(echo $response)
+  response=$(httpGet https://unshorten.me/s/"$url")
+  errorCheck=$(echo "$response")
   if [[ $errorCheck == "Invalid Short URL" ]]; then
   echo "Error: 404 could not find the website"
   return 1
 fi
-  returnedURL=$(echo $response)
+  returnedURL=$(echo "$response")
 }
 
 shortenURL()
 {
 newURL=$1
-if [[ $(echo $1 | grep -Eo "^[h]ttp[s]?://") == "" ]]; then newURL="http://"$1; fi
-response=$(httpGet http://tinyurl.com/api-create.php?url=$newURL)
-returnedURL=$(echo $response)
+if [[ $(echo "$1" | grep -Eo "^[h]ttp[s]?://") == "" ]]; then newURL="http://"$1; fi
+response=$(httpGet http://tinyurl.com/api-create.php?url="$newURL")
+returnedURL=$(echo "$response")
 }
 
 printResults()

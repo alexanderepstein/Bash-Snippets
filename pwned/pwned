@@ -68,9 +68,9 @@ getPwned()
 {
 	info=$(httpGet  "https://haveibeenpwned.com/api/v2/breachedaccount/$1") > /dev/null #grab the JSON response
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
-  echo $info | python -c "from __future__ import print_function; import sys, json; print(sys.stdin)[0]['Title'])" > /dev/null 2>&1 || { echo "Looks like you have not been breached"; exit 1; } #
+  echo "$info" | python -c "from __future__ import print_function; import sys, json; print(sys.stdin)[0]['Title'])" > /dev/null 2>&1 || { echo "Looks like you have not been breached"; exit 1; } #
   # The rest of the code is just extrapolating the data with python from the JSON response
-  echo $info > .pwned.json
+  echo "$info" > .pwned.json
   title=$(python -c "from __future__ import print_function; import sys, json; print('\n'.join([u['Title']for u in json.load(open(sys.argv[1]))]))" ".pwned.json")
   rm -f .pwned.json
   unset info # done with the JSON response not needed anymore
@@ -183,7 +183,7 @@ elif [[ $# == "0" ]]; then
   exit 0
 else
   checkInternet || exit 1
-  getPwned $1 # based on the stock symbol exrapolated by the getTicker function get information on the stock
-  printPwned $1  # print this information out to the user in a human readable format
+  getPwned "$1" # based on the stock symbol exrapolated by the getTicker function get information on the stock
+  printPwned "$1"  # print this information out to the user in a human readable format
 exit 0
 fi

@@ -122,8 +122,8 @@ checkInternet()
 
 getLyrics()
 {
-  encodedArtist=$(echo $1 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
-  encodedSong=$(echo $2 | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
+  encodedArtist=$(echo "$1" | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
+  encodedSong=$(echo "$2" | sed s/" "/%20/g | sed s/"&"/%26/g | sed s/,/%2C/g | sed s/-/%2D/g)
   response=$(httpGet "https://api.lyrics.ovh/v1/$encodedArtist/$encodedSong")
   lyrics="$(AccessJsonElement "$response" "lyrics" 2> /dev/null)"
   if [[ $lyrics == "" ]];then { echo "Error: no lyrics found!"; return 1; }; fi

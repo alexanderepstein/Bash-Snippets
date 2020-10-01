@@ -97,7 +97,7 @@ removeTask()
   touch ~/.todo/temp.txt
   for taskToRemove in "$@";do
     oldTaskNumber=$taskToRemove
-    taskNumber=$( echo $taskToRemove | grep -Eo "[0-9]*" )
+    taskNumber=$( echo "$taskToRemove" | grep -Eo "[0-9]*" )
     if [[ $taskNumber == "" || $oldTaskNumber != $taskNumber ]]; then echo "Error: $oldTaskNumber is not a valid task number!" && return 1; fi
   done
   count="0"
@@ -121,7 +121,7 @@ removeTask()
 
   ##Checking if the task exists
   for taskToRemove in "$@" ;do
-    if [ $count -lt $taskToRemove ]; then
+    if [ $count -lt "$taskToRemove" ]; then
       echo "Error: task number $taskToRemove does not exist!"
     else
       echo "Sucessfully removed task number $taskToRemove"
@@ -256,6 +256,6 @@ elif [[ $# == "1" ]]; then
   else { echo "Error: the argument $1 is not valid"; exit 1; }; fi
 else
   if [[ $flag == "add" || $1 == "add" ]]; then addTask "${*:2}" && getTasks || exit 1
-  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask ${*:2} && getTasks || exit 1
+  elif [[ $flag == "remove" || $1 == "remove" ]]; then removeTask "${*:2}" && getTasks || exit 1
   else { usage; exit 1; }; fi
 fi

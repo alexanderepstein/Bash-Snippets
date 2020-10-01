@@ -207,8 +207,8 @@ for arg; do
 done
 
 ## check for special pages before moving on
-checkSpecialPage $arg1 1
-checkSpecialPage $arg2 2
+checkSpecialPage "$arg1" 1
+checkSpecialPage "$arg2" 2
 
 if [[ $# == 0 ]]; then
   usage
@@ -223,10 +223,10 @@ elif [[ $1 == "help" || $1 == ":help" ]]; then ## shows the help and prevents th
 else
   checkInternet || exit 1
   if [[ $arg1 != $arg2 ]]; then ## if they equal each other that means there was no arg 2 supplied
-    getCheatSheet $arg1 $arg2
+    getCheatSheet "$arg1" "$arg2"
     exit 0
   else
-    getCheatSheet $arg1
+    getCheatSheet "$arg1"
     exit 0
   fi
   exit 0
