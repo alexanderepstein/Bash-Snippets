@@ -68,8 +68,8 @@ getBase()
 {
   echo -n "What is the base currency: "
   read -r base
-  base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1"  ]]; then
+  base=$(echo "$base" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$base") == "1"  ]]; then
     unset base
     echo "Invalid base currency"
     getBase
@@ -81,8 +81,8 @@ getBase()
 checkBase()
 {
   base=$1
-  base=$(echo $base | tr /a-z/ /A-Z/)
-  if [[ $(checkValidCurrency $base) == "1" ]]; then
+  base=$(echo "$base" | tr /a-z/ /A-Z/)
+  if [[ $(checkValidCurrency "$base") == "1" ]]; then
     unset base
     echo "Invalid base currency"
     exit 1
@@ -113,8 +113,8 @@ getExchangeTo()
 {
   echo -n "What currency to exchange to: "
   read -r exchangeTo
-  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkTargetCurrency $exchangeTo) == "1" ]]; then
+  exchangeTo=$(echo "$exchangeTo" | tr /a-z/ /A-Z/)
+  if [[ $(checkTargetCurrency "$exchangeTo") == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     getExchangeTo
@@ -126,8 +126,8 @@ getExchangeTo()
 checkExchangeTo()
 {
   exchangeTo=$1
-  exchangeTo=$(echo $exchangeTo | tr /a-z/ /A-Z/)
-  if [[ $(checkTargetCurrency $exchangeTo) == "1" ]]; then
+  exchangeTo=$(echo "$exchangeTo" | tr /a-z/ /A-Z/)
+  if [[ $(checkTargetCurrency "$exchangeTo") == "1" ]]; then
     echo "Invalid exchange currency"
     unset exchangeTo
     exit 1
@@ -171,8 +171,8 @@ convertCurrency()
   exchangeRate=$(httpGet "https://api.coinmarketcap.com/v1/ticker/$reqId/?convert=$exchangeTo" | grep -Eo "\"price_$exchangeTo\": \"[0-9 .]*" | sed s/"\"price_$exchangeTo\": \""//g) > /dev/null
   if ! command -v bc &>/dev/null; then
     oldRate=$exchangeRate
-    exchangeRate=$(echo $exchangeRate | grep -Eo "^[0-9]*" )
-    amount=$(echo $amount | grep -Eo "^[0-9]*" )
+    exchangeRate=$(echo "$exchangeRate" | grep -Eo "^[0-9]*" )
+    amount=$(echo "$amount" | grep -Eo "^[0-9]*" )
     exchangeAmount=$(( $exchangeRate * $amount ))
     exchangeRate=$oldRate
   else
@@ -317,4 +317,4 @@ if [[ $currency =~ [a-zA-Z] ]]; then
   link="$link/$currency"
 fi
 
-httpGet $link
+httpGet "$link"

@@ -105,8 +105,8 @@ update()
 
 makeqr()
 {
-  input=$(echo $input | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
-  httpGet qrenco.de/$input ## get a response for the qrcode
+  input=$(echo "$input" | sed s/" "/%20/g ) ## replace all spaces in the sentence with HTML-encoded space %20
+  httpGet qrenco.de/"$input" ## get a response for the qrcode
 }
 
 # redirects the image obtained from the goqr api into a png file

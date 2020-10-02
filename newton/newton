@@ -88,20 +88,20 @@ update()
 validateExpression()
 {
   local parsedExpression # only used here
-  originalEquation=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g") # accont for the fact that we have to use brackets and not parenthesis
-  parsedExpression=$(echo $1 | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*") # only grepping valid characters
+  originalEquation=$(echo "$1" | sed "s/\[/\(/g" | sed "s/\]/\)/g") # accont for the fact that we have to use brackets and not parenthesis
+  parsedExpression=$(echo "$1" | sed "s/\[/\(/g" | sed "s/\]/\)/g" | grep -Eo "[0-9 + -- / * ^ . a-z A-Z ~ : ( ) ]*") # only grepping valid characters
   if [ "$parsedExpression" != "$originalEquation" ];then { echo "Error: Expression contains invalid characters"; return 1; }; fi # compare result to original
   return 0
 }
 
 encodeEquation()
 {
-  equation=$(echo $originalEquation | sed "s:/:(over):g" | sed "s/~/|/g" | sed "s/-/%2D/g") # encode all the special characters
+  equation=$(echo "$originalEquation" | sed "s:/:(over):g" | sed "s/~/|/g" | sed "s/-/%2D/g") # encode all the special characters
 }
 
 validateOperation()
 {
-  operation=$(echo $1 | tr "[[:upper:]]" "[[:lower:]]") # get rid of case being an issue
+  operation=$(echo "$1" | tr "[[:upper:]]" "[[:lower:]]") # get rid of case being an issue
   validOp="false" # lets us know if oeration is valid
   for op in "${simpleOperations[@]}"; do # go through all valid simple operations
     if [[ "$op" == "$operation" ]]; then { opType="simple"; validOp="true"; break; }; fi # if the operation matches leave the loop
@@ -112,7 +112,7 @@ validateOperation()
 
 getSimpleResponse()
 {
-  result=$(httpGet https://newton.now.sh/$operation/$equation | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g | tr '"' " ") # get reponse, grab result
+  result=$(httpGet https://newton.now.sh/$operation/"$equation" | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g | tr '"' " ") # get reponse, grab result
   if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi # if result is empty sometthing went wrong...
 }
 
@@ -204,11 +204,11 @@ elif [ $# -gt 3 ];then echo "Error: newton only accepts two arguments, operation
 # flagCount helps us determine what argument to pass to the functions
 # flow: validateOperation, validateExpression, encodeEquation, getResponse, print Answer/Result
 checkInternet || exit 1
-if [[ $flagCount == "0" ]];then validateOperation $1 || exit 1
-elif [[ $flagCount == "1" ]];then validateOperation $2 || exit 1; fi
-if [[ $flagCount == "0" ]];then validateExpression $2 || exit 1
-elif [[ $flagCount == "1" ]];then validateExpression $3 || exit 1; fi
+if [[ $flagCount == "0" ]];then validateOperation "$1" || exit 1
+elif [[ $flagCount == "1" ]];then validateOperation "$2" || exit 1; fi
+if [[ $flagCount == "0" ]];then validateExpression "$2" || exit 1
+elif [[ $flagCount == "1" ]];then validateExpression "$3" || exit 1; fi
 encodeEquation || exit 1
 if [[ $opType == "simple" ]];then getSimpleResponse || exit 1;fi
 if [ -z $resultOnly ];then printAnswer
-else echo $result; fi
+else echo "$result"; fi

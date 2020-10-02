@@ -58,7 +58,7 @@
 currentVersion="1.23.0"
 configuredClient=""
 
-NAME=${GISTSCRIPT:-$(basename $0)} #show hint and helper message with current script name
+NAME=${GISTSCRIPT:-$(basename "$0")} #show hint and helper message with current script name
 GITHUB_API=https://api.github.com
 CONFIG=~/.config/gist.conf; mkdir -p ~/.config
 
@@ -87,9 +87,9 @@ trap "[[ '$DEBUG' == 'true' ]] && find  $tmp_dir -type f | xargs tail -n +1 > lo
 # Mac compatibility
 tmp_file() {
   if [[ $(uname) == Darwin ]]; then 
-    file=$(mktemp) && mv $(mktemp) $tmp_dir && echo $tmp_dir/$(basename $file)
+    file=$(mktemp) && mv $(mktemp) "$tmp_dir" && echo "$tmp_dir"/$(basename "$file")
   else
-    mktemp -p $tmp_dir
+    mktemp -p "$tmp_dir"
   fi
 }
 tac() {
@@ -101,9 +101,9 @@ tac() {
 }
 mtime() {
   if [[ $(uname) == Darwin ]]; then 
-    stat -x $1 | grep Modify | cut -d' ' -f2- 
+    stat -x "$1" | grep Modify | cut -d' ' -f2- 
   else
-    stat -c %y $1
+    stat -c %y "$1"
   fi
 }
 
@@ -344,7 +344,7 @@ _show_hint() {
 # If display=tag/language, print tags/languages instead or url
 _show_list() {
   if [[ ! -s $INDEX ]]; then
-    echo "Index file is empty, please run commands "$NAME fetch" or "$NAME create""
+    echo "Index file is empty, please run commands ""$NAME" fetch" or ""$NAME" create""
     return 0
   fi
 
@@ -356,13 +356,13 @@ _show_list() {
       [[ $show_untagged == 'false' && ${#tags[@]} == '0' ]] && continue
       local width=45; local align=' ';
     elif [[ $display == 'language' ]]; then
-      message="$(tr ',' '\n' <<< $file_array | sed -Ee 's/.+@/#/' | uniq | xargs)"
+      message="$(tr ',' '\n' <<< "$file_array" | sed -Ee 's/.+@/#/' | uniq | xargs)"
       local width=45; local align=' ';
     fi
 
     local extra="$(printf "%-4s" "$file_num $comment_num")"
     local status=''; status=$(_check_repo_status "$folder/${url##*/}" "$blob_code")
-    [[ $index =~ ^s ]] && description="$(printf "%-12s" [${author}]) ${description}"
+    [[ $index =~ ^s ]] && description="$(printf "%-12s" ["${author}"]) ${description}"
 
     raw_output="$(printf "%-3s" "$index") $(printf "%${align:--}${width:-56}s" "$message") $extra ${status:+${status} }$(_color_description_title "$description")"
     [[ -n $pin ]] && raw_output="$(_color_pinned_tags "$raw_output")"
@@ -385,9 +385,9 @@ _grep_content() {
       hint=false mark="$index " _show_list
     else
       local repo=$folder/${url##*/}
-      [[ -d $repo ]] && cd $repo || continue
+      [[ -d $repo ]] && cd "$repo" || continue
       # grep from filenames
-      local file=$(ls $repo | grep --color=always -Ei "$1")
+      local file=$(ls "$repo" | grep --color=always -Ei "$1")
       # grep from content of files
       # Abort error message to prevent weird file name, for example: https://gist.github.com/6057f4a3a533f7992c60
       local content=$(grep --color=always -EHi -m1 "$1" * 2>/dev/null | head -1)
@@ -430,7 +430,7 @@ _parse_response() {
 
     local hashtags_suffix="$(_trailing_hashtags "$description")"
     description="${description%"$hashtags_suffix"}"
-    local hashtags="$(echo $hashtags_suffix | xargs)"
+    local hashtags="$(echo "$hashtags_suffix" | xargs)"
     local tags_string="${hashtags// /,}"; [[ -z $tags_string ]] && tags_string=','
 
     eval echo "${INDEX_FORMAT[@]/#/$}"
@@ -463,7 +463,7 @@ _fetch_gists() {
 # TODO pagnation for more than 100 gists
 _query_user() {
   local route="users/$1/gists"
-  result="$(http_method GET $GITHUB_API/$route?per_page=100 | _parse_response)"
+  result="$(http_method GET $GITHUB_API/"$route"?per_page=100 | _parse_response)"
   [[ -z $result ]] && echo "Failed to query $1's gists" && return 1
 
   echo "$result" \
@@ -498,13 +498,13 @@ _sync_repos() {
     result=$(cat)
 
     # clone repos which are not in the local
-    sed -ne '/^\t/ !p' <<<$result \
+    sed -ne '/^\t/ !p' <<<"$result" \
     | xargs -I{} --max-procs 8 git clone "$(_repo_url {})" $folder/{} &
 
     # if repo is cloned, do 'git pull' if remote repo has different blob objects
-    sed -ne '/^\t/ s/\t//p' <<<$result \
+    sed -ne '/^\t/ s/\t//p' <<<"$result" \
     | while read GIST_ID; do
-      _pull_if_needed $GIST_ID
+      _pull_if_needed "$GIST_ID"
     done
   }
 }
@@ -611,18 +611,18 @@ for comment in raw:
 # Show the detail of a gist
 # TODO add parameter --comment to fetch comments
 _show_detail() {
-  _set_gist_id $1 || return 1
+  _set_gist_id "$1" || return 1
 
   sed -En -e "/[^ ]+ [^ ]+$GIST_ID / p" $INDEX \
   | while read -r "${INDEX_FORMAT[@]}"; do
     echo -e desc: $(_color_description_title "$description")
     echo -e tags: ${tags_string//,/ }
-    echo -e site: https://gist.github.com/$GIST_ID
-    echo -e API : https://api.github.com/gists/$GIST_ID
-    echo -e created_at: $created_at
-    echo -e updated_at: $updated_at
+    echo -e site: https://gist.github.com/"$GIST_ID"
+    echo -e API : https://api.github.com/gists/"$GIST_ID"
+    echo -e created_at: "$created_at"
+    echo -e updated_at: "$updated_at"
     echo -e files:
-    tr ',' '\n' <<<${file_array//@/ } | column -t | sed -e 's/^/    /'
+    tr ',' '\n' <<<"${file_array//@/ }" | column -t | sed -e 's/^/    /'
   done
 }
 
@@ -638,7 +638,7 @@ _export_to_github() {
 _push_to_remote() {
   if [[ ! $(pwd) =~ ^$folder/[0-9a-z]+$ ]]; then
     _gist_id "$1" || return 1
-    cd "$folder/$GIST_ID"
+    cd "$folder/$GIST_ID" || exit
   fi
   if [[ -n $(git status --short) ]]; then
     git add . && git commit -m 'update'
@@ -682,8 +682,8 @@ _new_file() {
 
   echo > /dev/tty
   [[ -z $1 ]] && read -e -r -p 'Type file name: ' filename < /dev/tty
-  mv "$tmp_file" $tmp_dir/"$filename"
-  echo $tmp_dir/"$filename"
+  mv "$tmp_file" "$tmp_dir"/"$filename"
+  echo "$tmp_dir"/"$filename"
 }
 
 # Parse JSON object of a single gist 
@@ -775,13 +775,13 @@ _tag_gist() {
   if [[ -z $* ]]; then
     display=tag _show_list
   # if user want to change tags of a gist
-  elif _gist_id $1 &>/dev/null; then
-    _show_detail $1 | sed 3,6d && echo
+  elif _gist_id "$1" &>/dev/null; then
+    _show_detail "$1" | sed 3,6d && echo
     read -r "${INDEX_FORMAT[@]}" <<<"$(sed -ne "/^$1 / p" $INDEX)"
     local tags="$(sed -e 's/,//g; s/#/ /g; s/^ //g' <<<"$tags_string")"
     read -e -p 'Edit tags: ' -i "$tags" -r -a new_tags < /dev/tty
     local hashtags=( $(sed -Ee 's/#+/#/g' <<<${new_tags[@]/#/#}) ) 
-    ($0 edit $1 "${description}${hashtags:+ }${hashtags[@]}" &>/dev/null &)
+    ($0 edit "$1" "${description}${hashtags:+ }${hashtags[@]}" &>/dev/null &)
   # if user want to filter gists with given tags
   else
     local pattern="($(sed -E 's/([^ ]+)/#\1/g; s/ /[[:space:]]|/g; s/\./[^ ]/g' <<<"$@") )"
@@ -797,7 +797,7 @@ _show_tags() {
                done < $INDEX  | tr ' ' '\n' | sed -e '/^$/d' | sort -u) 
 
   for prefix in {0..9} {a..z} {A-Z} [^0-9a-zA-Z]; do
-    local line=$(echo $tags | grep -Eo "#$prefix[^ ]+" | tr '\n' ' ')
+    local line=$(echo "$tags" | grep -Eo "#$prefix[^ ]+" | tr '\n' ' ')
     [[ -z $line ]] && continue
 
     # add color to pinned tags
@@ -816,12 +816,12 @@ _show_tags() {
 _pin_tags() {
   # if no arguments, print gists with pinned tags
   if [[ -z $* && -n $pin ]]; then
-    hint=false _tag_gist $pin
+    hint=false _tag_gist "$pin"
   else
-    local new_pinned=( $(echo $pin $* | tr ' ' '\n' | sort | uniq -u | xargs) )
+    local new_pinned=( $(echo "$pin" "$*" | tr ' ' '\n' | sort | uniq -u | xargs) )
     for tag in "${new_pinned[@]}"; do
       if [[ $tag =~ [p]*[0-9]+ ]]; then 
-        echo Invalid tag: $tag
+        echo Invalid tag: "$tag"
         return 1
       fi
     done || exit 1
@@ -844,7 +844,7 @@ _gists_with_range() {
 
   local maximum=$(sed -Ene "/^${prefix:-[^s]}/ p" $INDEX | wc -l)
   local range=$(sed -Ee "s/s//g; s/^-/1-/; s/-$/-$maximum/; s/-/ /" <<< "$*")
-  INPUT=$(seq $range | sed -e "s/^/p?$prefix/")
+  INPUT=$(seq "$range" | sed -e "s/^/p?$prefix/")
   hint=false _show_list
 }
 

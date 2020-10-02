@@ -52,7 +52,7 @@ httpGet()
 encrypt()
 {
   echo "Encrypting $1..."
-  openssl enc -aes-256-cbc -salt -a -in $1 -out $2 || { echo "File not found"; return 1; }
+  openssl enc -aes-256-cbc -salt -a -in "$1" -out "$2" || { echo "File not found"; return 1; }
   echo "Successfully encrypted"
 }
 
@@ -60,7 +60,7 @@ encrypt()
 decrypt()
 {
   echo "Decrypting $1..."
-  openssl enc -aes-256-cbc -d -a -in $1 -out $2 || { echo "File not found"; return 1; }
+  openssl enc -aes-256-cbc -d -a -in "$1" -out "$2" || { echo "File not found"; return 1; }
   echo "Successfully decrypted"
 }
 
@@ -187,9 +187,9 @@ elif [[ $1 == "help" ]]; then
   usage
   exit 0
 elif [[ $state == "encrypt" ]]; then
-  encrypt $2 $3 || exit 1
+  encrypt "$2" "$3" || exit 1
   exit 0
 elif [[ $state == "decrypt" ]]; then
-  decrypt $2 $3 || exit 1
+  decrypt "$2" "$3" || exit 1
   exit 0
 fi

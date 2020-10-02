@@ -101,8 +101,8 @@ getBitbucketInfo()
 
 backupRepo()
 {
-  cd ~/temp/github/$repoName || { echo "Fatal error"; return 1; }
-  repoSlug=$(echo $repoName | tr '[:upper:]' '[:lower:]')
+  cd ~/temp/github/"$repoName" || { echo "Fatal error"; return 1; }
+  repoSlug=$(echo "$repoName" | tr '[:upper:]' '[:lower:]')
   if [[ $tStamp == "0" ]]; then { echo -n "Attempting to delete existing bitbucket repostiory..."; httpGet -X DELETE "https://$bbUsername:$password@api.bitbucket.org/1.0/repositories/$bbUsername/$repoSlug" > /dev/null || echo -n -e "Failure!\n"; echo -n -e "Success!\n"; }; fi ## if no timestamp then repo will not be unique we must look to delete old repo
   if [[ $private == "1" ]]; then
     echo -n "Creating private repository for $repoName..."
@@ -112,18 +112,18 @@ backupRepo()
   if [[ $tStamp == "1" ]]; then ## create the repository with a timestamp appended to repo name
     timestamp=$(date | tr " " _ | tr : _  ) ## we do this because it takes care of changes bitbucket would have made
     if [[ $private == "1" ]]; then # if so we will use --data is_private=true when creating repository
-      httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp --data is_private=true > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
+      httpGet --user "$bbUsername":"$password" https://api.bitbucket.org/1.0/repositories/ --data name="$repoName""$timestamp" --data is_private=true > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     else
-      httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName$timestamp > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
+      httpGet --user "$bbUsername":"$password" https://api.bitbucket.org/1.0/repositories/ --data name="$repoName""$timestamp" > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     fi
     echo -n -e "Success!\n"
     echo -n "Setting new remote url..."
     git remote set-url origin "https://$bbUsername:$password@bitbucket.org/$bbUsername/$repoName$timestamp.git" > /dev/null || { echo -n -e "Failure!\n"; return 1;} ## switch the remote over to bitbucket rather than github
   else # we are creating a reoo without a timestamp appended name
     if [[ $private == "1" ]]; then # if so we will use --data is_private=true when creating repository
-      httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName --data is_private=true > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
+      httpGet --user "$bbUsername":"$password" https://api.bitbucket.org/1.0/repositories/ --data name="$repoName" --data is_private=true > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     else
-      httpGet --user $bbUsername:$password https://api.bitbucket.org/1.0/repositories/ --data name=$repoName > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
+      httpGet --user "$bbUsername":"$password" https://api.bitbucket.org/1.0/repositories/ --data name="$repoName" > /dev/null || { echo -n -e "Failure!\n"; echo "Error: creating the bitbucket repo failed, most likely due to an incorrect username or password."; return 1; }
     fi
     echo -n -e "Success!\n"
     echo -n "Setting new remote url..."
@@ -172,7 +172,7 @@ cloneGitHubRepo()
   cd || { echo "Fatal error"; return 1; }
   mkdir ~/temp/github || { echo "Fatal error"; return 1; }
   cd ~/temp/github || { echo "Fatal error"; return 1; }
-  git clone -q  https://github.com/$ghUsername/$repoName && touch ~/temp/github/.BSnippetsHiddenFile || { touch ~/temp/github/.BSnippetsBrokenFile; echo -e -n "Failure!\n"; return 1;} &
+  git clone -q  https://github.com/"$ghUsername"/"$repoName" && touch ~/temp/github/.BSnippetsHiddenFile || { touch ~/temp/github/.BSnippetsBrokenFile; echo -e -n "Failure!\n"; return 1;} &
   while [[ ! -f ~/temp/github/.BSnippetsHiddenFile ]] ;do if [ -f ~/temp/github/.BSnippetsBrokenFile ];then return 1;fi && echo -n "." && sleep 2; done
   rm -f ~/temp/github/.BSnippetsHiddenFile
   echo -n -e "Success!\n"
@@ -183,9 +183,9 @@ getGithubRepoNames()
 {
   for pageNumber in {1..100}; do ## iterate through 100 possible pages
     response=$(httpGet "https://api.github.com/users/$ghUsername/repos?sort=updated&per_page=100&page=$pageNumber") ## grab the original response
-    if [[ $pageNumber == "1" && ( $(echo $response | grep -Eo "Not Found") == "Not Found"  || $response == "[' ']") ]];then  { echo -e -n "Failure!"; echo "Github username is invalid"; return 1;};fi
-    repoResponse=$(echo $response | grep -Eo '"full_name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"full_name": "'/""/g | sed s:$ghUsername/:: ) ## extract the repo names from the response
-    forkResponse=($(echo $response | grep -Eo '"fork": [a-Z]*' | cut -d " " -f 2 | sed  s/"'"//g  )) ## extract the fork status of each repo
+    if [[ $pageNumber == "1" && ( $(echo "$response" | grep -Eo "Not Found") == "Not Found"  || $response == "[' ']") ]];then  { echo -e -n "Failure!"; echo "Github username is invalid"; return 1;};fi
+    repoResponse=$(echo "$response" | grep -Eo '"full_name": "[ a-Z .  \/ \\ 0-9 -- _ ]*' | sed  s/'"full_name": "'/""/g | sed s:"$ghUsername"/:: ) ## extract the repo names from the response
+    forkResponse=($(echo "$response" | grep -Eo '"fork": [a-Z]*' | cut -d " " -f 2 | sed  s/"'"//g  )) ## extract the fork status of each repo
     count=0  ## used to iterate through the fork statuses
     if [[ $repoResponse == "" ]]; then break; fi ## will only break if the page is empty
     for repo in $repoResponse; do ## go through each repo

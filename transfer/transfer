@@ -122,13 +122,13 @@ checkInternet()
 
 singleDownload()
 {
-  if [[ ! -d $1 ]];then { echo "Directory doesn't exist, creating it now..."; mkdir -p $1;};fi
+  if [[ ! -d $1 ]];then { echo "Directory doesn't exist, creating it now..."; mkdir -p "$1";};fi
   tempOutputPath=$1
   if [ -f "$tempOutputPath/$3" ];then
     echo -n "File aleady exists at $tempOutputPath/$3, do you want to delete it? [Y/n] "
     read -r answer
     if [[ "$answer" == [Yy] ]] ;then
-      rm -f $tempOutputPath/$3
+      rm -f "$tempOutputPath"/"$3"
     else
       echo "Stopping download"
       return 1
@@ -150,7 +150,7 @@ httpSingleUpload()
 
 printUploadResponse()
 {
-fileID=$(echo $response | cut -d "/" -f 4)
+fileID=$(echo "$response" | cut -d "/" -f 4)
   cat <<EOF
 Transfer Download Command: transfer -d desiredOutputDirectory $fileID $tempFileName
 Transfer File URL: $response
@@ -166,9 +166,9 @@ EOF
 
 singleUpload()
 {
-  filePath=$(echo $1 | sed s:"~":$HOME:g)
-  if [ ! -f $filePath ];then { echo "Error: invalid file path"; return 1;}; fi
-  tempFileName=$(echo $1 | sed "s/.*\///")
+  filePath=$(echo "$1" | sed s:"~":"$HOME":g)
+  if [ ! -f "$filePath" ];then { echo "Error: invalid file path"; return 1;}; fi
+  tempFileName=$(echo "$1" | sed "s/.*\///")
   echo "Uploading $tempFileName"
   httpSingleUpload "$filePath" "$tempFileName"
 }
@@ -176,7 +176,7 @@ singleUpload()
 onetimeUpload()
 {
   response=$(curl -A curl -s -F "file=@$1" http://ki.tc/file/u/)
-  downlink=$(echo $response | python -c "import sys, json; print json.load(sys.stdin)['file']['download_page']")
+  downlink=$(echo "$response" | python -c "import sys, json; print json.load(sys.stdin)['file']['download_page']")
 }
 
 usage()
@@ -247,7 +247,7 @@ elif [[ $# == "1" ]];then
     checkInternet || exit 1
     update || exit 1
     exit 0
-  elif [ -f $1 ];then
+  elif [ -f "$1" ];then
     getConfiguredClient || exit 1
     checkInternet || exit 1
     getconfiguredUploadClient || exit 1

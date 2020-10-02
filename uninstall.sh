@@ -10,7 +10,7 @@ askUninstall()
     read -r answer
     if [[ "$answer" == [Yy] ]]; then
       echo -n "Removing $1: "
-      rm -f /usr/local/bin/$1 > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
+      rm -f /usr/local/bin/"$1" > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
       echo "Success"
     else
       all="0"
@@ -23,7 +23,7 @@ removeTool()
 {
   if [[ -f /usr/local/bin/$1 ]]; then
     echo -n "Removing $1: "
-    rm -f /usr/local/bin/$1 > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
+    rm -f /usr/local/bin/"$1" > /dev/null 2>&1 || { echo "Failed" ; echo "Error removing file, try running uninstall script as sudo"; exit 1; }
     echo "Success"
   fi
 }
@@ -36,11 +36,11 @@ removeManpage()
 
 if [[ $1 != "all" ]]; then
   for tool in "${tools[@]}"; do
-    askUninstall $tool || exit 1
+    askUninstall "$tool" || exit 1
   done
 else
   for tool in "${tools[@]}"; do
-    removeTool $tool || exit 1
+    removeTool "$tool" || exit 1
   done
 fi
 

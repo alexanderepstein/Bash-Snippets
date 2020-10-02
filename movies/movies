@@ -86,14 +86,14 @@ getMovieInfo()
   movie=$( (echo "$@" | tr " " + ) | sed 's/-d+//g' ) ## format the inputs to use for the api. Added sed command to filter -d flag.
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
-  checkResponse=$(echo $movieInfo | python -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
+  checkResponse=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
   if [[ $checkResponse == "False" ]]; then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
   # The rest of the code is just extrapolating the data with python from the JSON response
   title="$(AccessJsonElement "$movieInfo" "Title")"
   year="$(AccessJsonElement "$movieInfo" "Year")"
   runtime="$(AccessJsonElement "$movieInfo" "Runtime")"
-  imdbScore=$(echo $movieInfo | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][0]['Value'])" 2> /dev/null)
-  tomatoScore=$(echo $movieInfo | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][1]['Value'])" 2> /dev/null)
+  imdbScore=$(echo "$movieInfo" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][0]['Value'])" 2> /dev/null)
+  tomatoScore=$(echo "$movieInfo" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][1]['Value'])" 2> /dev/null)
   rated="$(AccessJsonElement "$movieInfo" "Rated")"
   genre="$(AccessJsonElement "$movieInfo" "Genre")"
   director="$(AccessJsonElement "$movieInfo" "Director")"
@@ -103,7 +103,7 @@ getMovieInfo()
   if $detail; then
     awards="$(AccessJsonElement "$movieInfo" "Awards")"
     boxOffice="$(AccessJsonElement "$movieInfo" "BoxOffice")"
-    metacriticScore=$(echo $movieInfo | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][2]['Value'])" 2> /dev/null)
+    metacriticScore=$(echo "$movieInfo" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Ratings'][2]['Value'])" 2> /dev/null)
     production="$(AccessJsonElement "$movieInfo" "Production")"
   fi
 }

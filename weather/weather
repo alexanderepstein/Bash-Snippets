@@ -3,9 +3,9 @@
 
 currentVersion="1.23.0" #This version variable should not have a v but should contain all other characters ex Github release tag is v1.2.4 currentVersion is 1.2.4
 LANG="${LANG:-en}"
-locale=$(echo $LANG | cut -c1-2)
+locale=$(echo "$LANG" | cut -c1-2)
 unset configuredClient
-if [[ $(echo $locale | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]]; then locale="en"; fi
+if [[ $(echo "$locale" | grep -Eo "[a-z A-Z]*" | wc -c) != 3 ]]; then locale="en"; fi
 
 ## This function determines which http get tool the system has installed and returns an error if there isnt one
 getConfiguredClient()
@@ -41,20 +41,20 @@ getIPWeather()
   if [[ $country == "US" ]]; then ## if were in the us id rather not use longitude and latitude so the output is nicer
     city=$(httpGet ipinfo.io/city) > /dev/null
     region=$(httpGet ipinfo.io/region) > /dev/null
-    if [[ $(echo $region | wc -w) == 2 ]];then
-      region=$(echo $region | grep -Eo "[A-Z]*" | tr -d "[:space:]")
+    if [[ $(echo "$region" | wc -w) == 2 ]];then
+      region=$(echo "$region" | grep -Eo "[A-Z]*" | tr -d "[:space:]")
     fi
-    httpGet $locale.wttr.in/$city,$region$1
+    httpGet $locale.wttr.in/"$city","$region""$1"
   else ## otherwise we are going to use longitude and latitude
     location=$(httpGet ipinfo.io/loc) > /dev/null
-    httpGet $locale.wttr.in/$location$1
+    httpGet $locale.wttr.in/"$location""$1"
   fi
 }
 
 getLocationWeather()
 {
   args=$(echo "$@" | tr " " + )
-  httpGet $locale.wttr.in/${args}
+  httpGet $locale.wttr.in/"${args}"
 }
 
 checkInternet()
@@ -169,27 +169,27 @@ if [[ $1 == "m" ]]; then
   getIPWeather "?m" || exit 1
 elif [[ "${@: -1}" == "m" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?m | sed s/" "//g)
-  getLocationWeather $args || exit 1
+  getLocationWeather "$args" || exit 1
 elif [[ $1 == "M" ]]; then
   getIPWeather "?M" || exit 1
 elif [[ "${@: -1}" == "M" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
+  getLocationWeather "$args" || exit 1
 elif [[ $1 == "mM" || $1 == "Mm" ]]; then
   getIPWeather "?m?M" || exit 1
 elif [[ "${@: -1}" == "mM" || "${@:-1}" == "Mm" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?m?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
+  getLocationWeather "$args" || exit 1
 elif [[ $1 == "iM" || $1 == "Mi" ]]; then
   getIPWeather "?u?M" || exit 1
 elif [[ "${@: -1}" == "iM" || "${@:-1}" == "Mi" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?u?M | sed s/" "//g)
-  getLocationWeather $args || exit 1
+  getLocationWeather "$args" || exit 1
 elif [[ $1 == "i" ]]; then
   getIPWeather "?u" || exit 1
 elif [[ "${@: -1}" == "i" ]];then
   args=$( echo "${@:1:(($# - 1))}" ?u | sed s/" "//g)
-  getLocationWeather $args || exit 1
+  getLocationWeather "$args" || exit 1
 else
   getLocationWeather "$@" || exit 1
 fi

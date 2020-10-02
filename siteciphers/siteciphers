@@ -111,10 +111,10 @@ checkCiphers()
   ciphers=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/ /g') # grab all ciphers
   SERVER=$1:443 # setup the connection server
   for cipher in ${ciphers[*]}; do # for all possible ciphers
-    result=$(echo | openssl s_client -cipher "$cipher" -connect $SERVER 2>&1)
+    result=$(echo | openssl s_client -cipher "$cipher" -connect "$SERVER" 2>&1)
     if [[ "$result" =~ ":error:" ]]; then
       if [[ -z $2 ]]; then
-        error=$(echo -n $result | cut -d':' -f6)
+        error=$(echo -n "$result" | cut -d':' -f6)
         echo "$cipher - NO ($error)"
       fi
     else
@@ -174,7 +174,7 @@ done
 
 checkInternet || exit 1
 if [[ $dFlag == "1" ]]; then
-  checkCiphers $3 || exit 1 # if dflag is present input will look like siteciphers -d 0.5 github.com making the website the third arg
+  checkCiphers "$3" || exit 1 # if dflag is present input will look like siteciphers -d 0.5 github.com making the website the third arg
 else
-  checkCiphers $1 || exit 1
+  checkCiphers "$1" || exit 1
 fi

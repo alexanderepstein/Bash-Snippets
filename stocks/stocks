@@ -130,7 +130,7 @@ getTicker()
   input="$(echo "$@" | tr " " +)"
   response="$(httpGet "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=$input&region=1&lang=en%22")" > /dev/null
   # using python to extrapolate the stock symbol
-  symbol="$(echo $response | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['ResultSet']['Result'][0]['symbol'])")"
+  symbol="$(echo "$response" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['ResultSet']['Result'][0]['symbol'])")"
   # just unsets the entire response after using it since all I need is the stock ticker
   unset response 
 }

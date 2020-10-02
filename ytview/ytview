@@ -2,7 +2,7 @@
 # Author: Linyos Torovoltos https://github.com/linyostorovovoltos
 # Modifications: Alexander Epstein https://github.com/alexanderepstein
 
-if [[ -d $HOME/.cache/ytview ]]; then rm -rf $HOME/.cache/ytview/; fi
+if [[ -d $HOME/.cache/ytview ]]; then rm -rf "$HOME"/.cache/ytview/; fi
 
 player=""
 configuredClient=""
@@ -139,14 +139,14 @@ getConfiguredPlayer()
 # Get the video titles
 channelview()
 {
-  mkdir -p $HOME/.cache/ytview/channels/$channel || return 1
-  httpGet "https://www.youtube.com/user/$channel/videos?hl=en" | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}'  | sed  s/'&#39;'/"'"/g | sed s/'&amp;'/'and'/g | sed s/\&quot\;/\"/g > $HOME/.cache/ytview/channels/$channel/titles.txt || return 1
+  mkdir -p "$HOME"/.cache/ytview/channels/"$channel" || return 1
+  httpGet "https://www.youtube.com/user/$channel/videos?hl=en" | grep "Duration" | awk '{print $10 " " $11 " " $12 " " $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $24 " " $25 " " $26 " " $27 " " $29}' | sed 's/aria-describedby="description-id.*//' | sed s/title=// | sed 's/"//' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}'  | sed  s/'&#39;'/"'"/g | sed s/'&amp;'/'and'/g | sed s/\&quot\;/\"/g > "$HOME"/.cache/ytview/channels/"$channel"/titles.txt || return 1
 
   # Get the video urls
-  httpGet "https://www.youtube.com/user/$channel/Videos?hl=en" | grep "watch?v=" | awk '{print $6}' | sed s/spf-link// | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/channels/$channel/urls.txt || return 1
+  httpGet "https://www.youtube.com/user/$channel/Videos?hl=en" | grep "watch?v=" | awk '{print $6}' | sed s/spf-link// | sed s/href=// | sed 's/"//' | sed 's/"//' | sed '/^\s*$/d' | sed 's/\//https:\/\/www.youtube.com\//' | awk '{printf "%s.\t%s\n",NR,$0}' > "$HOME"/.cache/ytview/channels/"$channel"/urls.txt || return 1
 
   # Print 20 first video titles for the user to choose from
-  head -n 20 $HOME/.cache/ytview/channels/$channel/titles.txt || return 1
+  head -n 20 "$HOME"/.cache/ytview/channels/"$channel"/titles.txt || return 1
   # Prompt the user for video number
   read -p "Choose a video: " titlenumber
   if [[ -n ${titlenumber//[0-9]/} ]]; then
@@ -155,21 +155,21 @@ channelview()
   fi
 
   # Play the video with your player
-  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/channels/$channel/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
+  $player $(sed -n $(echo "$titlenumber")p < "$HOME"/.cache/ytview/channels/"$channel"/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
 }
 
 searchview()
 {
-  search=$(echo $search | tr " " + )
-  mkdir -p $HOME/.cache/ytview/searches/$search
+  search=$(echo "$search" | tr " " + )
+  mkdir -p "$HOME"/.cache/ytview/searches/"$search"
 
   #Get video titles
-  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "Duration" | grep "watch?v=" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $23}' | sed 's/aria-describedby="description-id.*//g' | sed s/title=// | sed 's/"//g' | sed s/spf-link// | sed 's/data-session-link=itct*.//' | sed s/spf-prefetch//g | sed 's/rel=//g' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' | sed  s/'&#39;'/"'"/g | sed  s/'&amp;'/'and'/g | sed s/\&quot\;/\"/g > $HOME/.cache/ytview/searches/$search/titles.txt || return 1
+  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "Duration" | grep "watch?v=" | awk '{print $13 " " $14 " " $15 " " $16 " " $17 " " $18 " " $19 " " $20 " " $21 " " $22 " " $23 " " $23}' | sed 's/aria-describedby="description-id.*//g' | sed s/title=// | sed 's/"//g' | sed s/spf-link// | sed 's/data-session-link=itct*.//' | sed s/spf-prefetch//g | sed 's/rel=//g' | sed 's/"//' | awk '{printf "%s.\t%s\n",NR,$0}' | sed  s/'&#39;'/"'"/g | sed  s/'&amp;'/'and'/g | sed s/\&quot\;/\"/g > "$HOME"/.cache/ytview/searches/"$search"/titles.txt || return 1
 
   #Get video urls
-  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// | sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > $HOME/.cache/ytview/searches/$search/urls.txt || return 1
+  httpGet "https://www.youtube.com/results?hl=en&search_query=$search" | grep "watch?v=" | awk '{print $5}' | sed s/vve-check// | sed 's/href="/https:\/\/www.youtube.com/' | sed 's/"//' | sed s/class="yt-uix-tile-link"// | sed '/^\s*$/d' | awk '{printf "%s.\t%s\n",NR,$0}' > "$HOME"/.cache/ytview/searches/"$search"/urls.txt || return 1
   #Print 20 first video titles for the user to choose from
-  cat $HOME/.cache/ytview/searches/$search/titles.txt || return 1
+  cat "$HOME"/.cache/ytview/searches/"$search"/titles.txt || return 1
 
   #Let the user choose the video number
   read -p "Choose a video: " titlenumber
@@ -179,7 +179,7 @@ searchview()
   fi
 
   #Play the video with your favorite player
-  $player $(sed -n $(echo $titlenumber)p < $HOME/.cache/ytview/searches/$search/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
+  $player $(sed -n $(echo "$titlenumber")p < "$HOME"/.cache/ytview/searches/"$search"/urls.txt | awk '{print $2}') > /dev/null 2>&1 &
 }
 
 usage()

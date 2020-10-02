@@ -99,7 +99,7 @@ main(){
     else
       echo ""
     fi
-    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> $fileName.png || return 1
+    httpGet "https://memegen.link/$bg/$first/$second.jpg"  >> "$fileName".png || return 1
     return 0
 }
 
