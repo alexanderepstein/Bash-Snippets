@@ -383,145 +383,115 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 </details>
 
 
-
-
-
 ## Installing
 
-<details>
-<summary>For macOS via homebrew / Linux via linuxbrew</summary>
+[![Packaging status](https://repology.org/badge/vertical-allrepos/bash-snippets.svg)](https://repology.org/project/bash-snippets/versions)
+
+### AUR
+
+bash-snippets is available as an AUR package: `bash-snippets`.
+
+### APT Package Manager
+
+```bash
+sudo add-apt-repository ppa:navanchauhan/bash-snippets # add bash-snippets PPA
+sudo apt update # update package list
+sudo apt install bash-snippets # install bash-snippets package
+```
+
+### homebrew (macOS) / linuxbrew (Linux)
 
 ```bash
 brew install bash-snippets # installs all tools
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
-</details>
-
-<details>
-<summary>Apt Package Manager</summary>
+### From Source
 
 ```bash
-sudo add-apt-repository ppa:navanchauhan/bash-snippets
-sudo apt update
-sudo apt install bash-snippets
+git clone https://github.com/alexanderepstein/Bash-Snippets # clone the repository
+cd Bash-Snippets # cd into the cloned directory
+git checkout v1.23.0 # Git checkout to the latest stable release
 ```
-
-</details>
-
-<details>
-<summary>Git Install</summary>
-
-* First clone the repository:  
 ```bash
-git clone https://github.com/alexanderepstein/Bash-Snippets
+./install.sh all # install all scripts
 ```
 
-* Then cd into the cloned directory:
+or
+
 ```bash
-cd Bash-Snippets
+./install.sh stocks # to install individual scripts
 ```
-
-* Git checkout to the latest stable release
-```bash
-git checkout v1.23.0
-```
-
-* Run the guided install script with
-```bash
-./install.sh
-```
-this will let you choose which scripts to install
-
-* Install all the scripts
-```bash
-./install.sh all
-```
-
-* Install an individual script
-```bash
-./install.sh stocks
-```
-
-</details>
-
-
-
 
 ## Updating
 
-<details>
-<summary>For macOS if installed via homebrew / Linux if installed via linuxbrew</summary>
+### AUR
 
 ```bash
-brew upgrade bash-snippets
+yay -S bash-snippets # replace yay with your aur helper
 ```
 
-</details>
-
-<details>
-<summary>Apt Package Manager</summary>
+### APT Package Manager
 
 ```bash
-sudo apt update
-sudo apt upgrade
+sudo apt update # update package list
+sudo apt upgrade bash-snippets # upgrade bash-snippets package
 ```
 
-</details>
+### homebrew (macOS) / linuxbrew (Linux)
 
-<details>
-<summary>Git Update</summary>
-
-With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments
-Ex.
 ```bash
-stocks update
+brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
+
+### From Source
+
+With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments Ex.
+
+`stocks update`
+
 or
-```bash
-stocks -u
-```
-This will clone the repository and install the new versions of scripts that were installed, if you didn't install a certain tool this script will not install the new version of that tool.
 
+`stocks -u`
 
-</details>
-
-
+This will clone the repository and install the new versions of scripts that were installed, if you didn’t install a certain tool this script will not install the new version of that tool.
 
 ## Uninstalling
 
-<details>
-<summary>For macOS if installed via homebrew / Linux  if installed via linuxbrew</summary>
+### AUR
+
+`pacman -Rns bash-snippets`
+
+### APT Package Manager
 
 ```bash
-brew uninstall bash-snippets
+sudo apt purge bash-snippets # you can also use remove instead of purge
 ```
 
-</details>
+### homebrew (macOS) / linuxbrew (Linux)
 
-<details>
-<summary>Apt Package Manager</summary>
+`brew uninstall bash-snippets`
+
+### Git Uninstall
 
 ```bash
-sudo apt remove bash-snippets
+git clone https://github.com/alexanderepstein/Bash-Snippets # If you don't have the Bash-Snippets folder anymore clone the repository
 ```
 
-</details>
-
-<details>
-<summary>Git Uninstall</summary>
-
-
-* If you don't have the Bash-Snippets folder anymore clone the repository:  
 ```bash
-git clone https://github.com/alexanderepstein/Bash-Snippets
+cd Bash-Snippets # cd into the Bash-Snippets directory:
 ```
 
-* cd into the Bash-Snippets directory:
+
+##### To go through a guided uninstall
 ```bash
-cd Bash-Snippets
+./uninstall.sh
 ```
 
+##### To uninstall all installed bash-snippets
+```bash
+./uninstall.sh all
+```
 
 #### To go through a guided uninstall
 ```bash
