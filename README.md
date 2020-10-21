@@ -493,12 +493,12 @@ cd Bash-Snippets # cd into the Bash-Snippets directory:
 ./uninstall.sh all
 ```
 
-#### To go through a guided uninstall
+##### To go through a guided uninstall
 ```bash
 ./uninstall.sh
 ```
 
-#### To uninstall all installed bash-snippets
+##### To uninstall all installed bash-snippets
 ```bash
 ./uninstall.sh all
 ```
