@@ -389,7 +389,11 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 ### AUR
 
-bash-snippets is available as an AUR package: `bash-snippets`.
+bash-snippets is available in two different AUR packages: `bash-snippets` and `bash-snippets-git`.
+
+```bash
+yay -S bash-snippets # or bash-snippets-git
+```
 
 ### APT Package Manager
 
@@ -428,7 +432,7 @@ or
 ### AUR
 
 ```bash
-yay -S bash-snippets # replace yay with your aur helper
+yay -S bash-snippets # or bash-snippets-git
 ```
 
 ### APT Package Manager
@@ -460,7 +464,9 @@ This will clone the repository and install the new versions of scripts that were
 
 ### AUR
 
-`pacman -Rns bash-snippets`
+```bash
+pacman -Rns bash-snippets # or bash-snippets-git
+```
 
 ### APT Package Manager
 
@@ -476,9 +482,6 @@ sudo apt purge bash-snippets # you can also use remove instead of purge
 
 ```bash
 git clone https://github.com/alexanderepstein/Bash-Snippets # If you don't have the Bash-Snippets folder anymore clone the repository
-```
-
-```bash
 cd Bash-Snippets # cd into the Bash-Snippets directory:
 ```
 
