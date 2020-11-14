@@ -112,7 +112,7 @@ validateOperation()
 
 getSimpleResponse()
 {
-  result=$(httpGet https://newton.now.sh/$operation/"$equation" | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g | tr '"' " ") # get reponse, grab result
+  result=$(httpGet https://newton.now.sh/api/v2/$operation/"$equation" | grep -Eo '"result":"[a-z A-Z 0-9 ( ) \^ / -- + , ]*' | sed s/'"result":"'//g | tr '"' " ") # get reponse, grab result
   if [[ $result == "" ]];then { echo "Error: no result was returned, did you use valid characters?"; return 1; }; fi # if result is empty sometthing went wrong...
 }
 
