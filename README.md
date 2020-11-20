@@ -387,15 +387,20 @@ Written by: [Linyos Torovoltos](http://github.com/linyostorovovoltos)
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/bash-snippets.svg)](https://repology.org/project/bash-snippets/versions)
 
-### AUR
-
+<details>
+  <summary>AUR</summary>
+  
 bash-snippets is available in two different AUR packages: `bash-snippets` and `bash-snippets-git`.
 
 ```bash
 yay -S bash-snippets # or bash-snippets-git
 ```
 
-### APT Package Manager
+</details>
+
+<details>
+  
+<summary>APT Package Manager</summary>
 
 ```bash
 sudo add-apt-repository ppa:navanchauhan/bash-snippets # add bash-snippets PPA
@@ -403,14 +408,22 @@ sudo apt update # update package list
 sudo apt install bash-snippets # install bash-snippets package
 ```
 
-### homebrew (macOS) / linuxbrew (Linux)
+</details>
+
+<details>
+  
+  <summary>homebrew (macOS) / linuxbrew (Linux)</summary>
 
 ```bash
 brew install bash-snippets # installs all tools
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
-### From Source
+</details>
+
+<details>
+  
+  <summary>From Source</summary>
 
 ```bash
 git clone https://github.com/alexanderepstein/Bash-Snippets # clone the repository
@@ -426,29 +439,44 @@ or
 ```bash
 ./install.sh stocks # to install individual scripts
 ```
+</details>
 
 ## Updating
 
-### AUR
+<details>
+
+<summary>AUR</summary>
 
 ```bash
 yay -S bash-snippets # or bash-snippets-git
 ```
+</details>
 
-### APT Package Manager
+
+<details>
+  
+<summary>APT Package Manager</summary>
 
 ```bash
 sudo apt update # update package list
 sudo apt upgrade bash-snippets # upgrade bash-snippets package
 ```
 
-### homebrew (macOS) / linuxbrew (Linux)
+</details>
+
+<details>
+  
+<summary>homebrew (macOS) / linuxbrew (Linux)</summary>
 
 ```bash
 brew install bash-snippets --without-all-tools --with-newton --with-weather # specifying install for individual tools
 ```
 
-### From Source
+</details>
+
+<details>
+  
+  <summary>From Source</summary>
 
 With any of the installed tools you can automate the update by running it with the -u option or passing in update as the arguments Ex.
 
@@ -460,33 +488,54 @@ or
 
 This will clone the repository and install the new versions of scripts that were installed, if you didn’t install a certain tool this script will not install the new version of that tool.
 
+</details>
+
 ## Uninstalling
 
-### AUR
+<details>
+  
+  <summary>AUR</summary>
 
 ```bash
 pacman -Rns bash-snippets # or bash-snippets-git
 ```
 
-### APT Package Manager
+</details>
+
+<details>
+  
+  <summary>APT Package Manager</summary>
 
 ```bash
 sudo apt purge bash-snippets # you can also use remove instead of purge
 ```
 
-### homebrew (macOS) / linuxbrew (Linux)
+</details>
 
-`brew uninstall bash-snippets`
+<details>
+  
+  <summary>homebrew (macOS) / linuxbrew (Linux)</summary>
 
-### Git Uninstall
+```bash
+brew uninstall bash-snippets
+```
 
+</details>
+
+<details>
+  
+  <summary>Git Uninstall</summary>
+  
 ```bash
 git clone https://github.com/alexanderepstein/Bash-Snippets # If you don't have the Bash-Snippets folder anymore clone the repository
 cd Bash-Snippets # cd into the Bash-Snippets directory:
 ```
 
+</details>
 
-##### To go through a guided uninstall
+<details>
+  
+<summary>To go through a guided uninstall</summary>
 ```bash
 ./uninstall.sh
 ```
