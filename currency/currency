@@ -166,7 +166,7 @@ convertCurrency()
   if [[ "$trueBase" == "$exchangeTo" || "$base" == "$trueTarget" ]]; then
     exchangeRate="1"
   else
-    exchangeRate=$(httpGet "https://api.exchangeratesapi.io/latest?base=$trueBase" | grep -Eo "$trueTarget\":[0-9.]*" | grep -Eo "[0-9.]*") > /dev/null
+    exchangeRate=$(httpGet "https://api.exchangerate-api.com/v4/latest/$trueBase" | grep -Eo "$trueTarget\":[0-9.]*" | grep -Eo "[0-9.]*") > /dev/null
   fi
   if ! command -v bc &>/dev/null; then
     exchangeRate=$(echo "$exchangeRate" | grep -Eo "^[0-9]*" )
