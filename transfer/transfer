@@ -61,15 +61,6 @@ getconfiguredUploadClient()
     return 1
   fi
 }
-## Allows to call the users configured client without if statements everywhere
-httpDownload()
-{
-  case "$configuredDownloadClient" in
-    curl)  curl -A curl --progress -o "$tempOutputPath/$3" "https://transfer.sh/$2/$3" || { echo "Failure!"; return 1;};;
-    wget)  wget --progress=dot -O "$tempOutputPath/$3" "https://transfer.sh/$2/$3" || { echo "Failure!"; return 1;} ;;
-    fetch) fetch -q -o "$tempOutputPath/$3" "https://transfer.sh/$2/$3" || { echo "Failure!"; return 1;};;
-  esac
-}
 
 update()
 {
@@ -120,50 +111,6 @@ checkInternet()
   httpGet github.com > /dev/null 2>&1 || { echo "Error: no active internet connection" >&2; return 1; } # query github with a get request
 }
 
-singleDownload()
-{
-  if [[ ! -d $1 ]];then { echo "Directory doesn't exist, creating it now..."; mkdir -p "$1";};fi
-  tempOutputPath=$1
-  if [ -f "$tempOutputPath/$3" ];then
-    echo -n "File aleady exists at $tempOutputPath/$3, do you want to delete it? [Y/n] "
-    read -r answer
-    if [[ "$answer" == [Yy] ]] ;then
-      rm -f "$tempOutputPath"/"$3"
-    else
-      echo "Stopping download"
-      return 1
-    fi
-  fi
-  echo "Downloading $3"
-  httpDownload "$tempOutputPath" "$2" "$3"
-  echo "Success!"
-}
-
-httpSingleUpload()
-{
-  case "$configuredUploadClient" in
-    curl) response=$(curl -A curl --progress --upload-file "$1" "https://transfer.sh/$2") || { echo "Failure!"; return 1;};;
-    wget) response=$(wget --progress=dot --method PUT --body-file="$1" "https://transfer.sh/$2") || { echo "Failure!"; return 1;} ;;
-  esac
-  echo  "Success!"
-}
-
-printUploadResponse()
-{
-fileID=$(echo "$response" | cut -d "/" -f 4)
-  cat <<EOF
-Transfer Download Command: transfer -d desiredOutputDirectory $fileID $tempFileName
-Transfer File URL: $response
-EOF
-}
-
-printOntimeUpload()
-{
-  cat <<EOF
-  Download link: $downlink
-EOF
-}
-
 singleUpload()
 {
   filePath=$(echo "$1" | sed s:"~":"$HOME":g)
@@ -173,10 +120,67 @@ singleUpload()
   httpSingleUpload "$filePath" "$tempFileName"
 }
 
+
+httpSingleUpload()
+{
+  case "$configuredUploadClient" in
+    curl) response=$( curl --progress-bar --upload-file $1 "https://free.keep.sh" | tee /dev/null) || { echo "Failure!"; return 1;};;
+    wget) response=$(wget --progress=dot --method PUT --body-file="$1" "https://free.keep.sh" | tee /dev/null) || { echo "Failure!"; return 1;} ;;
+  esac
+  echo  "Success!"
+}
+
+printUploadResponse()
+{
+fileID=$(echo "$response" | cut -d "/" -f 4)
+  echo "Transfer Download Command: transfer -d desiredOutputDirectory $fileID $tempFileName"
+  echo "Transfer File URL: $response"
+  echo -e "\n\n\t Or scan this QR Code"
+  qrify $response
+}
+
+
 onetimeUpload()
 {
-  response=$(curl -A curl -s -F "file=@$1" http://ki.tc/file/u/)
-  downlink=$(echo "$response" | python -c "import sys, json; print json.load(sys.stdin)['file']['download_page']")
+	getConfiguredClient
+    checkInternet || exit 0
+    getconfiguredUploadClient
+  	response=$(curl --progress-bar -T $1 temp.sh)
+  	downlink=$(echo "$response")
+}
+
+
+printOnetimeUpload()
+{
+  	echo -e "\n Download link: $downlink"
+  	echo -e "\n\n\t Or scan this QR Code"
+  	qrify $downlink
+}
+
+singleDownload()
+{
+  if [[ ! -d $1 ]];then 
+  	{
+  		echo "Directory doesn't exist, creating it now...";
+  		mkdir -p "$1";
+  	};
+  fi
+
+  tempOutputPath=$1
+  if [ -f "$tempOutputPath/$3" ];then
+  	echo -n "File aleady exists at $tempOutputPath/$3, do you want to delete it? [Y/n] ";
+  	read -r answer
+    if [[ "$answer" == [Yy] ]] ;then
+    	rm -rf "$tempOutputPath"/"$3";
+    	else
+    		echo "Stopping download"
+    		return 1;
+    fi
+  fi
+  echo "Downloading $3"
+  curl -# -L https://free.keep.sh/$2/$3 > $1/$3 || { echo "Failure"; return 1;}
+  # curl -# -L https://temp.sh/$2/$3 > $1/$3 || { echo "Failure"; return 1;}
+  echo "Success!"
 }
 
 usage()
@@ -223,8 +227,15 @@ while getopts "o:d:uvh" opt; do
     ;;
     d)
       down="true"
-      if [ $# -lt 4 ];then { echo "Error: not enough arguments for downloading a file, see the usage"; return 1;};fi
-      if [ $# -gt 4 ];then { echo "Error: to many enough arguments for downloading a file, see the usage"; return 1;};fi
+      if [ $# -lt 4 ];
+      	then
+      		echo "Error: not enough arguments for downloading a file, see the usage"; exit 1
+      fi
+      
+      if [ $# -gt 4 ];
+      	then
+      		echo "Error: to many enough arguments for downloading a file, see the usage"; exit 1
+      	fi
       inputFilePath=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 2)
       inputID=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 3)
       inputFileName=$(echo "$*" | sed s/-d//g | sed s/-o//g | cut -d " " -f 4)
@@ -259,7 +270,7 @@ elif [[ $# == "1" ]];then
     exit 1
   fi
 else
-  if $down && ! $onetime ;then
+  if $down ;then
     getConfiguredClient || exit 1
     checkInternet || exit 1
     getConfiguredDownloadClient || exit 1
@@ -283,6 +294,6 @@ else
     fi
     inputFileName=$(echo "$*" | sed s/-o//g | cut -d " " -f 2 )
     onetimeUpload "$inputFileName"
-    printOntimeUpload
+    printOnetimeUpload
   fi
 fi
