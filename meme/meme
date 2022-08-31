@@ -24,7 +24,7 @@ getConfiguredClient()
 httpGet()
 {
   case "$configuredClient" in
-    curl)  curl -A curl -s "$@" ;;
+    curl)  curl -A curl -Ls "$@" ;;
     wget)  wget -qO- "$@" ;;
     httpie) http -b GET "$@" ;;
     fetch) fetch -q "$@" ;;
