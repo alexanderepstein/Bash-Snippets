@@ -100,7 +100,7 @@ dns_search() {
   if [ "$(uname)" = "Darwin" ]; then
     grep -i nameserver /etc/resolv.conf |head -n1|cut -d ' ' -f2
   elif [ "$(uname -s)" = "Linux" ]; then
-    cat /etc/resolv.conf | grep -i ^nameserver | cut -d ' ' -f2
+    grep -i ^nameserver /etc/resolv.conf | cut -d ' ' -f2
   else
     echo "OS not supported"
     exit 1

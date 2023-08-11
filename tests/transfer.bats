@@ -43,7 +43,7 @@ fi
 #if [ -f  $HOME/testFile.txt ];then exit 1;fi
 #run transfer -d $HOME $id testFile.txt
 #if [ ! -f  $HOME/testFile.txt ];then exit 1;fi
-#contents=$(cat $HOME/testFile.txt)
+#contents=$(< $HOME/testFile.txt)
 #if [ $contents != "This is some example content." ];then exit 1; fi
 #rm -f $HOME/testFile.txt
 #transferResponse=$(transfer -d $HOME $id testFile.txt)
