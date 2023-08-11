@@ -132,13 +132,13 @@ removeTask()
 getTasks()
 {
   if [ -f ~/.todo/list.txt ]; then
-    checkEmpty=$(cat ~/.todo/list.txt)
+    checkEmpty=$(< ~/.todo/list.txt)
     if [[ $checkEmpty == "" ]]; then
       echo "No tasks found"
     else
       count="1"
       IFS=$'\n'       # make newlines the only separator
-      for task in $(cat ~/.todo/list.txt); do
+      for task in $(< ~/.todo/list.txt); do
         tempTask=$count
         if [ $count -lt 10 ]; then tempTask="0$count"; fi
         echo "$tempTask). $task"  >> ~/.todo/getTemp.txt
