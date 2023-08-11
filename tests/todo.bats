@@ -42,7 +42,7 @@ fi
 @test "Removing task" {
   run todo -r "1"
   [ "$status" -eq 0 ]
-  result=$( cat ~/.todo/list.txt )
+  result=$( < ~/.todo/list.txt )
   echo $result
   [ "$result" = "" ]
 }
