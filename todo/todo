@@ -104,7 +104,7 @@ removeTask()
   IFS=$'\n'       # make newlines the only separator
 
   ## Removing the task (only don't add to temp if we should remove it)
-  for task in $(cat ~/.todo/list.txt); do
+  for task in $(<~/.todo/list.txt); do
     removeIt="false"
     for taskToRemove in "$@";do
       if [[ $(($count + 1)) == "$taskToRemove" ]]; then
