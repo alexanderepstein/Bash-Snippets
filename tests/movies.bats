@@ -27,8 +27,8 @@ fi
 @test "Get information on a single movie" {
   run movies Argo
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "==================================================" ]
-  [ "${lines[1]}" = "| Title: Argo" ]
+  [ "${lines[0]}" = "+=====================================================+" ]
+  [ "${lines[1]}" = "|      Title: Argo                                    |" ]
 }
 
 

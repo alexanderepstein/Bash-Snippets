@@ -108,30 +108,47 @@ getMovieInfo()
   fi
 }
 
+# Print key: value info
+printKV() {
+  key=$1
+  val=$2
+  ROW="|%11s: %-40s|\n"
+  WIDTH=53
+
+  # If value too long (greater then 43 char), split it into several line
+  if [[ ${#val} -le $((WIDTH - 10)) ]]; then
+    printf "$ROW" "$key" "$val"
+  else
+    printf "$ROW" "$key"
+    printf "%s\n" "$val" | fmt -w 50 \
+    | while IFS= read -r line; do printf "|  %-50s |\n" "$line"; done
+  fi
+}
+
 # Prints the movie information out in a human readable format
 printMovieInfo()
 {
   echo
-  echo '=================================================='
-  echo "| Title: $title"
-  echo "| Year: $year"
-  echo "| Runtime: $runtime"
-  if [[ $imdbScore != "" ]]; then echo "| IMDB: $imdbScore"; fi
-  if [[ $tomatoScore != "" ]]; then echo "| Tomato: $tomatoScore"; fi
+  echo '+=====================================================+'
+  printKV "Title" "$title"
+  printKV "Year" "$year"
+  printKV "Runtime" "$runtime"
+  if [[ $imdbScore != "" ]]; then printKV "IMDB" "$imdbScore"; fi
+  if [[ $tomatoScore != "" ]]; then printKV "Tomato" "$tomatoScore"; fi
   if $detail; then
-    if [[ $metacriticScore != "" ]]; then echo "| Metascore: $metacriticScore"; fi
+    if [[ $metacriticScore != "" ]]; then printKV "Metascore" "$metacriticScore"; fi
   fi
-  if [[ $rated != "N/A" && $rated != "" ]]; then echo "| Rated: $rated"; fi
-  echo "| Genre: $genre"
-  echo "| Director: $director"
-  echo "| Actors: $actors"
-  if [[ $plot != "N/A" && $plot != "" ]]; then echo "| Plot: $plot"; fi
+  if [[ $rated != "N/A" && $rated != "" ]]; then printKV "Rated" "$rated"; fi
+  printKV "Genre" "$genre"
+  printKV "Director" "$director"
+  printKV "Actors" "$actors"
+  if [[ $plot != "N/A" && $plot != "" ]]; then printKV "Plot" "$plot"; fi
   if $detail; then
-    if [[ $boxOffice != "" ]]; then echo "| Box Office: $boxOffice"; fi
-    if [[ $production != "" ]]; then echo "| Production: $production"; fi
-    if [[ $awards != "" ]]; then echo "| Awards: $awards"; fi
+    if [[ $boxOffice != "" ]]; then printKV "BoxOffice" "$boxOffice"; fi
+    if [[ $production != "" ]]; then printKV "Production" "$production"; fi
+    if [[ $awards != "" ]]; then printKV "Awards" "$awards"; fi
   fi
-  echo '=================================================='
+  echo '+=====================================================+'
   echo
 }
 
