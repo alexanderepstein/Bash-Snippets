@@ -86,8 +86,14 @@ getMovieInfo()
   movie=$( (echo "$@" | tr " " + ) | sed 's/-d+//g' ) ## format the inputs to use for the api. Added sed command to filter -d flag.
   export PYTHONIOENCODING=utf8 #necessary for python in some cases
   movieInfo=$(httpGet "http://www.omdbapi.com/?t=$movie&apikey=$apiKey") > /dev/null # query the server and get the JSON response
-  checkResponse=$(echo "$movieInfo" | python -c "import sys, json; print json.load(sys.stdin)['Response']" 2> /dev/null)
-  if [[ $checkResponse == "False" ]]; then { echo "No movie found" ; return 1 ;} fi ## check to see if the movie was found
+
+  ## check to see if the movie was found
+  checkResponse=$(echo "$movieInfo" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Response'])" 2> /dev/null)
+  if [[ $checkResponse == "False" ]]; then
+    echo "$movieInfo" | python -c "from __future__ import print_function; import sys, json; print(json.load(sys.stdin)['Error'])" 2> /dev/null
+    return 1
+  fi
+
   # The rest of the code is just extrapolating the data with python from the JSON response
   title="$(AccessJsonElement "$movieInfo" "Title")"
   year="$(AccessJsonElement "$movieInfo" "Year")"
