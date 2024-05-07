@@ -1,0 +1,29 @@
+name: Bash-Snippets CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: earthly/actions/setup-earthly@v1
+        with:
+          version: v0.5.10
+      - uses: actions/checkout@v2
+      - name: +lint
+        run: earthly +lint
+  bats:
+    name: bats
+    runs-on: ubuntu-latest
+    steps:
+      - uses: earthly/actions/setup-earthly@v1
+        with:
+          version: v0.5.10
+      - uses: actions/checkout@v2
+      - name: +bats
+        run: earthly +bats
